@@ -149,7 +149,7 @@ public class CadastreObjectBean extends SpatialBean {
     public Double getCalculatedArea() {
         for(SpatialValueAreaBean valueAreaBean: this.getSpatialValueAreaList()){
             if (valueAreaBean.getTypeCode().equals(SpatialValueAreaBean.TYPE_OFFICIAL)){
-                return valueAreaBean.getSize().doubleValue();
+                return valueAreaBean.getSize().doubleValue()/4046.86;
             }
         }
         return null;
@@ -163,7 +163,7 @@ public class CadastreObjectBean extends SpatialBean {
      * @param calculatedArea 
      */
     public void setCalculatedArea(Double calculatedArea) {
-        this.setArea(calculatedArea, SpatialValueAreaBean.TYPE_CALCULATED);
+        this.setArea((calculatedArea*4046.86), SpatialValueAreaBean.TYPE_CALCULATED);
     }
 
     /**
@@ -176,7 +176,7 @@ public class CadastreObjectBean extends SpatialBean {
     public Double getOfficialArea() {
         for(SpatialValueAreaBean valueAreaBean: this.getSpatialValueAreaList()){
             if (valueAreaBean.getTypeCode().equals(SpatialValueAreaBean.TYPE_OFFICIAL)){
-                return valueAreaBean.getSize().doubleValue();
+                return valueAreaBean.getSize().doubleValue()/4046.86;
             }
         }
         return null;
@@ -190,6 +190,7 @@ public class CadastreObjectBean extends SpatialBean {
      * @param officialArea 
      */
     public void setOfficialArea(Double officialArea) {
+        officialArea=officialArea*4046.86;
         this.setArea(officialArea, SpatialValueAreaBean.TYPE_OFFICIAL);
     }
 
