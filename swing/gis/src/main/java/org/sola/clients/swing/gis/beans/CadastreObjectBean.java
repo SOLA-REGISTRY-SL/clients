@@ -101,9 +101,9 @@ public class CadastreObjectBean extends SpatialBean {
     }
 
     public void setNameLastpart(String nameLastpart) {
-         String oldValue = this.nameLastpart;
-         this.nameLastpart = nameLastpart;
-         propertySupport.firePropertyChange(NAME_LAST_PART_PROPERTY, oldValue, nameLastpart);
+        String oldValue=this.nameLastpart;
+        this.nameLastpart = nameLastpart;
+        propertySupport.firePropertyChange(NAME_LAST_PART_PROPERTY, oldValue, nameLastpart);
     }
 
     public byte[] getGeomPolygon() {
