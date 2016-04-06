@@ -42,7 +42,7 @@ import org.geotools.swing.extended.util.GeometryUtility;
 public class CadastreObjectBean extends SpatialBean {
     
     public static String NAME_FIRST_PART_PROPERTY = "nameFirstpart";
-    public static String NAME_LAST_PART_PROPERTY="nameLastpart";
+    public static String NAME_LAST_PART_PROPERTY = "nameLastpart";
     
     private String id;
     private String nameFirstpart = "";

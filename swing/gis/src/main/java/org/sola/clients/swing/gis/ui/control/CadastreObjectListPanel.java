@@ -185,9 +185,11 @@ public class CadastreObjectListPanel extends javax.swing.JPanel {
 
         jScrollPane1.setViewportView(tableCadastreObject);
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("org/sola/clients/swing/gis/ui/control/Bundle"); // NOI18N
-        tableCadastreObject.getColumnModel().getColumn(0).setHeaderValue(bundle.getString("CadastreObjectListPanel.tableCadastreObject.columnModel.title0")); // NOI18N
-        tableCadastreObject.getColumnModel().getColumn(1).setHeaderValue(bundle.getString("CadastreObjectListPanel.tableCadastreObject.columnModel.title1")); // NOI18N
-        tableCadastreObject.getColumnModel().getColumn(2).setHeaderValue(bundle.getString("CadastreObjectListPanel.tableCadastreObject.columnModel.title2")); // NOI18N
+        if (tableCadastreObject.getColumnModel().getColumnCount() > 0) {
+            tableCadastreObject.getColumnModel().getColumn(0).setHeaderValue(bundle.getString("CadastreObjectListPanel.tableCadastreObject.columnModel.title0")); // NOI18N
+            tableCadastreObject.getColumnModel().getColumn(1).setHeaderValue(bundle.getString("CadastreObjectListPanel.tableCadastreObject.columnModel.title1")); // NOI18N
+            tableCadastreObject.getColumnModel().getColumn(2).setHeaderValue(bundle.getString("CadastreObjectListPanel.tableCadastreObject.columnModel.title2")); // NOI18N
+        }
 
         cmdRemove.setText(bundle.getString("CadastreObjectListPanel.cmdRemove.text")); // NOI18N
         cmdRemove.setEnabled(false);
