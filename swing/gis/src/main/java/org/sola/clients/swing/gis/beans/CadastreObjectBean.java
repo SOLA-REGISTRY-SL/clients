@@ -163,7 +163,7 @@ public class CadastreObjectBean extends SpatialBean {
      * @param calculatedArea 
      */
     public void setCalculatedArea(Double calculatedArea) {
-        this.setArea((calculatedArea*4046.86), SpatialValueAreaBean.TYPE_CALCULATED);
+        this.setArea((calculatedArea), SpatialValueAreaBean.TYPE_CALCULATED);
     }
 
     /**
