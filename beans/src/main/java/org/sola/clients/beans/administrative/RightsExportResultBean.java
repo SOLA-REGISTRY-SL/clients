@@ -28,6 +28,7 @@
 package org.sola.clients.beans.administrative;
 
 import java.math.BigDecimal;
+import java.math.*;
 import java.math.BigInteger;
 import java.util.Date;
 import org.sola.clients.beans.AbstractBindingBean;
@@ -189,16 +190,18 @@ public class RightsExportResultBean extends AbstractBindingBean {
     public String getAreaFormatted(){
         String areaFormatted = "";
         if(getArea()!=null){
-            areaFormatted = "with an area of " + getArea().toPlainString() + " m2";
+            areaFormatted = "with an area of " + (getArea()).toPlainString() + " ac2";
         }
         return areaFormatted;
     }
     
     public BigDecimal getArea() {
+        BigDecimal areaA= new BigDecimal(4046.86);
         if(area == null){
             return new BigDecimal(0);
         } else {
-            return area;
+            //return (area.divide(new BigDecimal(4046.86)));
+            return (area.divide(areaA));
         }
     }
 
