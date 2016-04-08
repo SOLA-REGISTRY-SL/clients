@@ -34,6 +34,8 @@ package org.sola.clients.swing.gis.ui.control;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import org.geotools.swing.extended.Map;
+import org.geotools.swing.control.*;
+import org.geotools.swing.extended.util.CRSUtility;
 import org.sola.clients.swing.gis.Messaging;
 import org.sola.clients.swing.gis.beans.AbstractListSpatialBean;
 import org.sola.clients.swing.gis.beans.SpatialBean;
@@ -145,6 +147,8 @@ public class SurveyPointListPanel extends javax.swing.JPanel {
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
+        cbxCooSys = new javax.swing.JComboBox();
+        lblCooSys = new javax.swing.JLabel();
 
         urbanRural.add(optionRural);
         optionRural.setSelected(true);
@@ -245,6 +249,10 @@ public class SurveyPointListPanel extends javax.swing.JPanel {
 
         jLabel5.setText(bundle.getString("SurveyPointListPanel.jLabel5.text")); // NOI18N
 
+        cbxCooSys.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Colonial", "Protectorate", "UTM28", "UTM29" }));
+
+        lblCooSys.setText(bundle.getString("SurveyPointListPanel.lblCooSys.text")); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -268,9 +276,12 @@ public class SurveyPointListPanel extends javax.swing.JPanel {
                         .addComponent(jLabel5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(txtAcceptableShift, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 608, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(lblCooSys, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(cbxCooSys, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(txtX, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -304,7 +315,9 @@ public class SurveyPointListPanel extends javax.swing.JPanel {
                     .addComponent(cmdAdd)
                     .addComponent(cmdRemove)
                     .addComponent(jLabel3)
-                    .addComponent(jLabel4))
+                    .addComponent(jLabel4)
+                    .addComponent(cbxCooSys, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblCooSys))
                 .addGap(6, 6, 6)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 254, Short.MAX_VALUE)
                 .addContainerGap())
@@ -325,6 +338,22 @@ public class SurveyPointListPanel extends javax.swing.JPanel {
         try {
             Double x = Double.valueOf(this.txtX.getText());
             Double y = Double.valueOf(this.txtY.getText());
+            System.out.println("COORDINATE SYSTEM SELECTED::::    "+this.cbxCooSys.getSelectedItem().toString());
+            CRSUtility crs = new CRSUtility();
+            if(this.cbxCooSys.getSelectedItem().toString().contentEquals("Colonial")){
+                System.out.println("CRS GET CRS da 2159::::"+crs.getCRS(32629));    
+            }
+            if(this.cbxCooSys.getSelectedItem().toString().contentEquals("UTM28")){
+                System.out.println("CRS GET CRS da 32629::::"+crs.getCRS(32629));
+            }
+            if(this.cbxCooSys.getSelectedItem().toString().contentEquals("UTM29")){
+                System.out.println("CRS GET CRS da 32628::::"+crs.getCRS(32629));    
+            }
+            
+            
+            
+            
+            
             SurveyPointBean bean = new SurveyPointBean();
             //bean.setSrid(this.getMapControl().getSrid());
             bean.setX(x);
@@ -344,6 +373,7 @@ public class SurveyPointListPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_cmdRemoveActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox cbxCooSys;
     private javax.swing.JButton cmdAdd;
     private javax.swing.JButton cmdRemove;
     private javax.swing.JLabel jLabel1;
@@ -352,6 +382,7 @@ public class SurveyPointListPanel extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel lblCooSys;
     private javax.swing.JRadioButton optionRural;
     private javax.swing.JRadioButton optionUrban;
     private org.sola.clients.swing.gis.beans.SurveyPointListBean surveyPointListBean;

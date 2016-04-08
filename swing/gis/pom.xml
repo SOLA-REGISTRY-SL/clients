@@ -22,7 +22,8 @@
         <dependency>
             <groupId>org.sola.clients.swing</groupId>
             <artifactId>sola-geotools-ui</artifactId>
-            <version>${project.version}</version>
+            <version>1503a</version>
+            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.sola.common</groupId>
