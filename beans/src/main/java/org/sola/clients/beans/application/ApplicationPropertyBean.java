@@ -123,8 +123,8 @@ public class ApplicationPropertyBean extends AbstractIdBean {
 
     public void setArea(BigDecimal val) {
         BigDecimal old = area;
-        area = val;
-        propertySupport.firePropertyChange(AREA_PROPERTY, old, val);
+        area = val.multiply(new BigDecimal(4046.86));
+        propertySupport.firePropertyChange(AREA_PROPERTY, old, val.multiply(new BigDecimal(4046.86)));
     }
 
     public String getNameFirstpart() {

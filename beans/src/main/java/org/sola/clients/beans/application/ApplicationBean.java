@@ -676,12 +676,14 @@ public class ApplicationBean extends ApplicationSummaryBean {
             }
 
             ApplicationPropertyBean newProperty = new ApplicationPropertyBean();
-            newProperty.setArea(area);
+            BigDecimal convertedarea = area.multiply(new BigDecimal(4046.86));
+            newProperty.setArea(convertedarea);
             newProperty.setNameFirstpart(firstPart);
             newProperty.setNameLastpart(lastPart);
             newProperty.setTotalValue(value);
             propertyList.addAsNew(newProperty);
             selectedProperty = newProperty;
+            
         }
     }
 
