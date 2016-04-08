@@ -341,10 +341,10 @@ public class SurveyPointListPanel extends javax.swing.JPanel {
             System.out.println("COORDINATE SYSTEM SELECTED::::    "+this.cbxCooSys.getSelectedItem().toString());
             CRSUtility crs = new CRSUtility();
             if(this.cbxCooSys.getSelectedItem().toString().contentEquals("Colonial")){
-                System.out.println("CRS GET CRS da 2159::::"+crs.getCRS(32629));    
+                System.out.println("CRS GET CRS da 2159::::"+crs.getCRS(2159));    
             }
             if(this.cbxCooSys.getSelectedItem().toString().contentEquals("UTM28")){
-                System.out.println("CRS GET CRS da 32629::::"+crs.getCRS(32629));
+                System.out.println("CRS GET CRS da 32629::::"+crs.getCRS(32628));
             }
             if(this.cbxCooSys.getSelectedItem().toString().contentEquals("UTM29")){
                 System.out.println("CRS GET CRS da 32628::::"+crs.getCRS(32629));    
