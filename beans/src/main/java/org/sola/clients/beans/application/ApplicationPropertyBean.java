@@ -118,7 +118,7 @@ public class ApplicationPropertyBean extends AbstractIdBean {
     }
 
     public BigDecimal getArea() {
-        return area;
+        return area.divide(new BigDecimal(4046.86));
     }
 
     public void setArea(BigDecimal val) {
