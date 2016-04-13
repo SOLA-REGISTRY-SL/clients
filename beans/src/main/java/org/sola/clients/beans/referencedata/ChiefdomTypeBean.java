@@ -13,19 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.sola.clients.beans.referencedata;
-
-import org.sola.clients.beans.AbstractCodeBean;
 import org.sola.webservices.transferobjects.referencedata.*;
+import org.sola.clients.beans.AbstractCodeBean;
+
 /**
  *
  * @author Moses VB
  */
-public class CordinateSystemTypeBean extends AbstractCodeBean {
+public class ChiefdomTypeBean extends AbstractCodeBean {
     
-    public CordinateSystemTypeBean() {
+    public ChiefdomTypeBean(){
         super();
     }
-    
+            
 }
