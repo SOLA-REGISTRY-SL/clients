@@ -233,7 +233,28 @@ public final class CacheManager {
     
     public static final String GET_NOTIFY_RELATIONSHIP_TYPE_KEY = NotifyRelationshipTypeBean.class.getName() + LIST_POSTFIX;
  
-    
+    //FOr CordinateSystemType
+      /**
+     * Cache key of the code/displayValue map based on {@link CordinateSystemTypeBean}
+     * collection.
+     */
+    public static final String CORDINATESYSTEM_TYPES_MAP_KEY = CordinateSystemTypeBean.class.getName() + MAP_POSTFIX;
+     /**
+     * Cache key of the {@link CordinateSystemTypeBean} collection.
+     */
+    public static final String CORDINATESYSTEM_TYPES_KEY = CordinateSystemTypeBean.class.getName() + LIST_POSTFIX;
+
+//FOr SurveyingMethodType
+      /**
+     * Cache key of the code/displayValue map based on {@link CordinateSystemTypeBean}
+     * collection.
+     */
+    public static final String SURVEYINGMETHOD_TYPES_MAP_KEY = SurveyingMethodTypeBean.class.getName() + MAP_POSTFIX;
+     /**
+     * Cache key of the {@link CordinateSystemTypeBean} collection.
+     */
+    public static final String SURVEYINGMETHOD_TYPES_KEY = SurveyingMethodTypeBean.class.getName() + LIST_POSTFIX;
+
     
     
     
@@ -274,7 +295,10 @@ public final class CacheManager {
     private static final String GET_REQUEST_DISPLAY_GROUPS = "getRequestDisplayGroups";
     private static final String GET_NOTIFY_RELATIONSHIP_TYPES = "getNotifyRelationshipTypes";
     
-    
+    //CordinateSysteType
+     private static final String GET_CORDINATESYSTEM_TYPES = "getCordinateSystemTypes";
+     //SurveyingMethod
+     private static final String GET_SURVEYINGMETHOD_TYPES = "getSurveyingMethodTypes";
     
     public static List<BrValidationTargetTypeBean> getBrValidationTargetTypes() {
         return getCachedBeanList(BrValidationTargetTypeBean.class,
@@ -674,5 +698,35 @@ public final class CacheManager {
         if (cache.contains(key)) {
             cache.remove(key);
         }
+    }
+    //SIERRAL CUSTOMIZATION CODES ADDED
+    //CordinateSystemTyp
+     public static List<CordinateSystemTypeBean> getCordinateSystemTypes() {
+        return getCachedBeanList(CordinateSystemTypeBean.class,
+                WSManager.getInstance().getReferenceDataService(),
+                GET_CORDINATESYSTEM_TYPES, CORDINATESYSTEM_TYPES_KEY);
+    }
+
+    public static Map getCordinateSystemTypesMap() {
+        return getCachedMap(
+                getCachedBeanList(CordinateSystemTypeBean.class,
+                        WSManager.getInstance().getReferenceDataService(),
+                        GET_CORDINATESYSTEM_TYPES, CORDINATESYSTEM_TYPES_KEY),
+                CORDINATESYSTEM_TYPES_MAP_KEY);
+    }
+    
+     //SurveyingMethodType
+     public static List<SurveyingMethodTypeBean> getSurveyingMethodTypes() {
+        return getCachedBeanList(SurveyingMethodTypeBean.class,
+                WSManager.getInstance().getReferenceDataService(),
+                GET_SURVEYINGMETHOD_TYPES, SURVEYINGMETHOD_TYPES_KEY);
+    }
+
+    public static Map getSurveyingMethodTypesMap() {
+        return getCachedMap(
+                getCachedBeanList(SurveyingMethodTypeBean.class,
+                        WSManager.getInstance().getReferenceDataService(),
+                        GET_SURVEYINGMETHOD_TYPES, SURVEYINGMETHOD_TYPES_KEY),
+                SURVEYINGMETHOD_TYPES_MAP_KEY);
     }
 }
