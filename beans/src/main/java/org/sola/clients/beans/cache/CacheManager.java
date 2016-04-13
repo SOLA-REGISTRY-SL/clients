@@ -255,6 +255,17 @@ public final class CacheManager {
      */
     public static final String SURVEYINGMETHOD_TYPES_KEY = SurveyingMethodTypeBean.class.getName() + LIST_POSTFIX;
 
+    //FOr ChiefdomType
+      /**
+     * Cache key of the code/displayValue map based on {@link CordinateSystemTypeBean}
+     * collection.
+     */
+    public static final String CHIEFDOMTYPE_TYPES_MAP_KEY = ChiefdomTypeBean.class.getName() + MAP_POSTFIX;
+     /**
+     * Cache key of the {@link CordinateSystemTypeBean} collection.
+     */
+    public static final String CHIEFDOMTYPE_TYPES_KEY = ChiefdomTypeBean.class.getName() + LIST_POSTFIX;
+
     
     
     
@@ -299,6 +310,8 @@ public final class CacheManager {
      private static final String GET_CORDINATESYSTEM_TYPES = "getCordinateSystemTypes";
      //SurveyingMethod
      private static final String GET_SURVEYINGMETHOD_TYPES = "getSurveyingMethodTypes";
+      //ChiefdomType
+     private static final String GET_CHIEFDOMTYPE_TYPES = "getChiefdomTypes";
     
     public static List<BrValidationTargetTypeBean> getBrValidationTargetTypes() {
         return getCachedBeanList(BrValidationTargetTypeBean.class,
@@ -728,5 +741,20 @@ public final class CacheManager {
                         WSManager.getInstance().getReferenceDataService(),
                         GET_SURVEYINGMETHOD_TYPES, SURVEYINGMETHOD_TYPES_KEY),
                 SURVEYINGMETHOD_TYPES_MAP_KEY);
+    }
+    
+     //ChiefdomType
+     public static List<ChiefdomTypeBean> getChiefdomTypes() {
+        return getCachedBeanList(ChiefdomTypeBean.class,
+                WSManager.getInstance().getReferenceDataService(),
+                GET_CHIEFDOMTYPE_TYPES, CHIEFDOMTYPE_TYPES_KEY);
+    }
+
+    public static Map getChiefdomTypesMap() {
+        return getCachedMap(
+                getCachedBeanList(ChiefdomTypeBean.class,
+                        WSManager.getInstance().getReferenceDataService(),
+                        GET_CHIEFDOMTYPE_TYPES, CHIEFDOMTYPE_TYPES_KEY),
+                CHIEFDOMTYPE_TYPES_MAP_KEY);
     }
 }
