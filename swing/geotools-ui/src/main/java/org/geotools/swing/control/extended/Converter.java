@@ -60,7 +60,7 @@ public class Converter {
 			    for (CoordinateOperation op : coordOps) {
 
 			        double[] dest  = op.transform(source);
-			        System.out.println("Tranformation: " + op.getName() + ", source: " + source[0] + ", " + source[1] + ", dest: " + dest[0] + ", " + dest[1]);
+			        System.out.println("TranformationPRIMO: " + op.getName() + ", source: " + source[0] + ", " + source[1] + ", dest: " + dest[0] + ", " + dest[1]);
 			    }
 		    }
 
@@ -71,7 +71,7 @@ public class Converter {
 			    for (CoordinateOperation op : coordOps) {
 
 			        double[] dest  = op.transform(source);
-			        System.out.println("Tranformation: " + op.getName() + ", source: " + source[0] + ", " + source[1] + ", dest: " + dest[0] + ", " + dest[1]);
+			        System.out.println("TranformationSECONDO: " + op.getName() + ", source: " + source[0] + ", " + source[1] + ", dest: " + dest[0] + ", " + dest[1]);
 			    }
 		    }
 
@@ -82,7 +82,7 @@ public class Converter {
 			    for (CoordinateOperation op : coordOps) {
 
 			        double[] dest  = op.transform(source);
-			        System.out.println("Tranformation: " + op.getName() + ", source: " + source[0] + ", " + source[1] + ", dest: " + dest[0] + ", " + dest[1]);
+			        System.out.println("TranformationTERZO: " + op.getName() + ", source: " + source[0] + ", " + source[1] + ", dest: " + dest[0] + ", " + dest[1]);
 			    }
 		    }
 
@@ -93,7 +93,7 @@ public class Converter {
 			    for (CoordinateOperation op : coordOps) {
 
 			        double[] dest  = op.transform(source);
-			        System.out.println("Tranformation: " + op.getName() + ", source: " + source[0] + ", " + source[1] + ", dest: " + dest[0] + ", " + dest[1]);
+			        System.out.println("TranformationQUARTO: " + op.getName() + ", source: " + source[0] + ", " + source[1] + ", dest: " + dest[0] + ", " + dest[1]);
 			    }
 		    }
 		} catch (CRSException e) {
