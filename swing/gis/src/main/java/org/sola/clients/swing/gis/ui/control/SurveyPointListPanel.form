@@ -9,6 +9,10 @@
     </Component>
     <Component class="javax.swing.ButtonGroup" name="urbanRural">
     </Component>
+    <Component class="org.sola.clients.beans.referencedata.CordinateSystemTypeListBean" name="cordinateSystemTypeListBean1">
+    </Component>
+    <Component class="org.sola.clients.beans.referencedata.CordinateSystemTypeBean" name="cordinateSystemTypeBean1">
+    </Component>
   </NonVisualComponents>
   <AuxValues>
     <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="1"/>
@@ -308,14 +312,13 @@
     <Component class="javax.swing.JComboBox" name="cbxCooSys">
       <Properties>
         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-          <StringArray count="4">
-            <StringItem index="0" value="Colonial"/>
-            <StringItem index="1" value="Protectorate"/>
-            <StringItem index="2" value="UTM28"/>
-            <StringItem index="3" value="UTM29"/>
-          </StringArray>
+          <StringArray count="0"/>
         </Property>
       </Properties>
+      <BindingProperties>
+        <BindingProperty name="elements" source="cordinateSystemTypeListBean1" sourcePath="${cordinateSystemType.displayValue}" target="cbxCooSys" targetPath="elements" updateStrategy="0" immediately="false"/>
+        <BindingProperty name="selectedItem" source="cordinateSystemTypeListBean1" sourcePath="${cordinateSystemType.code}" target="cbxCooSys" targetPath="selectedItem" updateStrategy="0" immediately="false"/>
+      </BindingProperties>
     </Component>
     <Component class="javax.swing.JLabel" name="lblCooSys">
       <Properties>
