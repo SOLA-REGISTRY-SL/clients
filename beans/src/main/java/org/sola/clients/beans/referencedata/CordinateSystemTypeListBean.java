@@ -76,7 +76,7 @@ public class CordinateSystemTypeListBean extends AbstractBindingListBean {
         return selectedCordinateSystemTypeBean;
     }
 
-    public void setSelectedGenderType(CordinateSystemTypeBean value) {
+    public void setSelectedCordinateSystemType(CordinateSystemTypeBean value) {
         selectedCordinateSystemTypeBean = value;
         propertySupport.firePropertyChange(SELECTED_CordinateSystemType_PROPERTY, null, value);
     }

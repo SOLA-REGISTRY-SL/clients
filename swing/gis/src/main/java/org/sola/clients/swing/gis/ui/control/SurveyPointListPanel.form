@@ -9,9 +9,9 @@
     </Component>
     <Component class="javax.swing.ButtonGroup" name="urbanRural">
     </Component>
-    <Component class="org.sola.clients.beans.referencedata.CordinateSystemTypeListBean" name="cordinateSystemTypeListBean1">
+    <Component class="org.sola.clients.beans.referencedata.CordinateSystemTypeListBean" name="coordinateSysListBean">
     </Component>
-    <Component class="org.sola.clients.beans.referencedata.CordinateSystemTypeBean" name="cordinateSystemTypeBean1">
+    <Component class="org.sola.clients.beans.referencedata.CordinateSystemTypeBean" name="cordinateSysTypeBean">
     </Component>
   </NonVisualComponents>
   <AuxValues>
@@ -310,14 +310,9 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JComboBox" name="cbxCooSys">
-      <Properties>
-        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-          <StringArray count="0"/>
-        </Property>
-      </Properties>
       <BindingProperties>
-        <BindingProperty name="elements" source="cordinateSystemTypeListBean1" sourcePath="${cordinateSystemType.displayValue}" target="cbxCooSys" targetPath="elements" updateStrategy="0" immediately="false"/>
-        <BindingProperty name="selectedItem" source="cordinateSystemTypeListBean1" sourcePath="${cordinateSystemType.code}" target="cbxCooSys" targetPath="selectedItem" updateStrategy="0" immediately="false"/>
+        <BindingProperty name="elements" source="coordinateSysListBean" sourcePath="${cordinateSystemTypeList}" target="cbxCooSys" targetPath="elements" updateStrategy="0" immediately="false"/>
+        <BindingProperty name="selectedItem" source="coordinateSysListBean" sourcePath="${selectedCordinateSystemType}" target="cbxCooSys" targetPath="selectedItem" updateStrategy="0" immediately="false"/>
       </BindingProperties>
     </Component>
     <Component class="javax.swing.JLabel" name="lblCooSys">

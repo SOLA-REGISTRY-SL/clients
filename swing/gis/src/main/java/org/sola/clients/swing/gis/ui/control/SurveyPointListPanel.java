@@ -131,8 +131,8 @@ public class SurveyPointListPanel extends javax.swing.JPanel {
 
         surveyPointListBean = createBean();
         urbanRural = new javax.swing.ButtonGroup();
-        cordinateSystemTypeListBean1 = new org.sola.clients.beans.referencedata.CordinateSystemTypeListBean();
-        cordinateSystemTypeBean1 = new org.sola.clients.beans.referencedata.CordinateSystemTypeBean();
+        coordinateSysListBean = new org.sola.clients.beans.referencedata.CordinateSystemTypeListBean();
+        cordinateSysTypeBean = new org.sola.clients.beans.referencedata.CordinateSystemTypeBean();
         optionRural = new javax.swing.JRadioButton();
         txtY = new javax.swing.JTextField();
         optionUrban = new javax.swing.JRadioButton();
@@ -251,10 +251,10 @@ public class SurveyPointListPanel extends javax.swing.JPanel {
 
         jLabel5.setText(bundle.getString("SurveyPointListPanel.jLabel5.text")); // NOI18N
 
-        eLProperty = org.jdesktop.beansbinding.ELProperty.create("${cordinateSystemType.displayValue}");
-        org.jdesktop.swingbinding.JComboBoxBinding jComboBoxBinding = org.jdesktop.swingbinding.SwingBindings.createJComboBoxBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, cordinateSystemTypeListBean1, eLProperty, cbxCooSys);
+        eLProperty = org.jdesktop.beansbinding.ELProperty.create("${cordinateSystemTypeList}");
+        org.jdesktop.swingbinding.JComboBoxBinding jComboBoxBinding = org.jdesktop.swingbinding.SwingBindings.createJComboBoxBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, coordinateSysListBean, eLProperty, cbxCooSys);
         bindingGroup.addBinding(jComboBoxBinding);
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, cordinateSystemTypeListBean1, org.jdesktop.beansbinding.ELProperty.create("${cordinateSystemType.code}"), cbxCooSys, org.jdesktop.beansbinding.BeanProperty.create("selectedItem"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, coordinateSysListBean, org.jdesktop.beansbinding.ELProperty.create("${selectedCordinateSystemType}"), cbxCooSys, org.jdesktop.beansbinding.BeanProperty.create("selectedItem"));
         bindingGroup.addBinding(binding);
 
         lblCooSys.setText(bundle.getString("SurveyPointListPanel.lblCooSys.text")); // NOI18N
@@ -382,8 +382,8 @@ public class SurveyPointListPanel extends javax.swing.JPanel {
     private javax.swing.JComboBox cbxCooSys;
     private javax.swing.JButton cmdAdd;
     private javax.swing.JButton cmdRemove;
-    private org.sola.clients.beans.referencedata.CordinateSystemTypeBean cordinateSystemTypeBean1;
-    private org.sola.clients.beans.referencedata.CordinateSystemTypeListBean cordinateSystemTypeListBean1;
+    private org.sola.clients.beans.referencedata.CordinateSystemTypeListBean coordinateSysListBean;
+    private org.sola.clients.beans.referencedata.CordinateSystemTypeBean cordinateSysTypeBean;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
