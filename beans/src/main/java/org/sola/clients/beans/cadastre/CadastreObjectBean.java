@@ -38,6 +38,7 @@ import org.sola.clients.beans.AbstractTransactionedBean;
 import org.sola.clients.beans.address.AddressBean;
 import org.sola.clients.beans.cache.CacheManager;
 import org.sola.clients.beans.controls.SolaList;
+import org.sola.clients.beans.party.PartyBean;
 import org.sola.clients.beans.referencedata.CadastreObjectTypeBean;
 import org.sola.clients.beans.referencedata.LandUseTypeBean;
 import org.sola.clients.beans.validation.Localized;
@@ -85,6 +86,23 @@ public class CadastreObjectBean extends AbstractTransactionedBean {
     private SolaList<SpatialValueAreaBean> spatialValueAreaList;
     private SolaList<AddressBean> addressList;
     private transient AddressBean selectedAddress;
+    private String ownerName;
+    private String address;
+    private String landType;
+    private double parcelArea;
+    private PartyBean licensedSurveyor;
+    private String licensedSurveyorId;
+    private String eastNeighbour;
+    private String westNeighbour;
+    private String southNeighbour;
+    private String northNeighbour;
+    private String surveyMethod;
+    private String surveyDate;
+    private String beaconNumber;
+    private PartyBean chartingOfficer;
+    private PartyBean stateLandClearingOfficer;
+    private String chartingOfficerId;
+    private String stateLandClearingOfficerId;
     
     public CadastreObjectBean() {
         super();

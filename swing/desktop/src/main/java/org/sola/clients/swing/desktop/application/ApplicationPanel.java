@@ -2854,7 +2854,8 @@ public class ApplicationPanel extends ContentPanel {
         BigDecimal value = null;
 
         try {
-            area = new BigDecimal(txtArea.getText());
+            if(txtArea.getValue()!=null)
+                area = new BigDecimal(txtArea.getValue().toString());
         } catch (Exception e) {
         }
 

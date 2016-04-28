@@ -190,7 +190,10 @@ public class CadastreObjectBean extends SpatialBean {
      * @param officialArea 
      */
     public void setOfficialArea(Double officialArea) {
-        officialArea=officialArea*4046.86;
+        if(officialArea == null)
+            officialArea=0.0;
+        else
+            officialArea=officialArea*4046.86;
         this.setArea(officialArea, SpatialValueAreaBean.TYPE_OFFICIAL);
     }
 
@@ -203,6 +206,9 @@ public class CadastreObjectBean extends SpatialBean {
      * @param areaType The area type
      */
     private void setArea(Double areaSize, String areaType) {
+        if(areaSize == null)
+            areaSize = 0.0;
+        
         SpatialValueAreaBean valueAreaBeanFound = null;
         for(SpatialValueAreaBean valueAreaBean: this.getSpatialValueAreaList()){
             if (valueAreaBean.getTypeCode().equals(areaType)){

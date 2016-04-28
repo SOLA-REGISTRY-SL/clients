@@ -676,7 +676,9 @@ public class ApplicationBean extends ApplicationSummaryBean {
             }
 
             ApplicationPropertyBean newProperty = new ApplicationPropertyBean();
-            BigDecimal convertedarea = area.multiply(new BigDecimal(4046.86));
+            BigDecimal convertedarea = BigDecimal.ZERO;
+            if(area!=null) 
+                convertedarea = area.multiply(new BigDecimal(4046.86));
             newProperty.setArea(convertedarea);
             newProperty.setNameFirstpart(firstPart);
             newProperty.setNameLastpart(lastPart);
