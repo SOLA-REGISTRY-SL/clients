@@ -75,7 +75,7 @@ public abstract class ControlsBundleForTransaction extends SolaControlsBundle {
     protected CadastreBoundaryPointLayer cadastreBoundaryPointLayer = null;
     protected CadastreBoundaryEditTool cadastreBoundaryEditTool;
     private String transactionStarterId;
-    private ApplicationBean applicationBean;
+    protected ApplicationBean applicationBean;
     private MapDocumentsPanel documentsPanel;
 
     /**
@@ -123,6 +123,8 @@ public abstract class ControlsBundleForTransaction extends SolaControlsBundle {
         } else if (requestTypeCode.equals(RequestTypeBean.CODE_MAP_EXISTINGPARCEL)) {
               instance = new ControlsBundleForMapExistingParcel(        
                     applicationBean, transactionStarterId, baUnitId, targetCadastreObjectType);
+        } else if (requestTypeCode.equals(RequestTypeBean.CODE_NEW_PARCEL)) {
+            instance = new ControlsBundleForNewParcel(applicationBean, transactionStarterId);
         }
         return instance;
     }
@@ -137,7 +139,12 @@ public abstract class ControlsBundleForTransaction extends SolaControlsBundle {
      */
     @Override
     public void Setup(PojoDataAccess pojoDataAccess) {
-        super.Setup(pojoDataAccess);
+        Setup(pojoDataAccess, null);
+    }
+
+    @Override
+    public void Setup(PojoDataAccess pojoDataAccess, Integer srid) {
+        super.Setup(pojoDataAccess, srid);
 
         //Adding tools and commands
         this.addToolsAndCommands();
@@ -154,8 +161,7 @@ public abstract class ControlsBundleForTransaction extends SolaControlsBundle {
             }
         }
     }
-
-
+    
     @Override
     protected void setupToolbar() {
         this.getMap().addMapAction(new SaveTransaction(this), this.getToolbar(), true);
@@ -249,9 +255,6 @@ public abstract class ControlsBundleForTransaction extends SolaControlsBundle {
      *
      */
     protected void addToolsAndCommands() {
-        this.cadastreBoundaryEditTool =
-                new CadastreBoundaryEditTool(this.cadastreBoundaryPointLayer);
-        this.getMap().addTool(this.cadastreBoundaryEditTool, this.getToolbar(), false);
         this.getMap().addTool(new AddDirectImageTool(this.imageLayer), this.getToolbar(), true);
         this.getMap().addMapAction(new RemoveDirectImage(this.getMap()), this.getToolbar(), true);
         if (this.applicationBean != null){
@@ -279,7 +282,6 @@ public abstract class ControlsBundleForTransaction extends SolaControlsBundle {
      */
     public void setReadOnly(boolean readOnly) {
         this.getMap().getMapActionByName(SaveTransaction.MAPACTION_NAME).setEnabled(!readOnly);
-        this.getMap().getMapActionByName(CadastreBoundarySelectTool.MAP_ACTION_NAME).setEnabled(!readOnly);
     }
     
     /**

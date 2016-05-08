@@ -234,8 +234,8 @@ public class CadastreChangeNewCadastreObjectLayer
         NewCadastreObjectIdentifier newCadastreObjectIdentifier;
         if (this.isUseClientSideIdentifierGenerator()) {
             newCadastreObjectIdentifier = new NewCadastreObjectIdentifier();
-            newCadastreObjectIdentifier.setLastPart(this.lastPart);
-            newCadastreObjectIdentifier.setFirstPart(this.getNameFirstPart());
+            newCadastreObjectIdentifier.setLastPart(this.getNameFirstPart());
+            newCadastreObjectIdentifier.setFirstPart("tmp");
         } else {
             newCadastreObjectIdentifier = PojoDataAccess.getInstance().getCadastreService().getNewCadastreObjectIdentifier(
                     GeometryUtility.getWkbFromGeometry(geom), cadastreObjectType);

@@ -64,7 +64,7 @@ public class ControlsBundle extends javax.swing.JPanel {
     private JTabbedPane leftPanel;
     private Toc toc;
     JMapStatusBar statusBar;
-
+    private CRSStatusBarItem crsCtrl;
     /**
      * Creates new ControlsBundle
      */
@@ -153,7 +153,8 @@ public class ControlsBundle extends javax.swing.JPanel {
         this.pnlStatusbar.setLayout(new BorderLayout());
         statusBar = new JMapStatusBar();
         statusBar.addItem(new JRendererStatusBarItem(this.getMap()), false, true);
-        statusBar.addItem(new CRSStatusBarItem(this.getMap()));
+        crsCtrl = new CRSStatusBarItem(this.getMap());
+        statusBar.addItem(crsCtrl);
         JCoordsStatusBarItem coordStatusItem = new JCoordsStatusBarItem(this.getMap());
         statusBar.addItem(coordStatusItem);
         // Adds the Scale Bar and Map Scale to the status bar of the map. Uses MigLayout constraints
@@ -171,6 +172,10 @@ public class ControlsBundle extends javax.swing.JPanel {
         return statusBar;
     }
 
+    public CRSStatusBarItem getCrsControl(){
+        return crsCtrl;
+    }
+    
     /**
      * Gets the map control
      *

@@ -344,6 +344,14 @@ public class Map extends JMapPane {
     }
 
     /**
+     * Sets map full extent
+     * @param extent Map full extent envelop
+     */
+    public void setFullExtent(ReferencedEnvelope extent) {
+        this.fullExtent = extent;
+    }
+    
+    /**
      * Gets the full extent. If the full extent is not yet set then the full
      * extent of all layers in the map is used.
      *
@@ -386,6 +394,23 @@ public class Map extends JMapPane {
         return this.extendedLayers;
     }
 
+    /** 
+     * Returns SOLA layer by name
+     * @param name Layer name
+     * @return 
+     */
+    public ExtendedLayer getSolaLayer(String name){
+        if(name == null || "".equals(name) || this.extendedLayers == null || this.extendedLayers.size() < 1)
+            return null;
+        
+        for (java.util.Map.Entry<String, ExtendedLayer> layer : extendedLayers.entrySet()) {
+            if(layer.getKey().equalsIgnoreCase(name))
+             return layer.getValue();
+        }
+        
+        return null;
+    }
+    
     /**
      * It adds a ExtendedLayer
      *

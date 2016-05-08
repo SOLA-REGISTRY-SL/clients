@@ -27,14 +27,22 @@
  */
 package org.sola.clients.swing.gis.ui.controlsbundle;
 
+import com.vividsolutions.jts.geom.Envelope;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.geotools.feature.SchemaException;
+import org.geotools.geometry.jts.JTS;
+import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.extended.layer.ExtendedFeatureLayer;
 import org.geotools.map.extended.layer.ExtendedLayer;
 import org.geotools.swing.extended.ControlsBundle;
 import org.geotools.swing.extended.exception.InitializeLayerException;
 import org.geotools.swing.extended.exception.InitializeMapException;
+import org.geotools.swing.extended.util.CRSUtility;
 import org.geotools.swing.mapaction.extended.KMLExportAction;
+import org.opengis.referencing.operation.MathTransform;
+import org.opengis.referencing.operation.TransformException;
 import org.sola.clients.beans.security.SecurityBean;
 import org.sola.clients.swing.gis.Messaging;
 import org.sola.clients.swing.gis.data.PojoDataAccess;
@@ -92,15 +100,35 @@ public abstract class SolaControlsBundle extends ControlsBundle {
      *
      */
     public void Setup(PojoDataAccess pojoDataAccess) {
+        Setup(pojoDataAccess, null);
+    }
+
+    /**
+     * Sets up the bundle.
+     *
+     * @param pojoDataAccess The data access library used to communicate with
+     * the server from where the map definitions are retrieved.
+     * @param srid SRID to set on the map
+     */
+    public void Setup(PojoDataAccess pojoDataAccess, Integer srid) {
         try {
             this.pojoDataAccess = pojoDataAccess;
             MapDefinitionTO mapDefinition = pojoDataAccess.getMapDefinition();
-            CrsTO firstCrs = mapDefinition.getCrsList().get(0);
-            super.Setup(firstCrs.getSrid(), firstCrs.getWkt(), true);
+            CrsTO crsToSet = mapDefinition.getCrsList().get(0);
+
+            if (srid != null) {
+                for (CrsTO crs : mapDefinition.getCrsList()) {
+                    if (crs.getSrid() == srid) {
+                        crsToSet = crs;
+                        break;
+                    }
+                }
+            }
+
+            super.Setup(crsToSet.getSrid(), crsToSet.getWkt(), true);
             this.addSearchPanel();
             InformationTool infoTool = new InformationTool(this.pojoDataAccess);
             this.getMap().addTool(infoTool, this.getToolbar(), true);
-
 
             // CHOOSE WHICH TOOL IS PREFERRED FOR THE MAP PRINT COMMENTING AND UNCOMMENTING THE FOLLOWING LINES
             //this is used for creating a pdf map print
@@ -115,12 +143,20 @@ public abstract class SolaControlsBundle extends ControlsBundle {
                 this.getMap().addMapAction(new KMLExportAction(this.getMap()), this.getToolbar(), true);
             }
 
-            this.getMap().setFullExtent(
-                    mapDefinition.getEast(),
+            ReferencedEnvelope env = new ReferencedEnvelope(
                     mapDefinition.getWest(),
+                    mapDefinition.getEast(),
+                    mapDefinition.getSouth(),
                     mapDefinition.getNorth(),
-                    mapDefinition.getSouth());
+                    CRSUtility.getInstance().getCRS(32629));
 
+            if (crsToSet.getSrid() != 32629) {
+                MathTransform transform = CRSUtility.getInstance().getTransform(32629, crsToSet.getSrid());
+                Envelope transformedEnv = JTS.transform(env, transform);
+                env = new ReferencedEnvelope(transformedEnv, CRSUtility.getInstance().getCRS(crsToSet.getSrid()));
+            }
+
+            this.getMap().setFullExtent(env);
             this.addLayers();
 
             this.getMap().initializeSelectionLayer();
@@ -137,6 +173,10 @@ public abstract class SolaControlsBundle extends ControlsBundle {
             Messaging.getInstance().show(GisMessage.GENERAL_CONTROLBUNDLE_ERROR);
             org.sola.common.logging.LogUtility.log(
                     GisMessage.GENERAL_CONTROLBUNDLE_ERROR, ex);
+        } catch (TransformException ex) {
+            Messaging.getInstance().show(GisMessage.GENERAL_CONTROLBUNDLE_ERROR);
+            org.sola.common.logging.LogUtility.log(
+                    GisMessage.GENERAL_CONTROLBUNDLE_ERROR, ex);
         }
     }
 
@@ -149,7 +189,7 @@ public abstract class SolaControlsBundle extends ControlsBundle {
      */
     private void addLayerConfig(ConfigMapLayerTO configMapLayer)
             throws InitializeLayerException, SchemaException {
-        if (!configMapLayer.isActive()){
+        if (!configMapLayer.isActive()) {
             return;
         }
         if (configMapLayer.getTypeCode().equals("wms")) {

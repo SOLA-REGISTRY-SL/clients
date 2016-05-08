@@ -41,7 +41,6 @@ import org.geotools.referencing.CRS;
 import org.geotools.referencing.NamedIdentifier;
 import org.geotools.swing.control.extended.CRSItem;
 import org.geotools.swing.extended.exception.InitializeCRSException;
-import org.geotools.swing.extended.exception.InitializeMapException;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;

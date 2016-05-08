@@ -409,4 +409,32 @@ public class GeometryUtility {
                     String.format("Error transforming geometry %s in srid:%s", geometry.toString(), targetSrid), ex);
         }
     }
+    
+    /**
+     * Returns converted coordinate from Colonial system to UTM 28
+     * @param x X coordinate
+     * @param y Y coordinate
+     * @return 
+     */
+    public static Coordinate convertFromColonialToUTM28(Double x, Double y){
+        if(x == null || y == null)
+            return null;
+        x = 0.30467*x-0.00231*y+679386.192-1.6999;
+        y = 0.00231*x+0.30467*y+736498.85+1.2612;
+        return new Coordinate(x, y);
+    }
+    
+    /**
+     * Returns converted coordinate from Colonial system to UTM 29
+     * @param x X coordinate
+     * @param y Y coordinate
+     * @return 
+     */
+    public static Coordinate convertFromColonialToUTM29(Double x, Double y){
+        if(x == null || y == null)
+            return null;
+        x = 0.30467*x-0.00231*y+679386.192-1.6999;
+        y = 0.00231*x+0.30467*y+736498.85+1.2612;
+        return new Coordinate(x, y);
+    }
 }

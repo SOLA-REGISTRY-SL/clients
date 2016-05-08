@@ -45,6 +45,7 @@ import org.sola.clients.swing.gis.data.PojoDataAccess;
 import org.sola.clients.swing.gis.layer.CadastreRedefinitionNodeLayer;
 import org.sola.clients.swing.gis.layer.CadastreRedefinitionObjectLayer;
 import org.sola.clients.swing.gis.mapaction.CadastreRedefinitionReset;
+import org.sola.clients.swing.gis.tool.CadastreBoundaryEditTool;
 import org.sola.clients.swing.gis.tool.CadastreBoundarySelectTool;
 import org.sola.clients.swing.gis.tool.CadastreRedefinitionAddNodeTool;
 import org.sola.clients.swing.gis.tool.CadastreRedefinitionBoundarySelectTool;
@@ -178,6 +179,10 @@ public final class ControlsBundleForCadastreRedefinition extends ControlsBundleF
                 this.cadastreObjectModifiedLayer,
                 this.cadastreObjectNodeModifiedLayer);
         this.getMap().addTool(this.boundarySelectTool, this.getToolbar(), true);
+        this.cadastreBoundaryEditTool =
+                new CadastreBoundaryEditTool(this.cadastreBoundaryPointLayer);
+        this.getMap().addTool(this.cadastreBoundaryEditTool, this.getToolbar(), false);
+        
         super.addToolsAndCommands();
         this.cadastreBoundaryEditTool.setTargetLayer(cadastreObjectModifiedLayer);
     }
@@ -206,6 +211,7 @@ public final class ControlsBundleForCadastreRedefinition extends ControlsBundleF
     @Override
     public void setReadOnly(boolean readOnly) {
         super.setReadOnly(readOnly);
+        this.getMap().getMapActionByName(CadastreBoundarySelectTool.MAP_ACTION_NAME).setEnabled(!readOnly);
         this.getMap().getMapActionByName(
                 CadastreRedefinitionAddNodeTool.NAME).setEnabled(!readOnly);
         this.getMap().getMapActionByName(

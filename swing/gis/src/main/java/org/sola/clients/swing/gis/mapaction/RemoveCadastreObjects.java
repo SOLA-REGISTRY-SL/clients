@@ -25,69 +25,44 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-package org.geotools.swing.control.extended;
+package org.sola.clients.swing.gis.mapaction;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import org.geotools.swing.control.StatusBarItem;
+import org.geotools.swing.mapaction.extended.ExtendedAction;
+import org.sola.clients.swing.gis.tool.CadastreChangeNewCadastreObjectTool;
+import org.sola.clients.swing.gis.ui.controlsbundle.ControlsBundleForApplicationLocation;
+import org.sola.common.messaging.GisMessage;
+import org.sola.common.messaging.MessageUtility;
 import org.geotools.swing.extended.Map;
+import org.sola.clients.swing.gis.layer.CadastreChangeNewCadastreObjectLayer;
 
 /**
+ * This map action is used to remove created cadastre objects on the map.
  *
- * @author Elton Manoku
  */
-public class CRSStatusBarItem extends StatusBarItem {
+public final class RemoveCadastreObjects extends ExtendedAction {
 
-    private static final String COMPONENT_NAME = "CRSStatusbarItem";
+    /**
+     * Constructor of the map action that is used to remove the application location geometry.
+     * 
+     * @param map  The map control with which the map action will interact 
+     */
     private Map map;
-    JComboBox cmbSrid;
+    private CadastreChangeNewCadastreObjectLayer newCadastreObjectLayer = null;
+    public final static String NAME = "co-remove";
     
-    public CRSStatusBarItem(Map map) {
-        super(COMPONENT_NAME, false);
+    public RemoveCadastreObjects(Map map, CadastreChangeNewCadastreObjectLayer newCadastreObjectLayer) {
+        super(map, "co-remove",
+                MessageUtility.getLocalizedMessage(
+                GisMessage.CADASTRE_CHANGE_TOOLTIP_REMOVE_CO).getMessage(),
+                "resources/cadastre-redefinition-reset.png");
         this.map = map;
-        addVisualControl();
+        this.newCadastreObjectLayer = newCadastreObjectLayer;
     }
 
-    protected void addVisualControl() {
-        if (map.getCRSList().size() == 1){
-            JLabel lblSrid = new JLabel();
-            lblSrid.setText(map.getCRSList().get(0).toString());
-            add(lblSrid);
-            return;
-        }
-        cmbSrid = new JComboBox();
-        for (CRSItem item : map.getCRSList()) {
-            cmbSrid.addItem(item);
-            if (item.getSrid() == map.getSrid()){
-                cmbSrid.setSelectedItem(item);
-            }
-        }
-        add(cmbSrid);
-        cmbSrid.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JComboBox cmb = (JComboBox) e.getSource();
-                onCRSChange((CRSItem) cmb.getSelectedItem());
-            }
-        });
-    }
-    
     @Override
-    public void setEnabled(boolean enabled){
-        super.setEnabled(enabled);
-        if(cmbSrid != null){
-            cmbSrid.setEnabled(enabled);
+    public void onClick() {
+        if(newCadastreObjectLayer.getBeanList() != null && newCadastreObjectLayer.getBeanList().size() > 0){
+            newCadastreObjectLayer.getBeanList().removeAll(newCadastreObjectLayer.getBeanList());
         }
-    }
-    
-    private void onCRSChange(CRSItem selectedCRSItem){
-        map.setCRS(selectedCRSItem.getCrs());
     }
 }

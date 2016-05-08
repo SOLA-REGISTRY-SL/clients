@@ -32,16 +32,19 @@
 package org.sola.clients.swing.gis.layer;
 
 import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.io.ParseException;
 import java.util.HashMap;
 import java.util.List;
+import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.feature.extended.VertexInformation;
 import org.geotools.geometry.DirectPosition2D;
 import org.geotools.geometry.jts.Geometries;
-import org.geotools.swing.extended.Map;
+import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.swing.extended.exception.InitializeLayerException;
+import org.geotools.swing.extended.util.CRSUtility;
 import org.opengis.feature.simple.SimpleFeature;
 import org.sola.clients.swing.gis.Messaging;
 import org.sola.clients.swing.gis.beans.SpatialBean;
@@ -93,13 +96,46 @@ public final class CadastreChangeNewSurveyPointLayer extends AbstractSpatialObje
         this.listBean = new SurveyPointListBean();
         //This is called after the listBean is initialized
         initializeListBeanEvents();
-        SurveyPointListPanel uiComponent = new SurveyPointListPanel((SurveyPointListBean) this.listBean);
+        SurveyPointListPanel uiComponent = new SurveyPointListPanel((SurveyPointListBean) this.listBean, newCadastreObjectLayer.getMapControl());
         initializeFormHosting(
                 MessageUtility.getLocalizedMessageText(
                 GisMessage.CADASTRE_CHANGE_FORM_SURVEYPOINT_TITLE), 
                 uiComponent);
     }
 
+    public ReferencedEnvelope getBounds(){
+        if(getFeatureCollection() == null || getFeatureCollection().size() < 1){
+            return null;
+        }
+                
+        Double minx=null;
+        Double maxx=null;
+        Double miny=null;
+        Double maxy=null;
+        int srid = 0;
+        
+        for (SimpleFeatureIterator iterator = getFeatureCollection().features(); iterator.hasNext();) {
+            SimpleFeature feature = iterator.next();
+            if(minx == null){
+                minx = ((Point)feature.getDefaultGeometry()).getCoordinate().x;
+                maxx = ((Point)feature.getDefaultGeometry()).getCoordinate().x;
+                miny = ((Point)feature.getDefaultGeometry()).getCoordinate().y;
+                maxy = ((Point)feature.getDefaultGeometry()).getCoordinate().y;
+                srid = ((Point)feature.getDefaultGeometry()).getSRID();
+            } else {
+                if(minx > ((Point)feature.getDefaultGeometry()).getCoordinate().x)
+                    minx = ((Point)feature.getDefaultGeometry()).getCoordinate().x;
+                if(maxx < ((Point)feature.getDefaultGeometry()).getCoordinate().x)
+                    maxx = ((Point)feature.getDefaultGeometry()).getCoordinate().x;
+                if(miny > ((Point)feature.getDefaultGeometry()).getCoordinate().y)
+                    miny = ((Point)feature.getDefaultGeometry()).getCoordinate().y;
+                if(maxy < ((Point)feature.getDefaultGeometry()).getCoordinate().y)
+                    maxy = ((Point)feature.getDefaultGeometry()).getCoordinate().y;
+            }
+        }
+        return new ReferencedEnvelope(minx,maxx,miny,maxy,CRSUtility.getInstance().getCRS(srid));
+    }
+    
     /**
      * Gets the list of survey points
      *

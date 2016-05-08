@@ -34,6 +34,7 @@ package org.geotools.map.extended.layer;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.io.ParseException;
+import java.util.Iterator;
 import org.geotools.data.collection.CollectionFeatureSource;
 import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.feature.SchemaException;
@@ -44,6 +45,7 @@ import org.geotools.data.collection.extended.GraphicsFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.feature.CollectionEvent;
 import org.geotools.geometry.jts.JTS;
+import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.graph.util.geom.GeometryUtil;
 import org.geotools.swing.extended.exception.GeometryTransformException;
 import org.geotools.swing.extended.exception.InitializeLayerException;
@@ -188,7 +190,7 @@ public class ExtendedLayerGraphics extends ExtendedFeatureLayer {
     public GraphicsFeatureCollection getFeatureCollection() {
         return this.featureCollection;
     }
-
+    
     /**
      * @return the geometryFactory
      */

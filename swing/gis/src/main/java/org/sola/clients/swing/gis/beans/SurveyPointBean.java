@@ -42,6 +42,8 @@ public class SurveyPointBean extends SpatialBean{
     public static String LINKED_FOR_FEATURE_PROPERTY = "linkedForFeature";
     public static String BOUNDARY_FOR_FEATURE_PROPERTY = "boundaryForFeature";
     public static String SHIFT_DISTANCE_PROPERTY = "shiftDistance";
+    public static String X_PROPERTY = "x";
+    public static String Y_PROPERTY = "y";
     private String id;
     private byte[] geom;
     private byte[] originalGeom;
@@ -89,8 +91,10 @@ public class SurveyPointBean extends SpatialBean{
      * @param x 
      */
     public void setX(Double x) {
+        Double oldValue = this.x;
         this.x = x;
         this.makeGeom();
+        propertySupport.firePropertyChange(X_PROPERTY, oldValue, x);
     }
 
     /**
@@ -106,8 +110,10 @@ public class SurveyPointBean extends SpatialBean{
      * @param y 
      */
     public void setY(Double y) {
+        Double oldValue = this.y;
         this.y = y;
         this.makeGeom();
+        propertySupport.firePropertyChange(Y_PROPERTY, oldValue, y);
     }
 
     public int getSrid() {
@@ -324,10 +330,14 @@ public class SurveyPointBean extends SpatialBean{
     }
     
     private void setXAndY(){
-        if (x == null){
-            x = ((Point)getFeatureGeom()).getX();
-            y = ((Point)getFeatureGeom()).getY();
-            srid = getFeatureGeom().getSRID();
-        }
+        Double oldX = getX();
+        Double oldY = getY();
+        
+        x = ((Point)getFeatureGeom()).getX();
+        y = ((Point)getFeatureGeom()).getY();
+        srid = getFeatureGeom().getSRID();
+        
+        propertySupport.firePropertyChange(X_PROPERTY, oldX, x);
+        propertySupport.firePropertyChange(Y_PROPERTY, oldY, y);
     }
 }

@@ -52,6 +52,7 @@ import org.sola.webservices.transferobjects.cadastre.CadastreObjectTO;
 import org.geotools.map.extended.layer.ExtendedFeatureLayer;
 import org.geotools.map.extended.layer.ExtendedLayer;
 import org.sola.clients.swing.gis.layer.PojoLayer;
+import org.sola.clients.swing.gis.tool.CadastreBoundaryEditTool;
 
 /**
  * A control bundle that is used for cadastre change process. The necessary tools and layers are
@@ -255,6 +256,11 @@ public final class ControlsBundleForMapExistingParcel extends ControlsBundleForT
                 this.newCadastreObjectLayer.getVerticesLayer());
 
         this.getMap().addTool(cadastreBoundarySelectTool, this.getToolbar(), true);
+        
+        this.cadastreBoundaryEditTool =
+                new CadastreBoundaryEditTool(this.cadastreBoundaryPointLayer);
+        this.getMap().addTool(this.cadastreBoundaryEditTool, this.getToolbar(), false);
+        
         super.addToolsAndCommands();
 
         this.cadastreBoundaryEditTool.setTargetLayer(this.newCadastreObjectLayer);
@@ -273,6 +279,7 @@ public final class ControlsBundleForMapExistingParcel extends ControlsBundleForT
     @Override
     public void setReadOnly(boolean readOnly) {
         super.setReadOnly(readOnly);
+        this.getMap().getMapActionByName(CadastreBoundarySelectTool.MAP_ACTION_NAME).setEnabled(!readOnly);
         this.getMap().getMapActionByName(CadastreChangeSelectCadastreObjectTool.NAME).setEnabled(!readOnly);
         this.getMap().getMapActionByName(
                 CadastreChangePointSurveyListFormShow.MAPACTION_NAME).setEnabled(!readOnly);

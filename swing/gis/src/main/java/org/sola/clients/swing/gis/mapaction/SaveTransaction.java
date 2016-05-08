@@ -107,13 +107,11 @@ public class SaveTransaction extends ExtendedAction {
             }
             if (cadObjectsToBeDeletedCount>0){
                 //Show warning if parcels are being deleted
-                if (MessageUtility.displayMessage(
-                        GisMessage.CADASTRE_CHANGE_SAVE_WARNING_PARCELS_DELETED, 
-                        new Object[]{cadObjectsToBeDeletedCount}) == MessageUtility.BUTTON_TWO){
-                 // User does not intend to continue with the transaction.
-                    // The whole service will be stopped.
-                    return;
-                }
+//                if (MessageUtility.displayMessage(
+//                        GisMessage.CADASTRE_CHANGE_SAVE_WARNING_PARCELS_DELETED, 
+//                        new Object[]{cadObjectsToBeDeletedCount}) == MessageUtility.BUTTON_TWO){
+//                    return;
+//                }
             }
         }
         List<ValidationResultBean> result = transactionBean.save();
