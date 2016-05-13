@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="surveyplan" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="01dcc4f4-b73c-4926-87e8-30cb7d89cf83">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="109"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="4" splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="538" splitType="Stretch">
+			<staticText>
+				<reportElement x="238" y="32" width="81" height="20" uuid="20e00b47-8cae-44ab-bbe1-18c7a8cf2987"/>
+				<textElement textAlignment="Center">
+					<font fontName="Segoe UI"/>
+				</textElement>
+				<text><![CDATA[PROPERTY OF ]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="97" y="52" width="345" height="20" uuid="45f49667-3d1e-4725-a181-15da617a1273"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{field}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="97" y="98" width="345" height="20" uuid="73f33252-4c19-4d8e-aa16-7676f326b964"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{field}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="238" y="78" width="81" height="20" uuid="9e76e2d3-8609-4e02-a28b-070126676545"/>
+				<textElement textAlignment="Center">
+					<font fontName="Segoe UI"/>
+				</textElement>
+				<text><![CDATA[SITUATED AT]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="97" y="145" width="345" height="20" uuid="0b0ecff1-9ebe-4f9b-ae07-b11a53c6c9a9"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{field}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="238" y="125" width="81" height="20" uuid="fbf7629a-f496-4cae-9f02-a5fa1ee95ca2"/>
+				<textElement textAlignment="Center">
+					<font fontName="Segoe UI"/>
+				</textElement>
+				<text><![CDATA[NOTE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="238" y="176" width="81" height="20" uuid="0c960c65-2ad8-4902-9406-ed338d4706b3"/>
+				<textElement textAlignment="Center">
+					<font fontName="Segoe UI"/>
+				</textElement>
+				<text><![CDATA[AREA]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="206" y="196" width="149" height="20" uuid="fe5daab6-36c1-46ec-b4db-646809a9bd5a"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{field}]]></textFieldExpression>
+			</textField>
+			<componentElement>
+				<reportElement x="342" y="478" width="200" height="34" uuid="2cd1f1bc-adda-4b4b-880c-64ba46d2bd6d"/>
+				<jr:barbecue xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" type="Bookland" drawText="false" checksumRequired="false">
+					<jr:codeExpression><![CDATA["1234"]]></jr:codeExpression>
+				</jr:barbecue>
+			</componentElement>
+			<staticText>
+				<reportElement x="201" y="278" width="49" height="20" uuid="7678df77-0298-479c-9de2-4ce390e61dcb"/>
+				<text><![CDATA[SCALE]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="250" y="278" width="130" height="20" uuid="08c923ad-c63c-4f28-8fd1-32a290970317"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{field}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="206" y="0" width="149" height="20" uuid="1c078ef3-f22b-42a4-86bf-1572d642af85"/>
+				<textElement textAlignment="Center">
+					<font fontName="Rockwell" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[SURVEY PLAN]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="512" width="189" height="20" uuid="5f336c73-5f7c-4579-ad89-4f6277ec0283"/>
+				<text><![CDATA[DIRECTOR OF SURVEYS AND LANDS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="353" y="458" width="189" height="20" uuid="c7fab313-da1d-4efe-9289-cc86c78a806f"/>
+				<text><![CDATA[CERTIFIED TRUE PHOTOSTAT COPY]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="13" y="410" width="500" height="32" uuid="1eb64c8c-e6a6-404d-bd39-521253456324"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="18" y="412" width="495" height="29" uuid="e7295ef9-d1d4-4f18-8bfa-278e1f77e116"/>
+				<text><![CDATA[THE PLAN IS SIGNED HAVING SATISFIED AND IS SURVEY ORDINANCE OF 1950 (As Amended) OF SURVEYS AND LANDS]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="6" splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="3" splitType="Stretch"/>
+	</detail>
+	<columnFooter>
+		<band height="6" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="5" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="3" splitType="Stretch"/>
+	</summary>
+</jasperReport>
