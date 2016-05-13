@@ -134,6 +134,10 @@ public final class CacheManager {
      */
     public static final String ID_TYPE_CODES_KEY = IdTypeBean.class.getName() + LIST_POSTFIX;
     /**
+     * Cache key of the {@link LandTypeBean} collection.
+     */
+    public static final String LAND_TYPE_CODES_KEY = LandTypeBean.class.getName() + LIST_POSTFIX;
+    /**
      * Cache key of the {@link BaUnitTypeBean} collection.
      */
     public static final String BA_UNIT_TYPE_CODES_KEY = BaUnitTypeBean.class.getName() + LIST_POSTFIX;
@@ -282,6 +286,7 @@ public final class CacheManager {
     private static final String GET_PARTY_ROLES = "getPartyRoles";
 //    private static final String GET_PARTY_GROUP = "getGroupParty";
     private static final String GET_ID_TYPES = "getIdTypes";
+    private static final String GET_LAND_TYPES = "getLandTypes";
     private static final String GET_BA_UNIT_TYPES = "getBaUnitTypes";
     private static final String GET_MORTGAGE_TYPES = "getMortgageTypes";
     private static final String GET_RRR_GROUP_TYPES = "getRrrGroupTypes";
@@ -421,6 +426,12 @@ public final class CacheManager {
                 GET_ID_TYPES, ID_TYPE_CODES_KEY);
     }
 
+    public static List<LandTypeBean> getLandTypes() {
+        return getCachedBeanList(LandTypeBean.class,
+                WSManager.getInstance().getReferenceDataService(),
+                GET_LAND_TYPES, LAND_TYPE_CODES_KEY);
+    }
+    
     public static List<ConditionTypeBean> getConditionTypes() {
         return getCachedBeanList(ConditionTypeBean.class,
                 WSManager.getInstance().getReferenceDataService(),

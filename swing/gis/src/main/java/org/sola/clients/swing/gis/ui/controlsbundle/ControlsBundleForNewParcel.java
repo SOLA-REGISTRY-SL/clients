@@ -27,10 +27,11 @@
  */
 package org.sola.clients.swing.gis.ui.controlsbundle;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.List;
 import org.geotools.feature.SchemaException;
 import org.geotools.geometry.jts.ReferencedEnvelope;
-import org.geotools.swing.control.extended.CRSItem;
 import org.geotools.swing.extended.exception.InitializeLayerException;
 import org.jdesktop.observablecollections.ObservableList;
 import org.jdesktop.observablecollections.ObservableListListener;
@@ -43,6 +44,7 @@ import org.sola.clients.swing.gis.layer.CadastreChangeNewCadastreObjectLayer;
 import org.sola.clients.swing.gis.layer.CadastreChangeNewSurveyPointLayer;
 import org.sola.clients.swing.gis.mapaction.CadastreChangePointSurveyListFormShow;
 import org.sola.clients.swing.gis.mapaction.RemoveCadastreObjects;
+import org.sola.clients.swing.gis.mapaction.SurveyPlanDetails;
 import org.sola.clients.swing.gis.tool.CadastreChangeNewCadastreObjectTool;
 import org.sola.clients.swing.gis.tool.CadastreChangeNodeTool;
 
@@ -83,16 +85,16 @@ public final class ControlsBundleForNewParcel extends ControlsBundleForTransacti
     private void postInit() {
         this.refreshTransactionFromServer();
         Integer srid = null;
-        if(transactionBean.getCadastreObjectList() != null && transactionBean.getCadastreObjectList().size() > 0){
+        if (transactionBean.getCadastreObjectList() != null && transactionBean.getCadastreObjectList().size() > 0) {
             srid = transactionBean.getCadastreObjectList().get(0).getFeatureGeom().getSRID();
         }
-        
+
         this.Setup(PojoDataAccess.getInstance(), srid);
         this.setTargetCadastreObjectTypeConfiguration(CadastreObjectTypeBean.CODE_PARCEL);
         this.setTransaction();
-        
+
         this.zoomToInterestingArea(null, applicationBean.getLocation());
-        
+
         // Listen to cadastre objects list events
         ((SolaObservableList) this.newCadastreObjectLayer.getBeanList())
                 .addObservableListListener(new ObservableListListener() {
@@ -100,6 +102,7 @@ public final class ControlsBundleForNewParcel extends ControlsBundleForTransacti
                     public void listElementsAdded(ObservableList list, int index, int length) {
                         getMap().getMapActionByName(CadastreChangeNewCadastreObjectTool.NAME).setEnabled(false);
                         getMap().getMapActionByName(RemoveCadastreObjects.NAME).setEnabled(true);
+                        getMap().getMapActionByName(SurveyPlanDetails.MAPACTION_NAME).setEnabled(true);
                         getCrsControl().setEnabled(false);
                     }
 
@@ -107,6 +110,7 @@ public final class ControlsBundleForNewParcel extends ControlsBundleForTransacti
                     public void listElementsRemoved(ObservableList list, int index, List oldElements) {
                         getMap().getMapActionByName(CadastreChangeNewCadastreObjectTool.NAME).setEnabled(list.size() < 1);
                         getMap().getMapActionByName(RemoveCadastreObjects.NAME).setEnabled(list.size() > 0);
+                        getMap().getMapActionByName(SurveyPlanDetails.MAPACTION_NAME).setEnabled(list.size() > 0);
                         getCrsControl().setEnabled(list.size() < 1);
                     }
 
@@ -118,6 +122,17 @@ public final class ControlsBundleForNewParcel extends ControlsBundleForTransacti
                     public void listElementPropertyChanged(ObservableList list, int index) {
                     }
                 });
+        
+        ((CadastreChangeNewCadastreObjectTool)(this.getMap()
+                .getMapActionByName(CadastreChangeNewCadastreObjectTool.NAME)
+                .getAttachedTool()))
+                .addPropertyChangeListener((PropertyChangeEvent evt) -> {
+                    if(evt.getPropertyName()
+                            .equalsIgnoreCase(CadastreChangeNewCadastreObjectTool.FEATURE_ADDED_PROPERTY) &&
+                            newCadastreObjectLayer.getBeanList().size() > 0){
+                        getMap().getMapActionByName(SurveyPlanDetails.MAPACTION_NAME).onClick();
+                    }
+        });
     }
 
     @Override
@@ -215,7 +230,8 @@ public final class ControlsBundleForNewParcel extends ControlsBundleForTransacti
         this.newCadastreObjectTool = new CadastreChangeNewCadastreObjectTool(this.newCadastreObjectLayer);
         this.newCadastreObjectTool.getTargetSnappingLayers().add(newPointsLayer);
         this.getMap().addTool(newCadastreObjectTool, this.getToolbar(), true);
-
+        this.getMap().addMapAction(new SurveyPlanDetails(this.getMap(), newCadastreObjectLayer),
+                this.getToolbar(), false);
         this.getMap().addMapAction(new RemoveCadastreObjects(this.getMap(), newCadastreObjectLayer),
                 this.getToolbar(), false);
 
@@ -230,12 +246,15 @@ public final class ControlsBundleForNewParcel extends ControlsBundleForTransacti
         this.getMap().getMapActionByName(CadastreChangeNodeTool.NAME).setEnabled(!readOnly);
         this.getMap().getMapActionByName(CadastreChangeNewCadastreObjectTool.NAME).setEnabled(!readOnly);
         getCrsControl().setEnabled(newCadastreObjectLayer.getBeanList().size() < 1);
-        
+        ((SurveyPlanDetails)getMap().getMapActionByName(SurveyPlanDetails.MAPACTION_NAME)).setReadOnly(readOnly);
+                
         if (!readOnly) {
             this.getMap().getMapActionByName(CadastreChangeNewCadastreObjectTool.NAME)
                     .setEnabled(newCadastreObjectLayer.getBeanList().size() < 1);
             this.getMap().getMapActionByName(RemoveCadastreObjects.NAME).setEnabled(
                     newCadastreObjectLayer.getBeanList().size() > 0);
+            getMap().getMapActionByName(SurveyPlanDetails.MAPACTION_NAME)
+                    .setEnabled(newCadastreObjectLayer.getBeanList().size() > 0);
         }
     }
 

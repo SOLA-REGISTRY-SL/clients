@@ -77,4 +77,25 @@ public class PartySearchResultListBean extends AbstractBindingListBean {
                 WSManager.getInstance().getSearchService().searchParties(searchParamsTO),
                 PartySearchResultBean.class, (List)getPartySearchResults());
     }
+    
+    /** 
+     * Searches parties by role code. 
+     * @param roleCode Party role code
+     * @param addDummy Indicates whether to add empty item on top or not
+     */
+    public void searchByRole(String roleCode, boolean addDummy){
+        if(roleCode == null || roleCode.equals("")){
+            return;
+        }
+        getPartySearchResults().clear();
+        TypeConverters.TransferObjectListToBeanList(
+                WSManager.getInstance().getSearchService().searchPartiesByRole(roleCode),
+                PartySearchResultBean.class, (List)getPartySearchResults());
+        if(addDummy){
+            PartySearchResultBean dummy = new PartySearchResultBean();
+            dummy.setId("");
+            dummy.setName("");
+            getPartySearchResults().add(0, dummy);
+        }
+    }
 }
