@@ -30,6 +30,8 @@
 package org.sola.clients.swing.gis.tool;
 
 import com.vividsolutions.jts.geom.Geometry;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import org.geotools.geometry.DirectPosition2D;
 import org.geotools.geometry.jts.Geometries;
 import org.geotools.swing.event.MapMouseEvent;
@@ -50,6 +52,9 @@ public class CadastreChangeNewCadastreObjectTool
         extends CadastreChangeEditAbstractTool implements TargetCadastreObjectTool {
 
     public final static String NAME = "new-parcel";
+    public final static String FEATURE_ADDED_PROPERTY = "feature-added-property";
+    
+    private final PropertyChangeSupport propertySupport;
     private static Integer maxAllowedFeatures = null;
     private String toolTip = MessageUtility.getLocalizedMessage(
             GisMessage.CADASTRE_CHANGE_TOOLTIP_NEW_PARCEL).getMessage();
@@ -68,6 +73,7 @@ public class CadastreChangeNewCadastreObjectTool
         this.setToolTip(toolTip);
         this.setGeometryType(Geometries.POLYGON);
         this.layer = newCadastreObjectLayer;
+        propertySupport = new PropertyChangeSupport(this);
     }
 
     @Override
@@ -128,11 +134,26 @@ public class CadastreChangeNewCadastreObjectTool
             CadastreObjectBean bean = getLayer().getBean(feature);
             if (bean != null) {
                 bean.setTypeCode(this.cadastreObjectType);
+                propertySupport.firePropertyChange(FEATURE_ADDED_PROPERTY, false, true);
             }
         }
         return feature;
     }
 
+    /**
+     * Registers property change listener on the bean.
+     */
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        propertySupport.addPropertyChangeListener(listener);
+    }
+
+    /**
+     * Removes property change listener.
+     */
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        propertySupport.removePropertyChangeListener(listener);
+    }
+    
     /**
      * Gets the layer where the new cadastre objects are added.
      *

@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 package org.sola.clients.beans.referencedata;
-import org.jdesktop.observablecollections.ObservableList;
 import org.sola.clients.beans.AbstractBindingListBean;
 import org.sola.clients.beans.cache.CacheManager;
 import org.sola.clients.beans.controls.SolaCodeList;
-import static org.sola.clients.beans.referencedata.CordinateSystemTypeListBean.SELECTED_CordinateSystemType_PROPERTY;
 
 /**
  *
@@ -40,9 +38,6 @@ public class ChiefdomTypeListBean extends AbstractBindingListBean {
      */
     public ChiefdomTypeListBean(boolean createDummy) {
         this(createDummy, (String) null);
-            ChiefdomTypeBean dummy = new ChiefdomTypeBean();
-            dummy.setDisplayValue(" ");
-            chiefdomTypeListBean.add(0, dummy);
     }
     
     /** 
@@ -80,7 +75,4 @@ public class ChiefdomTypeListBean extends AbstractBindingListBean {
     public void setSelectedChiefdomTypeBean(ChiefdomTypeBean selectedChiefdomTypeBean) {
         this.selectedChiefdomTypeBean = selectedChiefdomTypeBean;
     }
-
-    
-    
 }

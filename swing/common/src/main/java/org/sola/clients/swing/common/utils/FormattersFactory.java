@@ -53,6 +53,7 @@ public class FormattersFactory {
 
     private Map<String, DefaultFormatterFactory> factoryMap = new HashMap<String, DefaultFormatterFactory>();
     private static final String DECIMAL_FACTORY = "decimal";
+    private static final String DOUBLE_FACTORY = "double";
     private static final String INTEGER_FACTORY = "integer";
     private static final String SHORT_FACTORY = "short";
     private static final String DATE_FACTORY = "date";
@@ -126,6 +127,47 @@ public class FormattersFactory {
         return factoryMap.get(key);
     }
 
+    /**
+     * Returns a custom formatter factory for displaying and editing a
+     * double value. The precision parameter can be used to indicate the
+     * number of decimal places to display. Must be a value from 0 (no decimal
+     * places) to up 12. To use this factory, set the formatterFactory property
+     * of the JFormattedTextField to
+     *
+     * @param precision The number of decimal places to display. From 0 to 12
+     * @return
+     */
+    public DefaultFormatterFactory getDoubleFormatterFactory(int precision) {
+        String key = DOUBLE_FACTORY + Integer.toString(precision) + Locale.getDefault().getISO3Language();
+        if (!factoryMap.containsKey(key)) {
+            // Create a format mask to use for displaying the data value
+            String formatMask = "";
+            if (precision > 0) {
+                formatMask += ".";
+                for (int x = 0; x < precision; x++) {
+                    formatMask += "#";
+                }
+            }
+            DefaultFormatter displayFormat = new NumberFormatter(new DecimalFormat("#,###" + formatMask));
+            DefaultFormatter editFormat = new NumberFormatter(new DecimalFormat("#" + formatMask)) {
+                // Accept null or emtpy string values entered by the user as null.
+                @Override
+                public Object stringToValue(String userInput) throws ParseException {
+                    Object result = null;
+                    if (userInput != null && !userInput.trim().isEmpty()) {
+                        result = Double.parseDouble(userInput);
+                    }
+                    return result;
+                }
+            };
+            displayFormat.setValueClass(BigDecimal.class);
+            editFormat.setValueClass(BigDecimal.class);
+            factoryMap.put(key,
+                    new DefaultFormatterFactory(displayFormat, displayFormat, editFormat));
+        }
+        return factoryMap.get(key);
+    }
+    
     public DefaultFormatterFactory getIntegerFormatterFactory() {
         String key = INTEGER_FACTORY + Locale.getDefault().getISO3Language();
         if (!factoryMap.containsKey(key)) {
