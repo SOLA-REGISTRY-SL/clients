@@ -16,12 +16,11 @@
 package org.sola.clients.beans.referencedata;
 import org.sola.clients.beans.AbstractCodeBean;
 /**
- *
- * @author Moses VB
+ * Represents reference data object of the <b>cadastre.land_type</b> table. 
  */
-public class SurveyingMethodTypeBean extends AbstractCodeBean{
+public class LandTypeBean extends AbstractCodeBean{
     
-    public SurveyingMethodTypeBean()
+    public LandTypeBean()
     {
         super();
     }

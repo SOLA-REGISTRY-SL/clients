@@ -56,6 +56,7 @@ public class PartySummaryBean extends AbstractIdBean {
     public static final String TYPE_PROPERTY = "type";
     public static final String IS_RIGHTHOLDER_PROPERTY = "rightHolder";
     public static final String ROLE_CODE_PROPERTY = "roleCode";
+    public static final String ID_NUMBER_PROPERTY = "idNumber";
     
     @NotEmpty(message = ClientMessage.CHECK_NOTNULL_NAME, payload = Localized.class)
     @Length(max = 255, message = ClientMessage.CHECK_FIELD_INVALID_LENGTH_NAME, payload = Localized.class)
@@ -68,7 +69,7 @@ public class PartySummaryBean extends AbstractIdBean {
     private PartyTypeBean typeBean;
     private String nameFirstPart;
     private String nameLastPart;
-    
+    private String idNumber;
     
     public PartySummaryBean() {
         super();
@@ -128,6 +129,16 @@ public class PartySummaryBean extends AbstractIdBean {
         String oldValue = name;
         name = value;
         propertySupport.firePropertyChange(NAME_PROPERTY, oldValue, value);
+    }
+
+    public String getIdNumber() {
+        return idNumber;
+    }
+
+    public void setIdNumber(String value) {
+        String oldValue = idNumber;
+        idNumber = value;
+        propertySupport.firePropertyChange(ID_NUMBER_PROPERTY, oldValue, value);
     }
 
     /**

@@ -69,7 +69,6 @@ public class PartyBean extends PartySummaryBean {
     public static final String SELECTED_ROLE_PROPERTY = "selectedRole";
     public static final String GENDER_TYPE_PROPERTY = "genderType";
     public static final String ID_TYPE_PROPERTY = "idType";
-    public static final String IDNUMBER_PROPERTY = "idNumber";
     public static final String FAX_PROPERTY = "fax";
     public static final String FATHERSNAME_PROPERTY = "fathersName";
     public static final String GRANDFATHERSNAME_PROPERTY = "fathersLastName";
@@ -206,16 +205,6 @@ public class PartyBean extends PartySummaryBean {
         String oldValue = alias;
         alias = value;
         propertySupport.firePropertyChange(ALIAS_PROPERTY, oldValue, value);
-    }
-
-    public String getIdNumber() {
-        return idNumber;
-    }
-
-    public void setIdNumber(String value) {
-        String oldValue = idNumber;
-        idNumber = value;
-        propertySupport.firePropertyChange(IDNUMBER_PROPERTY, oldValue, value);
     }
 
     public GenderTypeBean getGenderType() {

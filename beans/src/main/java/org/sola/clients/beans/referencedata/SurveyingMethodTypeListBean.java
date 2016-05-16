@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.sola.clients.beans.referencedata;
+
 import org.jdesktop.observablecollections.ObservableList;
 import org.sola.clients.beans.AbstractBindingListBean;
 import org.sola.clients.beans.cache.CacheManager;
@@ -25,55 +26,54 @@ import static org.sola.clients.beans.referencedata.CordinateSystemTypeListBean.S
  * @author Moses VB
  */
 public class SurveyingMethodTypeListBean extends AbstractBindingListBean {
-    
+
     public static final String SELECTED_SURVEYINGMETHODTYPE_PROPERTY = "selectedSurveyingMethodType";
     private SolaCodeList<SurveyingMethodTypeBean> surveyingMethodTypeListBean;
     private SurveyingMethodTypeBean selectedSurveyingMethodTypeBean;
-    
-    public SurveyingMethodTypeListBean()
-    {
+
+    public SurveyingMethodTypeListBean() {
         this(false);
     }
-    
-     /** 
+
+    /**
      * Creates object instance.
+     *
      * @param createDummy Indicates whether to add empty object on the list.
      */
     public SurveyingMethodTypeListBean(boolean createDummy) {
         this(createDummy, (String) null);
-            SurveyingMethodTypeBean dummy = new SurveyingMethodTypeBean();
-            dummy.setDisplayValue(" ");
-            surveyingMethodTypeListBean.add(0, dummy);
     }
-    
-    /** 
+
+    /**
      * Creates object instance.
+     *
      * @param createDummy Indicates whether to add empty object on the list.
      * @param excludedCodes Codes, which should be skipped while filtering.
      */
-    public SurveyingMethodTypeListBean(boolean createDummy, String ... excludedCodes) {
+    public SurveyingMethodTypeListBean(boolean createDummy, String... excludedCodes) {
         super();
         surveyingMethodTypeListBean = new SolaCodeList<SurveyingMethodTypeBean>(excludedCodes);
         loadList(createDummy);
     }
-    
-    /** 
+
+    /**
      * Loads list of {@link CordinateSystemTypeBean}.
+     *
      * @param createDummy Indicates whether to add empty object on the list.
      */
     public final void loadList(boolean createDummy) {
-        loadCodeList(SurveyingMethodTypeBean.class, surveyingMethodTypeListBean, 
+        loadCodeList(SurveyingMethodTypeBean.class, surveyingMethodTypeListBean,
                 CacheManager.getSurveyingMethodTypes(), createDummy);
     }
-    
+
     public ObservableList<SurveyingMethodTypeBean> getSurveyingMethodTypeList() {
         return surveyingMethodTypeListBean.getFilteredList();
     }
-    
-    public void setExcludedCodes(String ... codes){
+
+    public void setExcludedCodes(String... codes) {
         surveyingMethodTypeListBean.setExcludedCodes(codes);
     }
-    
+
     public SurveyingMethodTypeBean getSurveyingMethodType() {
         return selectedSurveyingMethodTypeBean;
     }
