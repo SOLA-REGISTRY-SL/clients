@@ -15,46 +15,143 @@
  */
 package org.sola.clients.beans.cadastre;
 
-import org.sola.clients.beans.address.AddressBean;
-import org.sola.clients.beans.controls.SolaCodeList;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import javax.validation.ConstraintViolation;
+import org.jdesktop.observablecollections.ObservableList;
+import org.sola.clients.beans.AbstractBindingBean;
+import org.sola.clients.beans.AbstractBindingListBean;
+import org.sola.clients.beans.application.NotifyBean;
+//import static org.sola.clients.beans.application.;
 import org.sola.clients.beans.controls.SolaList;
-import org.sola.clients.beans.party.PartyBean;
-import org.sola.clients.beans.referencedata.CadastreObjectTypeBean;
-import org.sola.clients.beans.referencedata.LandUseTypeBean;
-import org.sola.clients.beans.referencedata.SurveyingMethodTypeBean;
+import org.sola.clients.beans.converters.TypeConverters;
+import org.sola.services.boundary.wsclients.WSManager;
+import org.sola.webservices.transferobjects.EntityAction;
 
 /**
  *
- * @author Moses VB
+ * @author soladev
  */
-public class SurveyPlanReturnListBean extends CadastreObjectBean{
-    
-  
-         /** Default constructor. */
-    public SurveyPlanReturnListBean(){
+       
+    public class SurveyPlanReturnListBean extends AbstractBindingListBean {
+
+    public static final String SELECTED_SURVEYPLAN = "selectedSurveyPlan";
+    private SolaList<SurveyPlanReturnBean> surveyPlanList;
+    private SurveyPlanReturnBean selectedSurveyPlan;
+    private String serviceId;
+
+    public SurveyPlanReturnListBean() {
         super();
+        surveyPlanList = new SolaList<SurveyPlanReturnBean>();
     }
     
-    private SurveyPlanReturnListBean cadastreObjectType;
-    private transient boolean selected;
-    private String ownerName;
-    private String address;
-    private String landType;
-    private double parcelArea;
-    private PartyBean licensedSurveyor;
-    private String licensedSurveyorId;
-    private String eastNeighbour;
-    private String westNeighbour;
-    private String southNeighbour;
-    private String northNeighbour;
-    private String surveyMethod;
-    private String surveyDate;
-    private String beaconNumber;
-    private PartyBean chartingOfficer;
-    private PartyBean stateLandClearingOfficer;
-    private String chartingOfficerId;
-    private String stateLandClearingOfficerId;
-    
     //I am a bit lost here, please help
+    
+     public ObservableList<SurveyPlanReturnBean> getFilteredSurveyPlanList() {
+        return surveyPlanList.getFilteredList();
+    }
+
+    public SurveyPlanReturnBean getSelectedSurveyPlan() {
+        return selectedSurveyPlan;
+    }
+
+    public void SelectedSurveyPlan(SurveyPlanReturnBean selected) {
+        SurveyPlanReturnBean oldValue = this.selectedSurveyPlan;
+        this.selectedSurveyPlan = selected;
+        propertySupport.firePropertyChange(SELECTED_SURVEYPLAN, oldValue, this.selectedSurveyPlan);
+    }
+
+    public String getServiceId() {
+        return serviceId;
+    }
+
+    public void setServiceId(String serviceId) {
+        this.serviceId = serviceId;
+    }
+
+    public void addItem(SurveyPlanReturnBean item) {
+        surveyPlanList.addAsNew(item);
+    }
+
+    public void removeItem(SurveyPlanReturnBean item) {
+        surveyPlanList.safeRemove(item, EntityAction.DELETE);
+    }
+
+
+    /**
+     * Retrieves the list of surveyplan from the database using the service
+     * id.
+     *
+     * @param serviceId
+     */
+    public void loadList(String serviceId) {
+        setServiceId(serviceId);
+        surveyPlanList.clear();
+        // Translate the TO's with the saved data to Beans and replace the original bean list
+        TypeConverters.TransferObjectListToBeanList(
+                WSManager.getInstance().getCaseManagementService().getNotifyParties(serviceId),
+                NotifyBean.class, (List) surveyPlanList);
+    }
+
+    /**
+     * Retrieves the list of notify parties from the database using the service
+     * id.
+     *
+     * @param serviceId
+     */
+    public List getList(String serviceId) {
+        setServiceId(serviceId);
+        surveyPlanList.clear();
+        // Translate the TO's with the saved data to Beans and replace the original bean list
+        return TypeConverters.TransferObjectListToBeanList(
+                WSManager.getInstance().getCaseManagementService().getNotifyParties(serviceId),
+                SurveyPlanReturnBean.class, (List) surveyPlanList);
+
+
+    }
+
+    /**
+     * Overrides the default validate method to ensure all
+     * PublicDisplayItemBeans are validated as well
+     *
+     * @param <T>
+     * @param showMessage
+     * @param group
+     * @return List of warning messages to display to the user
+     */
+    @Override
+    public <T extends AbstractBindingBean> Set<ConstraintViolation<T>> validate(boolean showMessage, Class<?>... group) {
+
+        Set<ConstraintViolation<T>> warningsList = super.validate(false, group);
+        for (SurveyPlanReturnBean bean : surveyPlanList) {
+            Set<ConstraintViolation<T>> beanWarningsList = bean.validate(false, group);
+            warningsList.addAll(beanWarningsList);
+        }
+
+        if (showMessage) {
+            showMessage(warningsList);
+        }
+        return warningsList;
+    }
+
+    /**
+     * Returns list of checked notify parties.
+     *
+     * @param includeSelected Indicates whether to include in the list selected
+     * notify party if there no notify parties checked.
+     */
+    public List<SurveyPlanReturnBean> getChecked(boolean includeSelected) {
+        List<SurveyPlanReturnBean> checked = new ArrayList<SurveyPlanReturnBean>();
+        for (SurveyPlanReturnBean bean : getFilteredSurveyPlanList()) {
+            //if (bean.isChecked()) { //to check this code after build
+                checked.add(bean);
+            //}
+        }
+        if (includeSelected && checked.size() < 1 && getSelectedSurveyPlan() != null) {
+            checked.add(getSelectedSurveyPlan());
+        }
+        return checked;
+    }
 }
 
