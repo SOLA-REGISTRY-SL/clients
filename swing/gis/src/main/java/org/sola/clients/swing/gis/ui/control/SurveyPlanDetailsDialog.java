@@ -117,7 +117,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
         if(cadastreObjectBean.validate(true).size() > 0)
             return false;
         originalCadastreObject.copyFromObject(cadastreObjectBean);
-        return true;
+        return true;       
     }
    
     @SuppressWarnings("unchecked")
@@ -149,7 +149,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
         txtAddress1 = new javax.swing.JTextField();
         jPanel4 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
-        cbxAddress2 = new javax.swing.JComboBox<>();
+        cbxAddress2 = new javax.swing.JComboBox();
         jPanel20 = new javax.swing.JPanel();
         jPanel14 = new javax.swing.JPanel();
         jLabel14 = new javax.swing.JLabel();
@@ -164,13 +164,13 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
         txtBeaconNumber = new javax.swing.JTextField();
         jPanel5 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
-        cbxLandType = new javax.swing.JComboBox<>();
+        cbxLandType = new javax.swing.JComboBox();
         jPanel8 = new javax.swing.JPanel();
         jLabel8 = new javax.swing.JLabel();
-        cbxSurveyMethod = new javax.swing.JComboBox<>();
+        cbxSurveyMethod = new javax.swing.JComboBox();
         jPanel17 = new javax.swing.JPanel();
         jLabel17 = new javax.swing.JLabel();
-        cbxLicensedSurveyor = new javax.swing.JComboBox<>();
+        cbxLicensedSurveyor = new javax.swing.JComboBox();
         jPanel10 = new javax.swing.JPanel();
         jLabel10 = new javax.swing.JLabel();
         txtNeighbourNorth = new javax.swing.JTextField();
@@ -185,10 +185,10 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
         txtNeighbourEast = new javax.swing.JTextField();
         jPanel15 = new javax.swing.JPanel();
         jLabel15 = new javax.swing.JLabel();
-        cbxChartingOfficer = new javax.swing.JComboBox<>();
+        cbxChartingOfficer = new javax.swing.JComboBox();
         jPanel16 = new javax.swing.JPanel();
         jLabel16 = new javax.swing.JLabel();
-        cbxClearingStateLandOfficer = new javax.swing.JComboBox<>();
+        cbxClearingStateLandOfficer = new javax.swing.JComboBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Survey plan details");

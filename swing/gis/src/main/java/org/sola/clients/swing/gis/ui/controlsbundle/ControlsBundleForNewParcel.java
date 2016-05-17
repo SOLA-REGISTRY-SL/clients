@@ -125,13 +125,15 @@ public final class ControlsBundleForNewParcel extends ControlsBundleForTransacti
         
         ((CadastreChangeNewCadastreObjectTool)(this.getMap()
                 .getMapActionByName(CadastreChangeNewCadastreObjectTool.NAME)
-                .getAttachedTool()))
-                .addPropertyChangeListener((PropertyChangeEvent evt) -> {
-                    if(evt.getPropertyName()
+                .getAttachedTool())).addPropertyChangeListener(new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                if(evt.getPropertyName()
                             .equalsIgnoreCase(CadastreChangeNewCadastreObjectTool.FEATURE_ADDED_PROPERTY) &&
                             newCadastreObjectLayer.getBeanList().size() > 0){
                         getMap().getMapActionByName(SurveyPlanDetails.MAPACTION_NAME).onClick();
                     }
+            }
         });
     }
 
