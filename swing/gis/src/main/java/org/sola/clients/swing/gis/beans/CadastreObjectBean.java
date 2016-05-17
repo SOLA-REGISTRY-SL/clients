@@ -535,12 +535,12 @@ public class CadastreObjectBean extends SpatialBean {
         co.setBeaconNumber(this.getBeaconNumber());
         co.setCalculatedArea(this.getCalculatedArea());
         if(this.getChartingOfficer() != null)
-            co.setChartingOfficer(this.getChartingOfficer().copy());
+            co.setChartingOfficer((PartySummaryBean) this.getChartingOfficer().copy());
         else
             co.setChartingOfficer(null);
         co.setChartingOfficerId(this.getChartingOfficerId());
         if(this.getChiefdomType() != null)
-            co.setChiefdomType(this.getChiefdomType().copy());
+            co.setChiefdomType((ChiefdomTypeBean) this.getChiefdomType().copy());
         else
             co.setChiefdomType(null);
         co.setClassificationCode(this.getClassificationCode());
@@ -550,11 +550,11 @@ public class CadastreObjectBean extends SpatialBean {
         co.setGeomPolygon(this.getGeomPolygon());
         co.setId(this.getId());
         if(this.getLandType() != null)
-            co.setLandType(this.getLandType().copy());
+            co.setLandType((LandTypeBean) this.getLandType().copy());
         else
             co.setLandType(null);
         if(this.getLicensedSurveyor() != null)
-            co.setLicensedSurveyor(this.getLicensedSurveyor().copy());
+            co.setLicensedSurveyor((PartySummaryBean) this.getLicensedSurveyor().copy());
         else
             co.setLicensedSurveyor(null);
         co.setNameFirstpart(this.getNameFirstpart());
@@ -569,12 +569,12 @@ public class CadastreObjectBean extends SpatialBean {
         co.setSouthNeighbour(this.getSouthNeighbour());
         co.setSpatialValueAreaList(this.getSpatialValueAreaList());
         if(this.getStateLandClearingOfficer() != null)
-            co.setStateLandClearingOfficer(this.getStateLandClearingOfficer().copy());
+            co.setStateLandClearingOfficer((PartySummaryBean) this.getStateLandClearingOfficer().copy());
         else
             co.setStateLandClearingOfficer(null);
         co.setSurveyDate(this.getSurveyDate());
         if(this.getSurveyMethod() != null)
-            co.setSurveyMethod(this.getSurveyMethod().copy());
+            co.setSurveyMethod((SurveyingMethodTypeBean) this.getSurveyMethod().copy());
         else
             co.setSurveyMethod(null);
         co.setTypeCode(this.getTypeCode());
@@ -591,12 +591,12 @@ public class CadastreObjectBean extends SpatialBean {
         this.setBeaconNumber(co.getBeaconNumber());
         this.setCalculatedArea(co.getCalculatedArea());
         if(co.getChartingOfficer() != null)
-            this.setChartingOfficer(co.getChartingOfficer().copy());
+            this.setChartingOfficer((PartySummaryBean) co.getChartingOfficer().copy());
         else
             this.setChartingOfficer(null);
         this.setChartingOfficerId(co.getChartingOfficerId());
         if(co.getChiefdomType() != null)
-            this.setChiefdomType(co.getChiefdomType().copy());
+            this.setChiefdomType((ChiefdomTypeBean) co.getChiefdomType().copy());
         else
             this.setChiefdomType(null);
         this.setClassificationCode(co.getClassificationCode());
@@ -606,11 +606,11 @@ public class CadastreObjectBean extends SpatialBean {
         this.setGeomPolygon(co.getGeomPolygon());
         this.setId(co.getId());
         if(co.getLandType() != null)
-            this.setLandType(co.getLandType().copy());
+            this.setLandType((LandTypeBean) co.getLandType().copy());
         else
             this.setLandType(null);
         if(co.getLicensedSurveyor() != null)
-            this.setLicensedSurveyor(co.getLicensedSurveyor().copy());
+            this.setLicensedSurveyor((PartySummaryBean) co.getLicensedSurveyor().copy());
         else
             this.setLicensedSurveyor(null);
         this.setNameFirstpart(co.getNameFirstpart());
@@ -625,12 +625,12 @@ public class CadastreObjectBean extends SpatialBean {
         this.setSouthNeighbour(co.getSouthNeighbour());
         this.setSpatialValueAreaList(co.getSpatialValueAreaList());
         if(co.getStateLandClearingOfficer() != null)
-            this.setStateLandClearingOfficer(co.getStateLandClearingOfficer().copy());
+            this.setStateLandClearingOfficer((PartySummaryBean) co.getStateLandClearingOfficer().copy());
         else
             this.setStateLandClearingOfficer(null);
         this.setSurveyDate(co.getSurveyDate());
         if(co.getSurveyMethod() != null)
-            this.setSurveyMethod(co.getSurveyMethod().copy());
+            this.setSurveyMethod((SurveyingMethodTypeBean) co.getSurveyMethod().copy());
         else
             this.setSurveyMethod(null);
         this.setTypeCode(co.getTypeCode());
