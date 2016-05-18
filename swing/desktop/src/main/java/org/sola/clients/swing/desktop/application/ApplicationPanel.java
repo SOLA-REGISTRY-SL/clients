@@ -443,9 +443,10 @@ public class ApplicationPanel extends ContentPanel {
         btnViewService.setEnabled(false);
         btnRevertService.setEnabled(false);
 
-        if (servicesManagementAllowed) {
-            if (selectedService != null) {
-                btnViewService.setEnabled(!selectedService.isNew());
+        if (selectedService != null) {
+            btnViewService.setEnabled(!selectedService.isNew());
+
+            if (servicesManagementAllowed) {
                 btnCancelService.setEnabled(selectedService.isManagementAllowed()
                         && SecurityBean.isInRole(RolesConstants.APPLICATION_SERVICE_CANCEL));
                 btnStartService.setEnabled(selectedService.isManagementAllowed()
@@ -2854,8 +2855,9 @@ public class ApplicationPanel extends ContentPanel {
         BigDecimal value = null;
 
         try {
-            if(txtArea.getValue()!=null)
+            if (txtArea.getValue() != null) {
                 area = new BigDecimal(txtArea.getValue().toString());
+            }
         } catch (Exception e) {
         }
 
@@ -3151,54 +3153,54 @@ public class ApplicationPanel extends ContentPanel {
 
             SolaTask<List<ValidationResultBean>, List<ValidationResultBean>> t
                     = new SolaTask<List<ValidationResultBean>, List<ValidationResultBean>>() {
-                        @Override
-                        public List<ValidationResultBean> doTask() {
-                            setMessage(MessageUtility.getLocalizedMessageText(ClientMessage.PROGRESS_MSG_APP_TAKE_ACTION));
-                            boolean displayValidationResultFormInSuccess = true;
-                            List<ValidationResultBean> result = null;
-                            if (ApplicationActionTypeBean.VALIDATE.equals(actionType)) {
-                                displayValidationResultFormInSuccess = false;
-                                validationResultListBean.setValidationResultList(appBean.validate());
-                            } else if (ApplicationActionTypeBean.WITHDRAW.equals(actionType)) {
-                                result = appBean.withdraw();
-                            } else if (ApplicationActionTypeBean.CANCEL.equals(actionType)) {
-                                result = appBean.reject();
-                            } else if (ApplicationActionTypeBean.ARCHIVE.equals(actionType)) {
-                                result = appBean.archive();
-                            } else if (ApplicationActionTypeBean.DISPATCH.equals(actionType)) {
-                                result = appBean.despatch();
-                            } else if (ApplicationActionTypeBean.LAPSE.equals(actionType)) {
-                                result = appBean.lapse();
-                            } else if (ApplicationActionTypeBean.REQUISITION.equals(actionType)) {
-                                result = appBean.requisition();
-                            } else if (ApplicationActionTypeBean.RESUBMIT.equals(actionType)) {
-                                result = appBean.resubmit();
-                            } else if (ApplicationActionTypeBean.APPROVE.equals(actionType)) {
-                                result = appBean.approve();
-                            } else if (ApplicationActionTypeBean.TRANSFER.equals(actionType)) {
-                                result = appBean.transfer();
-                            }
+                @Override
+                public List<ValidationResultBean> doTask() {
+                    setMessage(MessageUtility.getLocalizedMessageText(ClientMessage.PROGRESS_MSG_APP_TAKE_ACTION));
+                    boolean displayValidationResultFormInSuccess = true;
+                    List<ValidationResultBean> result = null;
+                    if (ApplicationActionTypeBean.VALIDATE.equals(actionType)) {
+                        displayValidationResultFormInSuccess = false;
+                        validationResultListBean.setValidationResultList(appBean.validate());
+                    } else if (ApplicationActionTypeBean.WITHDRAW.equals(actionType)) {
+                        result = appBean.withdraw();
+                    } else if (ApplicationActionTypeBean.CANCEL.equals(actionType)) {
+                        result = appBean.reject();
+                    } else if (ApplicationActionTypeBean.ARCHIVE.equals(actionType)) {
+                        result = appBean.archive();
+                    } else if (ApplicationActionTypeBean.DISPATCH.equals(actionType)) {
+                        result = appBean.despatch();
+                    } else if (ApplicationActionTypeBean.LAPSE.equals(actionType)) {
+                        result = appBean.lapse();
+                    } else if (ApplicationActionTypeBean.REQUISITION.equals(actionType)) {
+                        result = appBean.requisition();
+                    } else if (ApplicationActionTypeBean.RESUBMIT.equals(actionType)) {
+                        result = appBean.resubmit();
+                    } else if (ApplicationActionTypeBean.APPROVE.equals(actionType)) {
+                        result = appBean.approve();
+                    } else if (ApplicationActionTypeBean.TRANSFER.equals(actionType)) {
+                        result = appBean.transfer();
+                    }
 
-                            if (displayValidationResultFormInSuccess) {
-                                return result;
-                            }
-                            return null;
-                        }
+                    if (displayValidationResultFormInSuccess) {
+                        return result;
+                    }
+                    return null;
+                }
 
-                        @Override
-                        public void taskDone() {
-                            List<ValidationResultBean> result = get();
+                @Override
+                public void taskDone() {
+                    List<ValidationResultBean> result = get();
 
-                            if (result != null) {
-                                String message = MessageUtility.getLocalizedMessage(
-                                        ClientMessage.APPLICATION_ACTION_SUCCESS,
-                                        new String[]{appBean.getNr()}).getMessage();
-                                openValidationResultForm(result, true, message);
-                            }
-                            saveAppState();
-                            markDashboardForRefresh();
-                        }
-                    };
+                    if (result != null) {
+                        String message = MessageUtility.getLocalizedMessage(
+                                ClientMessage.APPLICATION_ACTION_SUCCESS,
+                                new String[]{appBean.getNr()}).getMessage();
+                        openValidationResultForm(result, true, message);
+                    }
+                    saveAppState();
+                    markDashboardForRefresh();
+                }
+            };
             TaskManager.getInstance().runTask(t);
         }
     }

@@ -48,7 +48,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
         txtNeighbourWest.setEnabled(enabled);
         cbxChartingOfficer.setEnabled(enabled);
         cbxClearingStateLandOfficer.setEnabled(enabled);
-        btnSave.setEnabled(enabled);
+        btnSave.setVisible(enabled);
     }
     
     /**
@@ -527,7 +527,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
             jPanel17Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel17Layout.createSequentialGroup()
                 .addComponent(jLabel17)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(cbxLicensedSurveyor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 

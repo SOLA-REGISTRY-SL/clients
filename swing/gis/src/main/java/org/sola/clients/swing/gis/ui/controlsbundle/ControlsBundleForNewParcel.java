@@ -249,14 +249,14 @@ public final class ControlsBundleForNewParcel extends ControlsBundleForTransacti
         this.getMap().getMapActionByName(CadastreChangeNewCadastreObjectTool.NAME).setEnabled(!readOnly);
         getCrsControl().setEnabled(newCadastreObjectLayer.getBeanList().size() < 1);
         ((SurveyPlanDetails)getMap().getMapActionByName(SurveyPlanDetails.MAPACTION_NAME)).setReadOnly(readOnly);
-                
+        getMap().getMapActionByName(SurveyPlanDetails.MAPACTION_NAME)
+                .setEnabled(newCadastreObjectLayer.getBeanList().size() > 0);
+        
         if (!readOnly) {
             this.getMap().getMapActionByName(CadastreChangeNewCadastreObjectTool.NAME)
                     .setEnabled(newCadastreObjectLayer.getBeanList().size() < 1);
             this.getMap().getMapActionByName(RemoveCadastreObjects.NAME).setEnabled(
                     newCadastreObjectLayer.getBeanList().size() > 0);
-            getMap().getMapActionByName(SurveyPlanDetails.MAPACTION_NAME)
-                    .setEnabled(newCadastreObjectLayer.getBeanList().size() > 0);
         }
     }
 

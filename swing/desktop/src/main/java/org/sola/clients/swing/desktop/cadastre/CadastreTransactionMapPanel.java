@@ -28,6 +28,7 @@
 package org.sola.clients.swing.desktop.cadastre;
 
 import java.awt.BorderLayout;
+import org.geotools.swing.mapaction.extended.ExtendedAction;
 import org.sola.clients.beans.application.ApplicationBean;
 import org.sola.clients.beans.application.ApplicationPropertyBean;
 import org.sola.clients.beans.application.ApplicationServiceBean;
@@ -170,7 +171,9 @@ public class CadastreTransactionMapPanel extends ContentPanel {
     }
     @Override
     protected boolean panelClosing() {
-        if (MainForm.checkSaveBeforeClose(this.mapControl.getTransactionBean())) {
+        ExtendedAction saveAction = this.mapControl.getMap().getMapActionByName(SaveTransaction.MAPACTION_NAME);
+        if ((saveAction == null || saveAction.isEnabled()) 
+                && MainForm.checkSaveBeforeClose(this.mapControl.getTransactionBean())) {
             return saveTransaction();
         }
         return true;
