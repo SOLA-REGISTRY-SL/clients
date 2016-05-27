@@ -42,6 +42,7 @@ import org.geotools.geometry.jts.Geometries;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.swing.extended.exception.InitializeLayerException;
 import org.geotools.swing.extended.util.GeometryUtility;
+import org.geotools.swing.extended.util.Messaging;
 import org.opengis.feature.simple.SimpleFeature;
 import org.sola.clients.swing.gis.beans.CadastreObjectBean;
 import org.sola.clients.swing.gis.beans.CadastreObjectListBean;
@@ -225,7 +226,7 @@ public class CadastreChangeNewCadastreObjectLayer
      * @return
      */
     protected NewCadastreObjectIdentifier getIdentifier(Geometry geom) {
-
+       
         //This code generates client side the identifier for the new cadastre object
         // This part can be rewritten to use another method to generate the identifier.
         //You can also decide to use server side service to generate the identifier
