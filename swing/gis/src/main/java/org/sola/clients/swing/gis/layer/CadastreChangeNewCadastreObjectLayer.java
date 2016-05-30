@@ -226,7 +226,10 @@ public class CadastreChangeNewCadastreObjectLayer
      * @return
      */
     protected NewCadastreObjectIdentifier getIdentifier(Geometry geom) {
-       
+//        System.out.println("GEOMETRY SRID MOMODUUUU    "+geom.getSRID());
+//        byte[] geombite = GeometryUtility.getWkbFromGeometry(geom);
+//        Messaging.getInstance().show(""+srid);
+        
         //This code generates client side the identifier for the new cadastre object
         // This part can be rewritten to use another method to generate the identifier.
         //You can also decide to use server side service to generate the identifier
