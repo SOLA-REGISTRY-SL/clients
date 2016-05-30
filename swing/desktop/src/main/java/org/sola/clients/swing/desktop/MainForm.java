@@ -238,7 +238,7 @@ public class MainForm extends javax.swing.JFrame {
         menuZoneEditor.setVisible(menuZoneEditor.isEnabled());
         // TODO: Remove these lines once the Map Editing functionality has been revised. 
         menuZoneEditor.setVisible(false);
-        menuFeatureEditor.setVisible(false);
+        menuFeatureEditor.setVisible(true);
 
         if (SecurityBean.isPasswordChangeReqd(false)) {
             // Load the user profile page
