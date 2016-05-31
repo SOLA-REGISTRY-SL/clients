@@ -37,6 +37,7 @@ import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import org.geotools.swing.extended.util.GeometryUtility;
+import org.geotools.swing.extended.util.Messaging;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.sola.clients.beans.cache.CacheManager;
 import org.sola.clients.beans.party.PartySummaryBean;
@@ -45,6 +46,8 @@ import org.sola.clients.beans.referencedata.LandTypeBean;
 import org.sola.clients.beans.referencedata.SurveyingMethodTypeBean;
 import org.sola.clients.beans.validation.Localized;
 import org.sola.common.messaging.ClientMessage;
+import org.sola.common.messaging.GisMessage;
+import org.sola.common.messaging.MessageUtility;
 
 /**
  * Defines a cadastre object bean.
@@ -546,7 +549,13 @@ public class CadastreObjectBean extends SpatialBean {
         co.setClassificationCode(this.getClassificationCode());
         co.setEastNeighbour(this.getEastNeighbour());
         co.setEntityAction(this.getEntityAction());
+        System.out.println("QUI 1!!!!   ");
         co.setFeatureGeom(this.getFeatureGeom());
+        int srid = GeometryUtility.getGeometryFromWkb(GeometryUtility.getWkbFromGeometry(this.getFeatureGeom())).getSRID();
+       
+       if (getTypeCode().contentEquals("parcel")) {
+        MessageUtility.displayMessage(GisMessage.CADASTRE_CHANGE_SURVEY_PLAN_SRID, new Object[]{srid});
+       }
         co.setGeomPolygon(this.getGeomPolygon());
         co.setId(this.getId());
         if(this.getLandType() != null)
