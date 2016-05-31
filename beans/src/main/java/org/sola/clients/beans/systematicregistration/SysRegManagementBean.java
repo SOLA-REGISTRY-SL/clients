@@ -288,6 +288,7 @@ public class SysRegManagementBean extends AbstractIdBean {
 
         List<SysRegManagementTO> managementViewTO =
                 WSManager.getInstance().getAdministrative().getSysRegManagement(paramsTO);
+        
         TypeConverters.TransferObjectListToBeanList(managementViewTO,
                 SysRegManagementBean.class, (List) this.getMenagementList());
     }

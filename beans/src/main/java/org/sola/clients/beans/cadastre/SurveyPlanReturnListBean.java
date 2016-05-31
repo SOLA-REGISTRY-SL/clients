@@ -50,9 +50,8 @@ import org.sola.webservices.transferobjects.cadastre.SurveyPlanListReturnReportP
 public class SurveyPlanReturnListBean extends AbstractBindingListBean  {
     public static final String SELECTED_SURVEYPLAN = "selectedSurveyPlan";
     private SolaObservableList<SurveyPlanReturnListBean> menagementList;
-    private SurveyPlanReturnBean selectedSurveyPlan;
+    private SurveyPlanReturnListBean selectedSurveyPlan;
    
-    private String landManagement;
     private String id;
 
     private String LSNo;
@@ -63,7 +62,7 @@ public class SurveyPlanReturnListBean extends AbstractBindingListBean  {
 
     private String landtype;
 
-    private String areaOfLand;
+    private double areaOfLand;
 
     private String eastNeighborPlotHolder;
 
@@ -90,7 +89,7 @@ public class SurveyPlanReturnListBean extends AbstractBindingListBean  {
        
 
     public SurveyPlanReturnListBean() {
-        super();
+//        super();
         menagementList = new SolaObservableList<SurveyPlanReturnListBean>();
     }
 
@@ -102,19 +101,11 @@ public class SurveyPlanReturnListBean extends AbstractBindingListBean  {
         this.menagementList = menagementList;
     }
 
-    public String getLandManagement() {
-        return landManagement;
-    }
-
-    public void setLandManagement(String landManagement) {
-        this.landManagement = landManagement;
-    }
-
     public static String getSELECTED_SURVEYPLAN() {
         return SELECTED_SURVEYPLAN;
     }
 
-    public SurveyPlanReturnBean getSelectedSurveyPlan() {
+    public SurveyPlanReturnListBean getSelectedSurveyPlan() {
         return selectedSurveyPlan;
     }
 
@@ -138,7 +129,7 @@ public class SurveyPlanReturnListBean extends AbstractBindingListBean  {
         return landtype;
     }
 
-    public String getAreaOfLand() {
+    public double getAreaOfLand() {
         return areaOfLand;
     }
 
@@ -202,16 +193,15 @@ public class SurveyPlanReturnListBean extends AbstractBindingListBean  {
 
     //      /** Passes from date and to date search criteria. */
     public void passParameter(String searchString, SurveyPlanReturnListParamsBean params) {
-//        applicationSearchResultsList.clear();
         SurveyPlanListReturnReportParamsTO paramsTO = TypeConverters.BeanToTrasferObject(params,
                 SurveyPlanListReturnReportParamsTO.class);
 
         List<SurveyPlanListReturnReportTO> managementViewTO =
                 WSManager.getInstance().getCadastreService().getSurveyPlanListReturnReportTO(searchString, paramsTO);
         
-        System.out.println("paramsTO.getFromDate()  "+paramsTO.getFromDate());
-        System.out.println("paramsTO.getToDate()  "+paramsTO.getToDate());
         TypeConverters.TransferObjectListToBeanList(managementViewTO,
                 SurveyPlanReturnListBean.class, (List) this.getMenagementList());
+        
+        
     }
 }
