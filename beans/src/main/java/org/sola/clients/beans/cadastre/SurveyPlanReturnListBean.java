@@ -34,84 +34,51 @@ import java.util.LinkedList;
 import java.util.List;
 import org.jdesktop.observablecollections.ObservableCollections;
 import org.jdesktop.observablecollections.ObservableList;
-import org.sola.clients.beans.AbstractBindingListBean;
 import org.sola.clients.beans.AbstractIdBean;
-import org.sola.clients.beans.controls.SolaObservableList;
 import org.sola.clients.beans.converters.TypeConverters;
 import org.sola.webservices.transferobjects.cadastre.SurveyPlanListReturnReportTO;
-import org.sola.services.boundary.wsclients.WSManager;
 import org.sola.webservices.transferobjects.cadastre.SurveyPlanListReturnReportParamsTO;
+import org.sola.services.boundary.wsclients.WSManager;
 
 /**
  * Contains summary properties of the LodgementView object. Could be populated
  * from the {@link LodgementViewTO} object.<br /> For more information see UC
  * <b>Lodgement Report</b> schema.
  */
-public class SurveyPlanReturnListBean extends AbstractBindingListBean  {
-    public static final String SELECTED_SURVEYPLAN = "selectedSurveyPlan";
-    private SolaObservableList<SurveyPlanReturnListBean> menagementList;
-    private SurveyPlanReturnListBean selectedSurveyPlan;
-   
-    private String id;
-
+public class SurveyPlanReturnListBean extends  AbstractIdBean  {
+    
+    private ObservableList<SurveyPlanReturnListBean> menagementList;
     private String LSNo;
-   
     private String nameofOwner;
-
     private String address;
-
     private String landtype;
-
     private double areaOfLand;
-
     private String eastNeighborPlotHolder;
-
     private String westNeighborPlotHolder;
-
     private String northNeighborPlotHolder;
-
     private String southNeighborPlotHolder;
-
     private String surveyingMethod;
-
     private Date DateSurveyed;
-    
     private String nameofLicenseSurveyor;
-
     private String surveyType;
-    
     private String rfSurvey;
-    
     private String surveyNumber;
-    
     private Date dslDate;
- 
        
 
     public SurveyPlanReturnListBean() {
-//        super();
-        menagementList = new SolaObservableList<SurveyPlanReturnListBean>();
+        super();
+        menagementList = ObservableCollections.observableList(new LinkedList<SurveyPlanReturnListBean>());
     }
 
-    public SolaObservableList<SurveyPlanReturnListBean> getMenagementList() {
+    public ObservableList<SurveyPlanReturnListBean> getMenagementList() {
         return menagementList;
     }
 
-    public void setMenagementList(SolaObservableList<SurveyPlanReturnListBean> menagementList) {
+    public void setMenagementList(ObservableList<SurveyPlanReturnListBean> menagementList) {
         this.menagementList = menagementList;
     }
 
-    public static String getSELECTED_SURVEYPLAN() {
-        return SELECTED_SURVEYPLAN;
-    }
-
-    public SurveyPlanReturnListBean getSelectedSurveyPlan() {
-        return selectedSurveyPlan;
-    }
-
-    public String getId() {
-        return id;
-    }
 
     public String getLSNo() {
         return LSNo;
@@ -177,6 +144,70 @@ public class SurveyPlanReturnListBean extends AbstractBindingListBean  {
         return dslDate;
     }
 
+    public void setLSNo(String LSNo) {
+        this.LSNo = LSNo;
+    }
+
+    public void setNameofOwner(String nameofOwner) {
+        this.nameofOwner = nameofOwner;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public void setLandtype(String landtype) {
+        this.landtype = landtype;
+    }
+
+    public void setAreaOfLand(double areaOfLand) {
+        this.areaOfLand = areaOfLand;
+    }
+
+    public void setEastNeighborPlotHolder(String eastNeighborPlotHolder) {
+        this.eastNeighborPlotHolder = eastNeighborPlotHolder;
+    }
+
+    public void setWestNeighborPlotHolder(String westNeighborPlotHolder) {
+        this.westNeighborPlotHolder = westNeighborPlotHolder;
+    }
+
+    public void setNorthNeighborPlotHolder(String northNeighborPlotHolder) {
+        this.northNeighborPlotHolder = northNeighborPlotHolder;
+    }
+
+    public void setSouthNeighborPlotHolder(String southNeighborPlotHolder) {
+        this.southNeighborPlotHolder = southNeighborPlotHolder;
+    }
+
+    public void setSurveyingMethod(String surveyingMethod) {
+        this.surveyingMethod = surveyingMethod;
+    }
+
+    public void setDateSurveyed(Date DateSurveyed) {
+        this.DateSurveyed = DateSurveyed;
+    }
+
+    public void setNameofLicenseSurveyor(String nameofLicenseSurveyor) {
+        this.nameofLicenseSurveyor = nameofLicenseSurveyor;
+    }
+
+    public void setSurveyType(String surveyType) {
+        this.surveyType = surveyType;
+    }
+
+    public void setRfSurvey(String rfSurvey) {
+        this.rfSurvey = rfSurvey;
+    }
+
+    public void setSurveyNumber(String surveyNumber) {
+        this.surveyNumber = surveyNumber;
+    }
+
+    public void setDslDate(Date dslDate) {
+        this.dslDate = dslDate;
+    }
+
     
     
     /**
@@ -198,10 +229,6 @@ public class SurveyPlanReturnListBean extends AbstractBindingListBean  {
 
         List<SurveyPlanListReturnReportTO> managementViewTO =
                 WSManager.getInstance().getCadastreService().getSurveyPlanListReturnReportTO(searchString, paramsTO);
-        
-        TypeConverters.TransferObjectListToBeanList(managementViewTO,
-                SurveyPlanReturnListBean.class, (List) this.getMenagementList());
-        
-        
+        TypeConverters.TransferObjectListToBeanList(managementViewTO,SurveyPlanReturnListBean.class, (List) this.getMenagementList());
     }
 }
