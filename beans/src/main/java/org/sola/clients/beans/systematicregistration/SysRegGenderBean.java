@@ -33,7 +33,7 @@ import org.sola.services.boundary.wsclients.WSManager;
 public class SysRegGenderBean extends AbstractIdBean {
 
     private ObservableList<SysRegGenderBean> genderList;
-     private String parcel;
+    private String parcel;
     private BigDecimal total;
     private BigDecimal totFem;
     private BigDecimal totMale;

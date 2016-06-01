@@ -229,6 +229,7 @@ public abstract class AbstractSpatialObjectLayer extends ExtendedLayerEditor {
                     if (bean.getFeatureGeom().getSRID() == 0){
                         Geometry newGeom = (Geometry)bean.getFeatureGeom().clone();
                         newGeom.setSRID(this.getSrid());
+                        System.out.println("!QUI!!!!    ");
                         bean.setFeatureGeom(newGeom);
                     }
                 }

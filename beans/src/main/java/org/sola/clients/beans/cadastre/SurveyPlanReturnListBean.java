@@ -34,209 +34,181 @@ import java.util.LinkedList;
 import java.util.List;
 import org.jdesktop.observablecollections.ObservableCollections;
 import org.jdesktop.observablecollections.ObservableList;
-import org.sola.clients.beans.AbstractBindingListBean;
 import org.sola.clients.beans.AbstractIdBean;
-import org.sola.clients.beans.controls.SolaObservableList;
 import org.sola.clients.beans.converters.TypeConverters;
 import org.sola.webservices.transferobjects.cadastre.SurveyPlanListReturnReportTO;
-import org.sola.services.boundary.wsclients.WSManager;
 import org.sola.webservices.transferobjects.cadastre.SurveyPlanListReturnReportParamsTO;
+import org.sola.services.boundary.wsclients.WSManager;
 
 /**
  * Contains summary properties of the LodgementView object. Could be populated
  * from the {@link LodgementViewTO} object.<br /> For more information see UC
  * <b>Lodgement Report</b> schema.
  */
-public class SurveyPlanReturnListBean extends AbstractBindingListBean  {
-    public static final String SELECTED_SURVEYPLAN = "selectedSurveyPlan";
-    private SolaObservableList<SurveyPlanReturnListBean> menagementList;
-    private SurveyPlanReturnBean selectedSurveyPlan;
-    private String surveyPlanid; //= id
-    private String lSNo;
-    private String nameOfOwner;
-    private String propertyNameOfStreet;
-    private String propertyAddressNo;
+public class SurveyPlanReturnListBean extends  AbstractIdBean  {
+    
+    private ObservableList<SurveyPlanReturnListBean> menagementList;
+    private String LSNo;
+    private String nameofOwner;
+    private String address;
     private String landtype;
-    private String areaOfLand;
-    private String landManagement;
-    private String nameOfLicenseSurveyor;
+    private double areaOfLand;
     private String eastNeighborPlotHolder;
     private String westNeighborPlotHolder;
     private String northNeighborPlotHolder;
     private String southNeighborPlotHolder;
     private String surveyingMethod;
-    private String directorOfSurveys;
-    private Date dateSurveyed;
-    private String beaconnumber;
-    private String nameOfCO;
-    private String nameOfSLCO;
-    
+    private Date DateSurveyed;
+    private String nameofLicenseSurveyor;
+    private String surveyType;
+    private String rfSurvey;
+    private String surveyNumber;
+    private Date dslDate;
+       
 
     public SurveyPlanReturnListBean() {
         super();
-        menagementList = new SolaObservableList<SurveyPlanReturnListBean>();
+        menagementList = ObservableCollections.observableList(new LinkedList<SurveyPlanReturnListBean>());
     }
 
     public ObservableList<SurveyPlanReturnListBean> getMenagementList() {
         return menagementList;
     }
 
-    public void setMenagementList(SolaObservableList<SurveyPlanReturnListBean> menagementList) {
+    public void setMenagementList(ObservableList<SurveyPlanReturnListBean> menagementList) {
         this.menagementList = menagementList;
     }
 
-    public String getSurveyPlanid() {
-        return surveyPlanid;
+
+    public String getLSNo() {
+        return LSNo;
     }
 
-    public void setSurveyPlanid(String surveyPlanid) {
-        this.surveyPlanid = surveyPlanid;
+    public String getNameofOwner() {
+        return nameofOwner;
     }
 
-    public String getlSNo() {
-        return lSNo;
-    }
-
-    public void setlSNo(String lSNo) {
-        this.lSNo = lSNo;
-    }
-
-    public String getNameOfOwner() {
-        return nameOfOwner;
-    }
-
-    public void setNameOfOwner(String nameOfOwner) {
-        this.nameOfOwner = nameOfOwner;
-    }
-
-    public String getPropertyNameOfStreet() {
-        return propertyNameOfStreet;
-    }
-
-    public void setPropertyNameOfStreet(String propertyNameOfStreet) {
-        this.propertyNameOfStreet = propertyNameOfStreet;
-    }
-
-    public String getPropertyAddressNo() {
-        return propertyAddressNo;
-    }
-
-    public void setPropertyAddressNo(String propertyAddressNo) {
-        this.propertyAddressNo = propertyAddressNo;
+    public String getAddress() {
+        return address;
     }
 
     public String getLandtype() {
         return landtype;
     }
 
-    public void setLandtype(String landtype) {
-        this.landtype = landtype;
-    }
-
-    public String getAreaOfLand() {
+    public double getAreaOfLand() {
         return areaOfLand;
-    }
-
-    public void setAreaOfLand(String areaOfLand) {
-        this.areaOfLand = areaOfLand;
-    }
-
-    public String getLandManagement() {
-        return landManagement;
-    }
-
-    public void setLandManagement(String landManagement) {
-        this.landManagement = landManagement;
-    }
-
-    public String getNameOfLicenseSurveyor() {
-        return nameOfLicenseSurveyor;
-    }
-
-    public void setNameOfLicenseSurveyor(String nameOfLicenseSurveyor) {
-        this.nameOfLicenseSurveyor = nameOfLicenseSurveyor;
     }
 
     public String getEastNeighborPlotHolder() {
         return eastNeighborPlotHolder;
     }
 
-    public void setEastNeighborPlotHolder(String eastNeighborPlotHolder) {
-        this.eastNeighborPlotHolder = eastNeighborPlotHolder;
-    }
-
     public String getWestNeighborPlotHolder() {
         return westNeighborPlotHolder;
-    }
-
-    public void setWestNeighborPlotHolder(String westNeighborPlotHolder) {
-        this.westNeighborPlotHolder = westNeighborPlotHolder;
     }
 
     public String getNorthNeighborPlotHolder() {
         return northNeighborPlotHolder;
     }
 
-    public void setNorthNeighborPlotHolder(String northNeighborPlotHolder) {
-        this.northNeighborPlotHolder = northNeighborPlotHolder;
-    }
-
     public String getSouthNeighborPlotHolder() {
         return southNeighborPlotHolder;
-    }
-
-    public void setSouthNeighborPlotHolder(String southNeighborPlotHolder) {
-        this.southNeighborPlotHolder = southNeighborPlotHolder;
     }
 
     public String getSurveyingMethod() {
         return surveyingMethod;
     }
 
+    public Date getDateSurveyed() {
+        return DateSurveyed;
+    }
+
+    public String getNameofLicenseSurveyor() {
+        return nameofLicenseSurveyor;
+    }
+
+    public String getSurveyType() {
+        return surveyType;
+    }
+
+    public String getRfSurvey() {
+        return rfSurvey;
+    }
+
+    public String getSurveyNumber() {
+        return surveyNumber;
+    }
+
+    public Date getDslDate() {
+        return dslDate;
+    }
+
+    public void setLSNo(String LSNo) {
+        this.LSNo = LSNo;
+    }
+
+    public void setNameofOwner(String nameofOwner) {
+        this.nameofOwner = nameofOwner;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public void setLandtype(String landtype) {
+        this.landtype = landtype;
+    }
+
+    public void setAreaOfLand(double areaOfLand) {
+        this.areaOfLand = areaOfLand;
+    }
+
+    public void setEastNeighborPlotHolder(String eastNeighborPlotHolder) {
+        this.eastNeighborPlotHolder = eastNeighborPlotHolder;
+    }
+
+    public void setWestNeighborPlotHolder(String westNeighborPlotHolder) {
+        this.westNeighborPlotHolder = westNeighborPlotHolder;
+    }
+
+    public void setNorthNeighborPlotHolder(String northNeighborPlotHolder) {
+        this.northNeighborPlotHolder = northNeighborPlotHolder;
+    }
+
+    public void setSouthNeighborPlotHolder(String southNeighborPlotHolder) {
+        this.southNeighborPlotHolder = southNeighborPlotHolder;
+    }
+
     public void setSurveyingMethod(String surveyingMethod) {
         this.surveyingMethod = surveyingMethod;
     }
 
-    public String getDirectorOfSurveys() {
-        return directorOfSurveys;
+    public void setDateSurveyed(Date DateSurveyed) {
+        this.DateSurveyed = DateSurveyed;
     }
 
-    public void setDirectorOfSurveys(String directorOfSurveys) {
-        this.directorOfSurveys = directorOfSurveys;
+    public void setNameofLicenseSurveyor(String nameofLicenseSurveyor) {
+        this.nameofLicenseSurveyor = nameofLicenseSurveyor;
     }
 
-    public Date getDateSurveyed() {
-        return dateSurveyed;
+    public void setSurveyType(String surveyType) {
+        this.surveyType = surveyType;
     }
 
-    public void setDateSurveyed(Date dateSurveyed) {
-        this.dateSurveyed = dateSurveyed;
+    public void setRfSurvey(String rfSurvey) {
+        this.rfSurvey = rfSurvey;
     }
 
-    public String getBeaconnumber() {
-        return beaconnumber;
+    public void setSurveyNumber(String surveyNumber) {
+        this.surveyNumber = surveyNumber;
     }
 
-    public void setBeaconnumber(String beaconnumber) {
-        this.beaconnumber = beaconnumber;
+    public void setDslDate(Date dslDate) {
+        this.dslDate = dslDate;
     }
 
-    public String getNameOfCO() {
-        return nameOfCO;
-    }
-
-    public void setNameOfCO(String nameOfCO) {
-        this.nameOfCO = nameOfCO;
-    }
-
-    public String getNameOfSLCO() {
-        return nameOfSLCO;
-    }
-
-    public void setNameOfSLCO(String nameOfSLCO) {
-        this.nameOfSLCO = nameOfSLCO;
-    }
-
+    
     
     /**
      * Returns collection of {@link ApplicationBean} objects. This method is
@@ -252,13 +224,11 @@ public class SurveyPlanReturnListBean extends AbstractBindingListBean  {
 
     //      /** Passes from date and to date search criteria. */
     public void passParameter(String searchString, SurveyPlanReturnListParamsBean params) {
-//        applicationSearchResultsList.clear();
         SurveyPlanListReturnReportParamsTO paramsTO = TypeConverters.BeanToTrasferObject(params,
                 SurveyPlanListReturnReportParamsTO.class);
 
         List<SurveyPlanListReturnReportTO> managementViewTO =
                 WSManager.getInstance().getCadastreService().getSurveyPlanListReturnReportTO(searchString, paramsTO);
-        TypeConverters.TransferObjectListToBeanList(managementViewTO,
-                SurveyPlanReturnListBean.class, (List) this.getMenagementList());
+        TypeConverters.TransferObjectListToBeanList(managementViewTO,SurveyPlanReturnListBean.class, (List) this.getMenagementList());
     }
 }

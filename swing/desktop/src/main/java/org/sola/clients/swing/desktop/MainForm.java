@@ -64,6 +64,7 @@ import org.sola.clients.swing.desktop.cadastre.MapSpatialUnitEditPanel;
 import org.sola.clients.swing.desktop.cadastre.MapSpatialUnitGroupEditPanel;
 import org.sola.clients.swing.desktop.party.PartySearchPanelForm;
 import org.sola.clients.swing.desktop.reports.LodgementReportParamsForm;
+import org.sola.clients.swing.desktop.reports.SurveyPlanListParamsForm;
 import org.sola.clients.swing.desktop.reports.SysRegCertParamsForm;
 import org.sola.clients.swing.desktop.reports.SysRegListingParamsForm;
 import org.sola.clients.swing.desktop.reports.SysRegManagementParamsForm;
@@ -237,7 +238,7 @@ public class MainForm extends javax.swing.JFrame {
         menuZoneEditor.setVisible(menuZoneEditor.isEnabled());
         // TODO: Remove these lines once the Map Editing functionality has been revised. 
         menuZoneEditor.setVisible(false);
-        menuFeatureEditor.setVisible(false);
+        menuFeatureEditor.setVisible(true);
 
         if (SecurityBean.isPasswordChangeReqd(false)) {
             // Load the user profile page
@@ -848,6 +849,7 @@ public class MainForm extends javax.swing.JFrame {
         menuReportsDesktop = new javax.swing.JMenu();
         menuLodgementReport = new javax.swing.JMenuItem();
         menuGenderReport = new javax.swing.JMenuItem();
+        menuSurveyPlanReturnReport = new javax.swing.JMenuItem();
         javax.swing.JMenu helpMenu = new javax.swing.JMenu();
         javax.swing.JMenuItem aboutMenuItem = new javax.swing.JMenuItem();
         jmiContextHelp = new javax.swing.JMenuItem();
@@ -1164,6 +1166,14 @@ public class MainForm extends javax.swing.JFrame {
         });
         menuReportsDesktop.add(menuGenderReport);
 
+        menuSurveyPlanReturnReport.setText(bundle.getString("MainForm.menuSurveyPlanReturnReport.text")); // NOI18N
+        menuSurveyPlanReturnReport.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuSurveyPlanReturnReportActionPerformed(evt);
+            }
+        });
+        menuReportsDesktop.add(menuSurveyPlanReturnReport);
+
         menuBar.add(menuReportsDesktop);
 
         helpMenu.setText(bundle.getString("MainForm.helpMenu.text")); // NOI18N
@@ -1274,7 +1284,16 @@ public class MainForm extends javax.swing.JFrame {
         SysRegManagementParamsForm managementGenerator = new SysRegManagementParamsForm(this, true, "sysRegGenderBean");
         managementGenerator.clickView(evt);
     }
-
+    
+    private void openSurveyPlanListReturnReport(java.awt.event.ActionEvent evt) {
+        SurveyPlanListParamsForm surveyListGenerator = new SurveyPlanListParamsForm(this, true, "surveyPlanReturnListBean");
+//        surveyListGenerator.clickView(evt);
+        surveyListGenerator.setVisible(true);
+    }
+    
+    
+    
+    
     private void btnOpenMapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOpenMapActionPerformed
         openMap();
     }//GEN-LAST:event_btnOpenMapActionPerformed
@@ -1315,6 +1334,10 @@ public class MainForm extends javax.swing.JFrame {
         openMapSpatialUnitGroupEditor();
     }//GEN-LAST:event_menuZoneEditorActionPerformed
 
+    private void menuSurveyPlanReturnReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuSurveyPlanReturnReportActionPerformed
+        openSurveyPlanListReturnReport(evt);
+    }//GEN-LAST:event_menuSurveyPlanReturnReportActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JToolBar applicationsMain;
     private javax.swing.JButton btnDocumentSearch;
@@ -1351,6 +1374,7 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JMenu menuSearch;
     private javax.swing.JMenuItem menuSearchApplication;
     private javax.swing.JMenuItem menuShowMap;
+    private javax.swing.JMenuItem menuSurveyPlanReturnReport;
     private javax.swing.JMenu menuView;
     private javax.swing.JMenuItem menuZoneEditor;
     private org.sola.clients.swing.ui.MainContentPanel pnlContent;
