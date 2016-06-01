@@ -40,6 +40,7 @@ import org.sola.webservices.transferobjects.referencedata.PartyTypeTO;
 public class PartyRoleTypeBean extends AbstractCodeBean {
 
     public static final String ROLE_LICENSED_SURVEYOR = "certifiedSurveyor";
+    public static final String ROLE_SURVEYOR = "surveyor";
     public static final String ROLE_CHARTING_OFFICER = "charting_officer";
     public static final String ROLE_CLEARING_STATE_LAND_OFFICER = "stland_clr_officer";
     

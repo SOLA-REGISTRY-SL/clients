@@ -25,66 +25,25 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
-package org.sola.clients.swing.gis.beans;
+package org.sola.clients.swing.gis.beans.validation;
 
-import org.sola.clients.beans.AbstractBindingBean;
+import javax.validation.Payload;
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import javax.validation.Constraint;
+import static java.lang.annotation.ElementType.*;
 
 /**
- * Bean used for the result in the Spatial Object Search Result list. Provides a customized toString
- * method for display in the list control.
- *
- * @author soladev
+ * Used on {@link PartyBean} object to validate document ID type and reference number.
  */
-public class SpatialSearchResultBean extends AbstractBindingBean implements Comparable {
-
-    private String id;
-    private String label;
-    private byte[] theGeom;
-
-    /**
-     * Constructor for the bean. 
-     */
-    public SpatialSearchResultBean() {
-        super();
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getLabel() {
-        return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
-    }
-
-    public byte[] getTheGeom() {
-        return theGeom;
-    }
-
-    public void setTheGeom(byte[] theGeom) { //NOSONAR
-        this.theGeom = theGeom; //NOSONAR
-    }
-
-    @Override
-    public String toString() {
-        return getLabel();
-    }
-
-    /**
-     * Can be used to sort the Spatial Result List 
-     */
-    @Override
-    public int compareTo(Object compareObj) {
-        if(compareObj!=null)
-            return this.toString().compareTo(compareObj.toString());
-        else
-            return -1;
-    }
+@Target({TYPE, METHOD, FIELD, ANNOTATION_TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+@Constraint(validatedBy=CadastreObjectSurveyTypeValidator.class)
+@Documented
+public @interface CadastreObjectSurveyTypeCheck {
+    String message() default "";
+    Class<?>[] groups() default {};
+    Class<? extends Payload>[] payload() default{};
 }

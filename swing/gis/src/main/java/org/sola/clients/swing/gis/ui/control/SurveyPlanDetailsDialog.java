@@ -1,36 +1,74 @@
 package org.sola.clients.swing.gis.ui.control;
 
+import java.awt.GridLayout;
 import javax.swing.JFormattedTextField;
-import org.sola.clients.beans.party.PartyRoleBean;
+import javax.swing.JOptionPane;
+import javax.validation.groups.Default;
 import org.sola.clients.beans.party.PartySearchResultListBean;
 import org.sola.clients.beans.referencedata.ChiefdomTypeListBean;
+import org.sola.clients.beans.referencedata.LandTypeBean;
 import org.sola.clients.beans.referencedata.LandTypeListBean;
 import org.sola.clients.beans.referencedata.PartyRoleTypeBean;
+import org.sola.clients.beans.referencedata.SurveyTypeListBean;
 import org.sola.clients.beans.referencedata.SurveyingMethodTypeListBean;
 import org.sola.clients.swing.common.controls.CalendarForm;
 import org.sola.clients.swing.common.utils.FormattersFactory;
 import org.sola.clients.swing.gis.beans.CadastreObjectBean;
+import org.sola.clients.swing.gis.beans.validation.PrivateLandValidationGroup;
+import org.sola.clients.swing.gis.beans.validation.StateLandValidationGroup;
+import org.sola.common.StringUtility;
 
 /**
  * Survey plan details form
  */
 public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
-    
+
     /**
      * Creates new form
      */
     private CadastreObjectBean originalCadastreObject;
-    
-    public SurveyPlanDetailsDialog(java.awt.Frame parent, boolean modal, 
+
+    public SurveyPlanDetailsDialog(java.awt.Frame parent, boolean modal,
             CadastreObjectBean cadastreObject, boolean readOnly) {
         super(parent, modal);
+        if (StringUtility.isEmpty(cadastreObject.getLandTypeCode())) {
+            if (JOptionPane.showConfirmDialog(this, "Do you want to create private land?",
+                    "Land type", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                cadastreObject.setLandTypeCode(LandTypeBean.TYPE_PRIVATE_LAND);
+            } else {
+                cadastreObject.setLandTypeCode(LandTypeBean.TYPE_STATE_LAND);
+                cadastreObject.setNameLastpart(null);
+            }
+        }
         this.originalCadastreObject = cadastreObject;
         this.cadastreObjectBean = cadastreObject.copy();
         initComponents();
         setReadOnly(!readOnly);
+        postInit();
     }
 
-    private void setReadOnly(boolean enabled){
+    private void postInit() {
+        // Show/hide panels depending on land type
+        if (isPrivateLand()) {
+            pnlMainGrid.remove(pnlSurveyNumCorrFile);
+            pnlMainGrid.remove(pnlCompFileDwgOffNum);
+            pnlMainGrid.remove(pnlDrawnBy);
+            pnlMainGrid.remove(pnlCheckedByAndDate);
+
+            ((GridLayout) pnlMainGrid.getLayout()).setRows(8);
+            this.setSize((int) this.getSize().getWidth(), (int) this.getSize().getHeight() - 120);
+        } else {
+            pnlMainGrid.remove(pnlStateLandOfficer);
+            pnlMainGrid.remove(pnlChartingOfficer);
+            pnlParcelNumber.remove(pnlNameLastPart);
+            lblSurveyor.setText("Surveyor");
+
+            ((GridLayout) pnlMainGrid.getLayout()).setRows(9);
+            this.setSize((int) this.getSize().getWidth(), (int) this.getSize().getHeight() - 60);
+        }
+    }
+
+    private void setReadOnly(boolean enabled) {
         txtNameFirstPart.setEnabled(enabled);
         txtNameLastPart.setEnabled(enabled);
         txtOwnerName.setEnabled(enabled);
@@ -39,7 +77,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
         txtSurveyDate.setEnabled(enabled);
         txtParcelArea.setEnabled(enabled);
         txtBeaconNumber.setEnabled(enabled);
-        cbxLandType.setEnabled(enabled);
+        //cbxLandType.setEnabled(enabled);
         cbxSurveyMethod.setEnabled(enabled);
         cbxLicensedSurveyor.setEnabled(enabled);
         txtNeighbourEast.setEnabled(enabled);
@@ -48,9 +86,21 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
         txtNeighbourWest.setEnabled(enabled);
         cbxChartingOfficer.setEnabled(enabled);
         cbxClearingStateLandOfficer.setEnabled(enabled);
+        cbxSurveyType.setEnabled(enabled);
+        txtSurveyNumber.setEnabled(enabled);
+        txtRefNameFirstPart.setEnabled(enabled);
+        txtRefNameLastPart.setEnabled(enabled);
+        txtCorrespondenceFile.setEnabled(enabled);
+        txtComputationFile.setEnabled(enabled);
+        txtCheckedBy.setEnabled(enabled);
+        txtCheckingDate.setEnabled(enabled);
+        txtDrawingOfficeNumber.setEnabled(enabled);
+        txtDrawnBy.setEnabled(enabled);
+        btnSurveyDate.setEnabled(enabled);
+        btnCheckingDate.setEnabled(enabled);
         btnSave.setVisible(enabled);
     }
-    
+
     /**
      * It creates the bean. It is called from the generated code.
      *
@@ -62,36 +112,47 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
         }
         return cadastreObjectBean;
     }
-   
+
     private LandTypeListBean createLandTypeList() {
         if (landTypeListBean == null) {
             landTypeListBean = new LandTypeListBean(true);
         }
         return landTypeListBean;
     }
-    
+
     private SurveyingMethodTypeListBean createSurveyMethodTypeList() {
         if (surveyingMethodTypeListBean == null) {
             surveyingMethodTypeListBean = new SurveyingMethodTypeListBean(true);
         }
         return surveyingMethodTypeListBean;
     }
-    
+
     private ChiefdomTypeListBean createChiefdomTypeList() {
         if (chiefdomTypeListBean == null) {
             chiefdomTypeListBean = new ChiefdomTypeListBean(true);
         }
         return chiefdomTypeListBean;
     }
-    
+
     private PartySearchResultListBean createLicensedSurveyorsList() {
         if (licensedSurveyors == null) {
             licensedSurveyors = new PartySearchResultListBean();
-            licensedSurveyors.searchByRole(PartyRoleTypeBean.ROLE_LICENSED_SURVEYOR, true);
+            if (isPrivateLand()) {
+                licensedSurveyors.searchByRole(PartyRoleTypeBean.ROLE_LICENSED_SURVEYOR, true);
+            } else {
+                licensedSurveyors.searchByRole(PartyRoleTypeBean.ROLE_SURVEYOR, true);
+            }
         }
         return licensedSurveyors;
     }
-    
+
+    private boolean isPrivateLand() {
+        if (!StringUtility.isEmpty(cadastreObjectBean.getLandTypeCode())) {
+            return cadastreObjectBean.getLandTypeCode().equalsIgnoreCase(LandTypeBean.TYPE_PRIVATE_LAND);
+        }
+        return true;
+    }
+
     private PartySearchResultListBean createChartingOfficersList() {
         if (chartingOfficers == null) {
             chartingOfficers = new PartySearchResultListBean();
@@ -99,7 +160,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
         }
         return chartingOfficers;
     }
-    
+
     private PartySearchResultListBean createClearingStateLandOfficiersList() {
         if (clearingStateLandOfficers == null) {
             clearingStateLandOfficers = new PartySearchResultListBean();
@@ -107,19 +168,32 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
         }
         return clearingStateLandOfficers;
     }
-    
+
+    private SurveyTypeListBean createSurveyTypesList() {
+        if (surveyTypeListBean == null) {
+            surveyTypeListBean = new SurveyTypeListBean(true);
+        }
+        return surveyTypeListBean;
+    }
+
     private void showCalendar(JFormattedTextField dateField) {
         CalendarForm calendar = new CalendarForm(null, true, dateField);
         calendar.setVisible(true);
     }
-    
-    private boolean save(){
-        if(cadastreObjectBean.validate(true).size() > 0)
+
+    private boolean save() {
+        if (isPrivateLand()) {
+            if (cadastreObjectBean.validate(true, Default.class, PrivateLandValidationGroup.class).size() > 0) {
+                return false;
+            }
+        } else if (cadastreObjectBean.validate(true, Default.class, StateLandValidationGroup.class).size() > 0) {
             return false;
+        }
+        
         originalCadastreObject.copyFromObject(cadastreObjectBean);
-        return true;       
+        return true;
     }
-   
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -132,13 +206,14 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
         licensedSurveyors = createLicensedSurveyorsList();
         chartingOfficers = createChartingOfficersList();
         clearingStateLandOfficers = createClearingStateLandOfficiersList();
+        surveyTypeListBean = createSurveyTypesList();
         btnSave = new javax.swing.JButton();
-        jPanel18 = new javax.swing.JPanel();
-        jPanel19 = new javax.swing.JPanel();
+        pnlMainGrid = new javax.swing.JPanel();
+        pnlParcelNumber = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         txtNameFirstPart = new javax.swing.JTextField();
-        jPanel2 = new javax.swing.JPanel();
+        pnlNameLastPart = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         txtNameLastPart = new javax.swing.JTextField();
         jPanel3 = new javax.swing.JPanel();
@@ -169,8 +244,49 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
         jLabel8 = new javax.swing.JLabel();
         cbxSurveyMethod = new javax.swing.JComboBox();
         jPanel17 = new javax.swing.JPanel();
-        jLabel17 = new javax.swing.JLabel();
+        lblSurveyor = new javax.swing.JLabel();
         cbxLicensedSurveyor = new javax.swing.JComboBox();
+        jPanel22 = new javax.swing.JPanel();
+        jLabel18 = new javax.swing.JLabel();
+        cbxSurveyType = new javax.swing.JComboBox();
+        jPanel23 = new javax.swing.JPanel();
+        jPanel24 = new javax.swing.JPanel();
+        jLabel19 = new javax.swing.JLabel();
+        txtRefNameFirstPart = new javax.swing.JTextField();
+        jPanel25 = new javax.swing.JPanel();
+        jLabel20 = new javax.swing.JLabel();
+        txtRefNameLastPart = new javax.swing.JTextField();
+        pnlChartingOfficer = new javax.swing.JPanel();
+        jLabel15 = new javax.swing.JLabel();
+        cbxChartingOfficer = new javax.swing.JComboBox();
+        pnlStateLandOfficer = new javax.swing.JPanel();
+        jLabel16 = new javax.swing.JLabel();
+        cbxClearingStateLandOfficer = new javax.swing.JComboBox();
+        pnlSurveyNumCorrFile = new javax.swing.JPanel();
+        jPanel27 = new javax.swing.JPanel();
+        jLabel21 = new javax.swing.JLabel();
+        txtSurveyNumber = new javax.swing.JTextField();
+        jPanel28 = new javax.swing.JPanel();
+        jLabel22 = new javax.swing.JLabel();
+        txtCorrespondenceFile = new javax.swing.JTextField();
+        pnlCompFileDwgOffNum = new javax.swing.JPanel();
+        jPanel30 = new javax.swing.JPanel();
+        jLabel23 = new javax.swing.JLabel();
+        txtComputationFile = new javax.swing.JTextField();
+        jPanel31 = new javax.swing.JPanel();
+        jLabel24 = new javax.swing.JLabel();
+        txtDrawingOfficeNumber = new javax.swing.JTextField();
+        pnlDrawnBy = new javax.swing.JPanel();
+        jLabel25 = new javax.swing.JLabel();
+        txtDrawnBy = new javax.swing.JTextField();
+        pnlCheckedByAndDate = new javax.swing.JPanel();
+        jPanel34 = new javax.swing.JPanel();
+        btnCheckingDate = new javax.swing.JButton();
+        txtCheckingDate = new org.sola.clients.swing.common.controls.WatermarkDate();
+        jLabel17 = new javax.swing.JLabel();
+        jPanel35 = new javax.swing.JPanel();
+        jLabel27 = new javax.swing.JLabel();
+        txtCheckedBy = new javax.swing.JTextField();
         jPanel10 = new javax.swing.JPanel();
         jLabel10 = new javax.swing.JLabel();
         txtNeighbourNorth = new javax.swing.JTextField();
@@ -183,17 +299,10 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
         jPanel12 = new javax.swing.JPanel();
         jLabel12 = new javax.swing.JLabel();
         txtNeighbourEast = new javax.swing.JTextField();
-        jPanel15 = new javax.swing.JPanel();
-        jLabel15 = new javax.swing.JLabel();
-        cbxChartingOfficer = new javax.swing.JComboBox();
-        jPanel16 = new javax.swing.JPanel();
-        jLabel16 = new javax.swing.JLabel();
-        cbxClearingStateLandOfficer = new javax.swing.JComboBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Survey plan details");
         setMaximumSize(new java.awt.Dimension(665, 433));
-        setResizable(false);
 
         btnSave.setText("Save");
         btnSave.addActionListener(new java.awt.event.ActionListener() {
@@ -202,13 +311,13 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
             }
         });
 
-        jPanel18.setMaximumSize(new java.awt.Dimension(647, 370));
-        jPanel18.setLayout(new java.awt.GridLayout(7, 2, 15, 15));
+        pnlMainGrid.setMaximumSize(new java.awt.Dimension(647, 370));
+        pnlMainGrid.setLayout(new java.awt.GridLayout(10, 2, 15, 15));
 
-        jPanel19.setLayout(new java.awt.GridLayout(1, 2, 10, 0));
+        pnlParcelNumber.setLayout(new java.awt.GridLayout(1, 2, 10, 0));
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/sola/clients/swing/gis/ui/control/red_asterisk.gif"))); // NOI18N
-        jLabel1.setText("LS No:");
+        jLabel1.setText("Name first part:");
 
         org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, cadastreObjectBean, org.jdesktop.beansbinding.ELProperty.create("${nameFirstpart}"), txtNameFirstPart, org.jdesktop.beansbinding.BeanProperty.create("text"));
         bindingGroup.addBinding(binding);
@@ -219,7 +328,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jLabel1)
-                .addGap(0, 104, Short.MAX_VALUE))
+                .addGap(0, 59, Short.MAX_VALUE))
             .addComponent(txtNameFirstPart)
         );
         jPanel1Layout.setVerticalGroup(
@@ -230,34 +339,34 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
                 .addComponent(txtNameFirstPart, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
-        jPanel19.add(jPanel1);
+        pnlParcelNumber.add(jPanel1);
 
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/sola/clients/swing/gis/ui/control/red_asterisk.gif"))); // NOI18N
-        jLabel2.setText("Sub Division LS:");
+        jLabel2.setText("Name last part:");
 
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, cadastreObjectBean, org.jdesktop.beansbinding.ELProperty.create("${nameLastpart}"), txtNameLastPart, org.jdesktop.beansbinding.BeanProperty.create("text"));
         bindingGroup.addBinding(binding);
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
+        javax.swing.GroupLayout pnlNameLastPartLayout = new javax.swing.GroupLayout(pnlNameLastPart);
+        pnlNameLastPart.setLayout(pnlNameLastPartLayout);
+        pnlNameLastPartLayout.setHorizontalGroup(
+            pnlNameLastPartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlNameLastPartLayout.createSequentialGroup()
                 .addComponent(jLabel2)
-                .addGap(0, 60, Short.MAX_VALUE))
+                .addGap(0, 61, Short.MAX_VALUE))
             .addComponent(txtNameLastPart)
         );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
+        pnlNameLastPartLayout.setVerticalGroup(
+            pnlNameLastPartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlNameLastPartLayout.createSequentialGroup()
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtNameLastPart, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
-        jPanel19.add(jPanel2);
+        pnlParcelNumber.add(pnlNameLastPart);
 
-        jPanel18.add(jPanel19);
+        pnlMainGrid.add(pnlParcelNumber);
 
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/sola/clients/swing/gis/ui/control/red_asterisk.gif"))); // NOI18N
         jLabel3.setText("Owner name:");
@@ -282,7 +391,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
                 .addComponent(txtOwnerName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
-        jPanel18.add(jPanel3);
+        pnlMainGrid.add(jPanel3);
 
         jLabel6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/sola/clients/swing/gis/ui/control/red_asterisk.gif"))); // NOI18N
         jLabel6.setText("Address1");
@@ -307,7 +416,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
                 .addComponent(txtAddress1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
-        jPanel18.add(jPanel6);
+        pnlMainGrid.add(jPanel6);
 
         jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/sola/clients/swing/gis/ui/control/red_asterisk.gif"))); // NOI18N
         jLabel4.setText("Address2:");
@@ -335,7 +444,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
                 .addComponent(cbxAddress2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
-        jPanel18.add(jPanel4);
+        pnlMainGrid.add(jPanel4);
 
         jPanel20.setLayout(new java.awt.GridLayout(1, 2, 10, 0));
 
@@ -408,7 +517,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
 
         jPanel20.add(jPanel7);
 
-        jPanel18.add(jPanel20);
+        pnlMainGrid.add(jPanel20);
 
         jLabel9.setText("Beacon No:");
 
@@ -432,7 +541,10 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
                 .addComponent(txtBeaconNumber, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
+        jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/sola/clients/swing/gis/ui/control/red_asterisk.gif"))); // NOI18N
         jLabel5.setText("Land type:");
+
+        cbxLandType.setEnabled(false);
 
         eLProperty = org.jdesktop.beansbinding.ELProperty.create("${landTypeList}");
         jComboBoxBinding = org.jdesktop.swingbinding.SwingBindings.createJComboBoxBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, landTypeListBean, eLProperty, cbxLandType);
@@ -446,7 +558,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addComponent(jLabel5)
-                .addGap(0, 152, Short.MAX_VALUE))
+                .addGap(0, 138, Short.MAX_VALUE))
             .addComponent(cbxLandType, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel5Layout.setVerticalGroup(
@@ -475,7 +587,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
                     .addComponent(jPanel5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
 
-        jPanel18.add(jPanel21);
+        pnlMainGrid.add(jPanel21);
 
         jLabel8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/sola/clients/swing/gis/ui/control/red_asterisk.gif"))); // NOI18N
         jLabel8.setText("Surveying method:");
@@ -503,10 +615,10 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
                 .addComponent(cbxSurveyMethod, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
-        jPanel18.add(jPanel8);
+        pnlMainGrid.add(jPanel8);
 
-        jLabel17.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/sola/clients/swing/gis/ui/control/red_asterisk.gif"))); // NOI18N
-        jLabel17.setText("Licensed surveyor:");
+        lblSurveyor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/sola/clients/swing/gis/ui/control/red_asterisk.gif"))); // NOI18N
+        lblSurveyor.setText("Licensed surveyor:");
 
         eLProperty = org.jdesktop.beansbinding.ELProperty.create("${partySearchResults}");
         jComboBoxBinding = org.jdesktop.swingbinding.SwingBindings.createJComboBoxBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, licensedSurveyors, eLProperty, cbxLicensedSurveyor);
@@ -519,19 +631,367 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
         jPanel17Layout.setHorizontalGroup(
             jPanel17Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel17Layout.createSequentialGroup()
-                .addComponent(jLabel17)
+                .addComponent(lblSurveyor)
                 .addGap(0, 204, Short.MAX_VALUE))
             .addComponent(cbxLicensedSurveyor, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel17Layout.setVerticalGroup(
             jPanel17Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel17Layout.createSequentialGroup()
-                .addComponent(jLabel17)
+                .addComponent(lblSurveyor)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(cbxLicensedSurveyor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
-        jPanel18.add(jPanel17);
+        pnlMainGrid.add(jPanel17);
+
+        jLabel18.setText("Survey/Service type:");
+
+        eLProperty = org.jdesktop.beansbinding.ELProperty.create("${surveyTypes}");
+        jComboBoxBinding = org.jdesktop.swingbinding.SwingBindings.createJComboBoxBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, surveyTypeListBean, eLProperty, cbxSurveyType);
+        bindingGroup.addBinding(jComboBoxBinding);
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, cadastreObjectBean, org.jdesktop.beansbinding.ELProperty.create("${surveyType}"), cbxSurveyType, org.jdesktop.beansbinding.BeanProperty.create("selectedItem"));
+        bindingGroup.addBinding(binding);
+
+        javax.swing.GroupLayout jPanel22Layout = new javax.swing.GroupLayout(jPanel22);
+        jPanel22.setLayout(jPanel22Layout);
+        jPanel22Layout.setHorizontalGroup(
+            jPanel22Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel22Layout.createSequentialGroup()
+                .addComponent(jLabel18)
+                .addGap(0, 207, Short.MAX_VALUE))
+            .addComponent(cbxSurveyType, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        jPanel22Layout.setVerticalGroup(
+            jPanel22Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel22Layout.createSequentialGroup()
+                .addComponent(jLabel18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(cbxSurveyType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+
+        pnlMainGrid.add(jPanel22);
+
+        jPanel23.setLayout(new java.awt.GridLayout(1, 2, 10, 0));
+
+        jLabel19.setText("Ref. Name first part:");
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, cadastreObjectBean, org.jdesktop.beansbinding.ELProperty.create("${refNameFirstpart}"), txtRefNameFirstPart, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        bindingGroup.addBinding(binding);
+
+        javax.swing.GroupLayout jPanel24Layout = new javax.swing.GroupLayout(jPanel24);
+        jPanel24.setLayout(jPanel24Layout);
+        jPanel24Layout.setHorizontalGroup(
+            jPanel24Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel24Layout.createSequentialGroup()
+                .addComponent(jLabel19)
+                .addGap(0, 49, Short.MAX_VALUE))
+            .addComponent(txtRefNameFirstPart)
+        );
+        jPanel24Layout.setVerticalGroup(
+            jPanel24Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel24Layout.createSequentialGroup()
+                .addComponent(jLabel19)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtRefNameFirstPart, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+
+        jPanel23.add(jPanel24);
+
+        jLabel20.setText("Ref. name last part:");
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, cadastreObjectBean, org.jdesktop.beansbinding.ELProperty.create("${refNameLastpart}"), txtRefNameLastPart, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        bindingGroup.addBinding(binding);
+
+        javax.swing.GroupLayout jPanel25Layout = new javax.swing.GroupLayout(jPanel25);
+        jPanel25.setLayout(jPanel25Layout);
+        jPanel25Layout.setHorizontalGroup(
+            jPanel25Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel25Layout.createSequentialGroup()
+                .addComponent(jLabel20)
+                .addGap(0, 52, Short.MAX_VALUE))
+            .addComponent(txtRefNameLastPart)
+        );
+        jPanel25Layout.setVerticalGroup(
+            jPanel25Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel25Layout.createSequentialGroup()
+                .addComponent(jLabel20)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtRefNameLastPart, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+
+        jPanel23.add(jPanel25);
+
+        pnlMainGrid.add(jPanel23);
+
+        jLabel15.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/sola/clients/swing/gis/ui/control/red_asterisk.gif"))); // NOI18N
+        jLabel15.setText("Charting officer:");
+
+        eLProperty = org.jdesktop.beansbinding.ELProperty.create("${partySearchResults}");
+        jComboBoxBinding = org.jdesktop.swingbinding.SwingBindings.createJComboBoxBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, chartingOfficers, eLProperty, cbxChartingOfficer);
+        bindingGroup.addBinding(jComboBoxBinding);
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, cadastreObjectBean, org.jdesktop.beansbinding.ELProperty.create("${chartingOfficer}"), cbxChartingOfficer, org.jdesktop.beansbinding.BeanProperty.create("selectedItem"));
+        bindingGroup.addBinding(binding);
+
+        javax.swing.GroupLayout pnlChartingOfficerLayout = new javax.swing.GroupLayout(pnlChartingOfficer);
+        pnlChartingOfficer.setLayout(pnlChartingOfficerLayout);
+        pnlChartingOfficerLayout.setHorizontalGroup(
+            pnlChartingOfficerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlChartingOfficerLayout.createSequentialGroup()
+                .addComponent(jLabel15)
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(cbxChartingOfficer, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        pnlChartingOfficerLayout.setVerticalGroup(
+            pnlChartingOfficerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlChartingOfficerLayout.createSequentialGroup()
+                .addComponent(jLabel15)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(cbxChartingOfficer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+
+        pnlMainGrid.add(pnlChartingOfficer);
+
+        jLabel16.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/sola/clients/swing/gis/ui/control/red_asterisk.gif"))); // NOI18N
+        jLabel16.setText("State land clearing officer:");
+
+        eLProperty = org.jdesktop.beansbinding.ELProperty.create("${partySearchResults}");
+        jComboBoxBinding = org.jdesktop.swingbinding.SwingBindings.createJComboBoxBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, clearingStateLandOfficers, eLProperty, cbxClearingStateLandOfficer);
+        bindingGroup.addBinding(jComboBoxBinding);
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, cadastreObjectBean, org.jdesktop.beansbinding.ELProperty.create("${stateLandClearingOfficer}"), cbxClearingStateLandOfficer, org.jdesktop.beansbinding.BeanProperty.create("selectedItem"));
+        bindingGroup.addBinding(binding);
+
+        javax.swing.GroupLayout pnlStateLandOfficerLayout = new javax.swing.GroupLayout(pnlStateLandOfficer);
+        pnlStateLandOfficer.setLayout(pnlStateLandOfficerLayout);
+        pnlStateLandOfficerLayout.setHorizontalGroup(
+            pnlStateLandOfficerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlStateLandOfficerLayout.createSequentialGroup()
+                .addComponent(jLabel16)
+                .addGap(0, 168, Short.MAX_VALUE))
+            .addComponent(cbxClearingStateLandOfficer, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        pnlStateLandOfficerLayout.setVerticalGroup(
+            pnlStateLandOfficerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlStateLandOfficerLayout.createSequentialGroup()
+                .addComponent(jLabel16)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(cbxClearingStateLandOfficer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+
+        pnlMainGrid.add(pnlStateLandOfficer);
+
+        pnlSurveyNumCorrFile.setLayout(new java.awt.GridLayout(1, 2, 10, 0));
+
+        jLabel21.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/sola/clients/swing/gis/ui/control/red_asterisk.gif"))); // NOI18N
+        jLabel21.setText("Survey number:");
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, cadastreObjectBean, org.jdesktop.beansbinding.ELProperty.create("${surveyNumber}"), txtSurveyNumber, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        bindingGroup.addBinding(binding);
+
+        javax.swing.GroupLayout jPanel27Layout = new javax.swing.GroupLayout(jPanel27);
+        jPanel27.setLayout(jPanel27Layout);
+        jPanel27Layout.setHorizontalGroup(
+            jPanel27Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel27Layout.createSequentialGroup()
+                .addComponent(jLabel21)
+                .addGap(0, 58, Short.MAX_VALUE))
+            .addComponent(txtSurveyNumber)
+        );
+        jPanel27Layout.setVerticalGroup(
+            jPanel27Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel27Layout.createSequentialGroup()
+                .addComponent(jLabel21)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtSurveyNumber, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+
+        pnlSurveyNumCorrFile.add(jPanel27);
+
+        jLabel22.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/sola/clients/swing/gis/ui/control/red_asterisk.gif"))); // NOI18N
+        jLabel22.setText("Correspondence file No:");
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, cadastreObjectBean, org.jdesktop.beansbinding.ELProperty.create("${correspondenceFile}"), txtCorrespondenceFile, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        bindingGroup.addBinding(binding);
+
+        javax.swing.GroupLayout jPanel28Layout = new javax.swing.GroupLayout(jPanel28);
+        jPanel28.setLayout(jPanel28Layout);
+        jPanel28Layout.setHorizontalGroup(
+            jPanel28Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel28Layout.createSequentialGroup()
+                .addComponent(jLabel22)
+                .addGap(0, 19, Short.MAX_VALUE))
+            .addComponent(txtCorrespondenceFile)
+        );
+        jPanel28Layout.setVerticalGroup(
+            jPanel28Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel28Layout.createSequentialGroup()
+                .addComponent(jLabel22)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtCorrespondenceFile, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+
+        pnlSurveyNumCorrFile.add(jPanel28);
+
+        pnlMainGrid.add(pnlSurveyNumCorrFile);
+
+        pnlCompFileDwgOffNum.setLayout(new java.awt.GridLayout(1, 2, 10, 0));
+
+        jLabel23.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/sola/clients/swing/gis/ui/control/red_asterisk.gif"))); // NOI18N
+        jLabel23.setText("Computation file No:");
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, cadastreObjectBean, org.jdesktop.beansbinding.ELProperty.create("${computationFile}"), txtComputationFile, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        bindingGroup.addBinding(binding);
+
+        javax.swing.GroupLayout jPanel30Layout = new javax.swing.GroupLayout(jPanel30);
+        jPanel30.setLayout(jPanel30Layout);
+        jPanel30Layout.setHorizontalGroup(
+            jPanel30Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel30Layout.createSequentialGroup()
+                .addComponent(jLabel23)
+                .addGap(0, 37, Short.MAX_VALUE))
+            .addComponent(txtComputationFile)
+        );
+        jPanel30Layout.setVerticalGroup(
+            jPanel30Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel30Layout.createSequentialGroup()
+                .addComponent(jLabel23)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtComputationFile, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+
+        pnlCompFileDwgOffNum.add(jPanel30);
+
+        jLabel24.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/sola/clients/swing/gis/ui/control/red_asterisk.gif"))); // NOI18N
+        jLabel24.setText("Drawing office number:");
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, cadastreObjectBean, org.jdesktop.beansbinding.ELProperty.create("${dwgOffNumber}"), txtDrawingOfficeNumber, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        bindingGroup.addBinding(binding);
+
+        javax.swing.GroupLayout jPanel31Layout = new javax.swing.GroupLayout(jPanel31);
+        jPanel31.setLayout(jPanel31Layout);
+        jPanel31Layout.setHorizontalGroup(
+            jPanel31Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel31Layout.createSequentialGroup()
+                .addComponent(jLabel24)
+                .addGap(0, 23, Short.MAX_VALUE))
+            .addComponent(txtDrawingOfficeNumber)
+        );
+        jPanel31Layout.setVerticalGroup(
+            jPanel31Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel31Layout.createSequentialGroup()
+                .addComponent(jLabel24)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtDrawingOfficeNumber, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+
+        pnlCompFileDwgOffNum.add(jPanel31);
+
+        pnlMainGrid.add(pnlCompFileDwgOffNum);
+
+        jLabel25.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/sola/clients/swing/gis/ui/control/red_asterisk.gif"))); // NOI18N
+        jLabel25.setText("Drawn by:");
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, cadastreObjectBean, org.jdesktop.beansbinding.ELProperty.create("${drawnBy}"), txtDrawnBy, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        bindingGroup.addBinding(binding);
+
+        javax.swing.GroupLayout pnlDrawnByLayout = new javax.swing.GroupLayout(pnlDrawnBy);
+        pnlDrawnBy.setLayout(pnlDrawnByLayout);
+        pnlDrawnByLayout.setHorizontalGroup(
+            pnlDrawnByLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlDrawnByLayout.createSequentialGroup()
+                .addComponent(jLabel25)
+                .addGap(0, 245, Short.MAX_VALUE))
+            .addComponent(txtDrawnBy)
+        );
+        pnlDrawnByLayout.setVerticalGroup(
+            pnlDrawnByLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlDrawnByLayout.createSequentialGroup()
+                .addComponent(jLabel25)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtDrawnBy, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+
+        pnlMainGrid.add(pnlDrawnBy);
+
+        btnCheckingDate.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/common/calendar.png"))); // NOI18N
+        btnCheckingDate.setText(bundle.getString("DocumentPanel.btnExpirationDate.text")); // NOI18N
+        btnCheckingDate.setBorder(null);
+        btnCheckingDate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCheckingDateActionPerformed(evt);
+            }
+        });
+
+        txtCheckingDate.setText(bundle.getString("DocumentPanel.txtExpiration.text")); // NOI18N
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, cadastreObjectBean, org.jdesktop.beansbinding.ELProperty.create("${checkingDate}"), txtCheckingDate, org.jdesktop.beansbinding.BeanProperty.create("value"));
+        bindingGroup.addBinding(binding);
+
+        jLabel17.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/sola/clients/swing/gis/ui/control/red_asterisk.gif"))); // NOI18N
+        jLabel17.setText("Checking date:");
+
+        javax.swing.GroupLayout jPanel34Layout = new javax.swing.GroupLayout(jPanel34);
+        jPanel34.setLayout(jPanel34Layout);
+        jPanel34Layout.setHorizontalGroup(
+            jPanel34Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel34Layout.createSequentialGroup()
+                .addComponent(txtCheckingDate, javax.swing.GroupLayout.DEFAULT_SIZE, 90, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnCheckingDate))
+            .addGroup(jPanel34Layout.createSequentialGroup()
+                .addComponent(jLabel17)
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
+        jPanel34Layout.setVerticalGroup(
+            jPanel34Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel34Layout.createSequentialGroup()
+                .addComponent(jLabel17)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel34Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtCheckingDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnCheckingDate)))
+        );
+
+        jLabel27.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/sola/clients/swing/gis/ui/control/red_asterisk.gif"))); // NOI18N
+        jLabel27.setText("Checked by:");
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, cadastreObjectBean, org.jdesktop.beansbinding.ELProperty.create("${checkedBy}"), txtCheckedBy, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        bindingGroup.addBinding(binding);
+
+        javax.swing.GroupLayout jPanel35Layout = new javax.swing.GroupLayout(jPanel35);
+        jPanel35.setLayout(jPanel35Layout);
+        jPanel35Layout.setHorizontalGroup(
+            jPanel35Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel35Layout.createSequentialGroup()
+                .addComponent(jLabel27)
+                .addGap(0, 106, Short.MAX_VALUE))
+            .addComponent(txtCheckedBy)
+        );
+        jPanel35Layout.setVerticalGroup(
+            jPanel35Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel35Layout.createSequentialGroup()
+                .addComponent(jLabel27)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtCheckedBy, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+
+        javax.swing.GroupLayout pnlCheckedByAndDateLayout = new javax.swing.GroupLayout(pnlCheckedByAndDate);
+        pnlCheckedByAndDate.setLayout(pnlCheckedByAndDateLayout);
+        pnlCheckedByAndDateLayout.setHorizontalGroup(
+            pnlCheckedByAndDateLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlCheckedByAndDateLayout.createSequentialGroup()
+                .addComponent(jPanel35, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel34, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        pnlCheckedByAndDateLayout.setVerticalGroup(
+            pnlCheckedByAndDateLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel34, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jPanel35, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+        );
+
+        pnlMainGrid.add(pnlCheckedByAndDate);
 
         jLabel10.setText("Neighbour at north:");
 
@@ -555,7 +1015,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
                 .addComponent(txtNeighbourNorth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
-        jPanel18.add(jPanel10);
+        pnlMainGrid.add(jPanel10);
 
         jLabel11.setText("Neighbour at south:");
 
@@ -579,7 +1039,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
                 .addComponent(txtNeighbourSouth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
-        jPanel18.add(jPanel11);
+        pnlMainGrid.add(jPanel11);
 
         jLabel13.setText("Neighbour at west:");
 
@@ -603,7 +1063,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
                 .addComponent(txtNeighbourWest, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
-        jPanel18.add(jPanel13);
+        pnlMainGrid.add(jPanel13);
 
         jLabel12.setText("Neighbour at east:");
 
@@ -627,63 +1087,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
                 .addComponent(txtNeighbourEast, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
-        jPanel18.add(jPanel12);
-
-        jLabel15.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/sola/clients/swing/gis/ui/control/red_asterisk.gif"))); // NOI18N
-        jLabel15.setText("Charting officer:");
-
-        eLProperty = org.jdesktop.beansbinding.ELProperty.create("${partySearchResults}");
-        jComboBoxBinding = org.jdesktop.swingbinding.SwingBindings.createJComboBoxBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, chartingOfficers, eLProperty, cbxChartingOfficer);
-        bindingGroup.addBinding(jComboBoxBinding);
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, cadastreObjectBean, org.jdesktop.beansbinding.ELProperty.create("${chartingOfficer}"), cbxChartingOfficer, org.jdesktop.beansbinding.BeanProperty.create("selectedItem"));
-        bindingGroup.addBinding(binding);
-
-        javax.swing.GroupLayout jPanel15Layout = new javax.swing.GroupLayout(jPanel15);
-        jPanel15.setLayout(jPanel15Layout);
-        jPanel15Layout.setHorizontalGroup(
-            jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel15Layout.createSequentialGroup()
-                .addComponent(jLabel15)
-                .addGap(0, 0, Short.MAX_VALUE))
-            .addComponent(cbxChartingOfficer, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-        jPanel15Layout.setVerticalGroup(
-            jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel15Layout.createSequentialGroup()
-                .addComponent(jLabel15)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cbxChartingOfficer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
-
-        jPanel18.add(jPanel15);
-
-        jLabel16.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/sola/clients/swing/gis/ui/control/red_asterisk.gif"))); // NOI18N
-        jLabel16.setText("State land clearing officer:");
-
-        eLProperty = org.jdesktop.beansbinding.ELProperty.create("${partySearchResults}");
-        jComboBoxBinding = org.jdesktop.swingbinding.SwingBindings.createJComboBoxBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, clearingStateLandOfficers, eLProperty, cbxClearingStateLandOfficer);
-        bindingGroup.addBinding(jComboBoxBinding);
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, cadastreObjectBean, org.jdesktop.beansbinding.ELProperty.create("${stateLandClearingOfficer}"), cbxClearingStateLandOfficer, org.jdesktop.beansbinding.BeanProperty.create("selectedItem"));
-        bindingGroup.addBinding(binding);
-
-        javax.swing.GroupLayout jPanel16Layout = new javax.swing.GroupLayout(jPanel16);
-        jPanel16.setLayout(jPanel16Layout);
-        jPanel16Layout.setHorizontalGroup(
-            jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel16Layout.createSequentialGroup()
-                .addComponent(jLabel16)
-                .addGap(0, 168, Short.MAX_VALUE))
-            .addComponent(cbxClearingStateLandOfficer, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-        jPanel16Layout.setVerticalGroup(
-            jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel16Layout.createSequentialGroup()
-                .addComponent(jLabel16)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cbxClearingStateLandOfficer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
-
-        jPanel18.add(jPanel16);
+        pnlMainGrid.add(jPanel12);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -692,7 +1096,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel18, javax.swing.GroupLayout.DEFAULT_SIZE, 634, Short.MAX_VALUE)
+                    .addComponent(pnlMainGrid, javax.swing.GroupLayout.DEFAULT_SIZE, 634, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(btnSave, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -700,10 +1104,10 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel18, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(18, 18, 18)
+                .addComponent(pnlMainGrid, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnSave)
                 .addContainerGap())
         );
@@ -714,15 +1118,21 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
-        if(save())
+        if (save()) {
             this.setVisible(false);
+        }
     }//GEN-LAST:event_btnSaveActionPerformed
 
     private void btnSurveyDateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSurveyDateActionPerformed
         showCalendar(txtSurveyDate);
     }//GEN-LAST:event_btnSurveyDateActionPerformed
 
+    private void btnCheckingDateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCheckingDateActionPerformed
+        showCalendar(txtCheckingDate);
+    }//GEN-LAST:event_btnCheckingDateActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnCheckingDate;
     private javax.swing.JButton btnSave;
     private javax.swing.JButton btnSurveyDate;
     private org.sola.clients.swing.gis.beans.CadastreObjectBean cadastreObjectBean;
@@ -732,6 +1142,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
     private javax.swing.JComboBox<String> cbxLandType;
     private javax.swing.JComboBox<String> cbxLicensedSurveyor;
     private javax.swing.JComboBox<String> cbxSurveyMethod;
+    private javax.swing.JComboBox<String> cbxSurveyType;
     private org.sola.clients.beans.party.PartySearchResultListBean chartingOfficers;
     private org.sola.clients.beans.referencedata.ChiefdomTypeListBean chiefdomTypeListBean;
     private org.sola.clients.beans.party.PartySearchResultListBean clearingStateLandOfficers;
@@ -744,7 +1155,16 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel18;
+    private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel20;
+    private javax.swing.JLabel jLabel21;
+    private javax.swing.JLabel jLabel22;
+    private javax.swing.JLabel jLabel23;
+    private javax.swing.JLabel jLabel24;
+    private javax.swing.JLabel jLabel25;
+    private javax.swing.JLabel jLabel27;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -758,15 +1178,20 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
     private javax.swing.JPanel jPanel12;
     private javax.swing.JPanel jPanel13;
     private javax.swing.JPanel jPanel14;
-    private javax.swing.JPanel jPanel15;
-    private javax.swing.JPanel jPanel16;
     private javax.swing.JPanel jPanel17;
-    private javax.swing.JPanel jPanel18;
-    private javax.swing.JPanel jPanel19;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel20;
     private javax.swing.JPanel jPanel21;
+    private javax.swing.JPanel jPanel22;
+    private javax.swing.JPanel jPanel23;
+    private javax.swing.JPanel jPanel24;
+    private javax.swing.JPanel jPanel25;
+    private javax.swing.JPanel jPanel27;
+    private javax.swing.JPanel jPanel28;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel30;
+    private javax.swing.JPanel jPanel31;
+    private javax.swing.JPanel jPanel34;
+    private javax.swing.JPanel jPanel35;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
@@ -774,10 +1199,27 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
     private org.sola.clients.beans.referencedata.LandTypeListBean landTypeListBean;
+    private javax.swing.JLabel lblSurveyor;
     private org.sola.clients.beans.party.PartySearchResultListBean licensedSurveyors;
+    private javax.swing.JPanel pnlChartingOfficer;
+    private javax.swing.JPanel pnlCheckedByAndDate;
+    private javax.swing.JPanel pnlCompFileDwgOffNum;
+    private javax.swing.JPanel pnlDrawnBy;
+    private javax.swing.JPanel pnlMainGrid;
+    private javax.swing.JPanel pnlNameLastPart;
+    private javax.swing.JPanel pnlParcelNumber;
+    private javax.swing.JPanel pnlStateLandOfficer;
+    private javax.swing.JPanel pnlSurveyNumCorrFile;
+    private org.sola.clients.beans.referencedata.SurveyTypeListBean surveyTypeListBean;
     private org.sola.clients.beans.referencedata.SurveyingMethodTypeListBean surveyingMethodTypeListBean;
     private javax.swing.JTextField txtAddress1;
     private javax.swing.JTextField txtBeaconNumber;
+    private javax.swing.JTextField txtCheckedBy;
+    private org.sola.clients.swing.common.controls.WatermarkDate txtCheckingDate;
+    private javax.swing.JTextField txtComputationFile;
+    private javax.swing.JTextField txtCorrespondenceFile;
+    private javax.swing.JTextField txtDrawingOfficeNumber;
+    private javax.swing.JTextField txtDrawnBy;
     private javax.swing.JTextField txtNameFirstPart;
     private javax.swing.JTextField txtNameLastPart;
     private javax.swing.JTextField txtNeighbourEast;
@@ -786,7 +1228,10 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
     private javax.swing.JTextField txtNeighbourWest;
     private javax.swing.JTextField txtOwnerName;
     private javax.swing.JFormattedTextField txtParcelArea;
+    private javax.swing.JTextField txtRefNameFirstPart;
+    private javax.swing.JTextField txtRefNameLastPart;
     public org.sola.clients.swing.common.controls.WatermarkDate txtSurveyDate;
+    private javax.swing.JTextField txtSurveyNumber;
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
 }

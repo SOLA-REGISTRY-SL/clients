@@ -166,7 +166,7 @@ public abstract class AbstractSpatialObjectLayer extends ExtendedLayerEditor {
         if (feature == null) {
             return;
         }
-        if (feature.getAttribute(propertyName).equals(newValue)) {
+        if (feature.getAttribute(propertyName) !=null && feature.getAttribute(propertyName).equals(newValue)) {
             return;
         }
         feature.setAttribute(propertyName, newValue);

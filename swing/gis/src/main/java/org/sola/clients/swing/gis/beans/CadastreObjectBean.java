@@ -39,18 +39,23 @@ import javax.validation.constraints.Past;
 import org.geotools.swing.extended.util.GeometryUtility;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.sola.clients.beans.cache.CacheManager;
+import org.sola.clients.swing.gis.beans.validation.PrivateLandValidationGroup;
+import org.sola.clients.swing.gis.beans.validation.StateLandValidationGroup;
 import org.sola.clients.beans.party.PartySummaryBean;
 import org.sola.clients.beans.referencedata.ChiefdomTypeBean;
 import org.sola.clients.beans.referencedata.LandTypeBean;
+import org.sola.clients.beans.referencedata.SurveyTypeBean;
 import org.sola.clients.beans.referencedata.SurveyingMethodTypeBean;
 import org.sola.clients.beans.validation.Localized;
+import org.sola.clients.swing.gis.beans.validation.CadastreObjectSurveyTypeCheck;
+import org.sola.common.StringUtility;
 import org.sola.common.messaging.ClientMessage;
 
 /**
  * Defines a cadastre object bean.
  * 
- * @author Elton Manoku
  */
+@CadastreObjectSurveyTypeCheck(message = ClientMessage.CHECK_NOTNULL_REF_NAME_FIRSTPART, payload = Localized.class)
 public class CadastreObjectBean extends SpatialBean {
     
     public static String NAME_FIRST_PART_PROPERTY = "nameFirstpart";
@@ -77,11 +82,22 @@ public class CadastreObjectBean extends SpatialBean {
     public static String LAND_TYPE_PROPERTY = "landType";
     public static String CHIEFDOM_TYPE_PROPERTY = "chiefdomType";
     public static String CHIEFDOM_TYPE_CODE_PROPERTY = "chiefdomTypeCode";
+    public static String SURVEY_TYPE_CODE_PROPERTY = "surveyTypeCode";
+    public static String REF_NAME_FIRST_PART_PROPERTY = "refNameFirstpart";
+    public static String REF_NAME_LAST_PART_PROPERTY = "refNameLastpart";
+    public static String SURVEY_NUMBER_PROPERTY = "surveyNumber";
+    public static String CORRESPONDENCE_FILE_PROPERTY = "correspondenceFile";
+    public static String COMPUTATION_FILE_PROPERTY = "computationFile";
+    public static String DRAWN_BY_PROPERTY = "drawnBy";
+    public static String CHECKED_BY_PROPERTY = "checkedBy";
+    public static String CHECKING_DATE_PROPERTY = "checkingDate";
+    public static String SURVEY_TYPE_PROPERTY = "surveyType";
+    public static String DWG_OFF_NUMBER_PROPERTY = "dwgOffNumber";
     
     private String id;
-    @NotEmpty(message = ClientMessage.CHECK_NOTNULL_LS_NO, payload = Localized.class)
+    @NotEmpty(message = ClientMessage.CHECK_NOTNULL_FIRSTPART, payload = Localized.class)
     private String nameFirstpart = "";
-    @NotEmpty(message = ClientMessage.CHECK_NOTNULL_SUB_LS, payload = Localized.class)
+    @NotEmpty(message = ClientMessage.CHECK_NOTNULL_LASTPART, payload = Localized.class, groups = PrivateLandValidationGroup.class)
     private String nameLastpart = "";
     private String typeCode = "parcel";
     private byte[] geomPolygon;
@@ -92,7 +108,7 @@ public class CadastreObjectBean extends SpatialBean {
     private String address;
     @DecimalMin(message = ClientMessage.CHECK_NOTNULL_PARCEL_AREA, value = "1.0", payload = Localized.class)
     private double parcelArea;
-    @NotEmpty(message = ClientMessage.CHECK_NOTNULL_LICENSED_SURVEYOR, payload = Localized.class)
+    @NotEmpty(message = ClientMessage.CHECK_NOTNULL_SURVEYOR, payload = Localized.class)
     private String licensedSurveyorId;
     private String eastNeighbour;
     private String westNeighbour;
@@ -105,13 +121,31 @@ public class CadastreObjectBean extends SpatialBean {
     private LandTypeBean landType;
     private ChiefdomTypeBean chiefdomType;
     private String beaconNumber;
-    @NotEmpty(message = ClientMessage.CHECK_NOTNULL_CHARTING_OFFICER, payload = Localized.class)
+    @NotEmpty(message = ClientMessage.CHECK_NOTNULL_CHARTING_OFFICER, payload = Localized.class, groups = PrivateLandValidationGroup.class)
     private String chartingOfficerId;
-    @NotEmpty(message = ClientMessage.CHECK_NOTNULL_STATE_LAND_OFFICER, payload = Localized.class)
+    @NotEmpty(message = ClientMessage.CHECK_NOTNULL_STATE_LAND_OFFICER, payload = Localized.class, groups = PrivateLandValidationGroup.class)
     private String stateLandClearingOfficerId;
     private PartySummaryBean stateLandClearingOfficer;
     private PartySummaryBean chartingOfficer;
     private PartySummaryBean licensedSurveyor;
+    private SurveyTypeBean surveyType;
+    private String refNameFirstpart;
+    private String refNameLastpart;
+    @NotEmpty(message = ClientMessage.CHECK_NOTNULL_SURVEY_NUMBER, payload = Localized.class, groups = StateLandValidationGroup.class)
+    private String surveyNumber;
+    @NotEmpty(message = ClientMessage.CHECK_NOTNULL_CORRESPONDENCE_FILE, payload = Localized.class, groups = StateLandValidationGroup.class)
+    private String correspondenceFile;
+    @NotEmpty(message = ClientMessage.CHECK_NOTNULL_COMPUTATION_FILE, payload = Localized.class, groups = StateLandValidationGroup.class)
+    private String computationFile;
+    @NotEmpty(message = ClientMessage.CHECK_NOTNULL_DRAWN_BY, payload = Localized.class, groups = StateLandValidationGroup.class)
+    private String drawnBy;
+    @NotEmpty(message = ClientMessage.CHECK_NOTNULL_CHECKED_BY, payload = Localized.class, groups = StateLandValidationGroup.class)
+    private String checkedBy;
+    @NotEmpty(message = ClientMessage.CHECK_NOTNULL_DRAWING_OFFICE_NUMBER, payload = Localized.class, groups = StateLandValidationGroup.class)
+    private String dwgOffNumber;
+    @NotNull(message = ClientMessage.CHECK_NOTNULL_CHECKING_DATE, payload = Localized.class, groups = StateLandValidationGroup.class)
+    @Past(message = ClientMessage.CHECK_NOTNULL_CHECKING_DATE_IN_PAST, payload = Localized.class, groups = StateLandValidationGroup.class)
+    private Date checkingDate;
     
     /**
      * Creates a cadastre object bean
@@ -168,6 +202,26 @@ public class CadastreObjectBean extends SpatialBean {
         propertySupport.firePropertyChange(NAME_LAST_PART_PROPERTY, oldValue, nameLastpart);
     }
 
+    public String getRefNameFirstpart() {
+        return refNameFirstpart;
+    }
+
+    public void setRefNameFirstpart(String refNameFirstpart) {
+        String oldValue=this.refNameFirstpart;
+        this.refNameFirstpart = refNameFirstpart;
+        propertySupport.firePropertyChange(REF_NAME_FIRST_PART_PROPERTY, oldValue, refNameFirstpart);
+    }
+
+    public String getRefNameLastpart() {
+        return refNameLastpart;
+    }
+
+    public void setRefNameLastpart(String refNameLastpart) {
+        String oldValue=this.refNameLastpart;
+        this.refNameLastpart = refNameLastpart;
+        propertySupport.firePropertyChange(REF_NAME_LAST_PART_PROPERTY, oldValue, refNameLastpart);
+    }
+
     public String getOwnerName() {
         return ownerName;
     }
@@ -188,6 +242,7 @@ public class CadastreObjectBean extends SpatialBean {
         propertySupport.firePropertyChange(ADDRESS_PROPERTY, oldValue, address);
     }
 
+    @NotEmpty(message = ClientMessage.CHECK_NOTNULL_LAND_TYPE, payload = Localized.class)
     public String getLandTypeCode() {
         if (landType == null) {
             return null;
@@ -319,6 +374,30 @@ public class CadastreObjectBean extends SpatialBean {
         this.setJointRefDataBean(this.surveyMethod, surveyMethod, SURVEY_METHOD_PROPERTY);
     }
 
+    public String getSurveyTypeCode() {
+        if (surveyType == null) {
+            return null;
+        } else {
+            return surveyType.getCode();
+        }
+    }
+
+    public void setSurveyTypeCode(String surveyTypeCode) {
+        setSurveyType(CacheManager.getBeanByCode(
+                CacheManager.getSurveyTypes(), surveyTypeCode));
+    }
+
+    public SurveyTypeBean getSurveyType() {
+        return surveyType;
+    }
+
+    public void setSurveyType(SurveyTypeBean surveyType) {
+        if (this.surveyType == null) {
+            this.surveyType = new SurveyTypeBean();
+        }
+        this.setJointRefDataBean(this.surveyType, surveyType, SURVEY_TYPE_PROPERTY);
+    }
+
     @NotEmpty(message = ClientMessage.CHECK_NOTNULL_CHIEFDOM_ADDRESS2, payload = Localized.class)
     public String getChiefdomTypeCode() {
         if (chiefdomType == null) {
@@ -441,6 +520,76 @@ public class CadastreObjectBean extends SpatialBean {
 
     public void setTypeCode(String typeCode) {
         this.typeCode = typeCode;
+    }
+
+    public String getSurveyNumber() {
+        return surveyNumber;
+    }
+
+    public void setSurveyNumber(String surveyNumber) {
+        String oldValue=this.surveyNumber;
+        this.surveyNumber = surveyNumber;
+        propertySupport.firePropertyChange(SURVEY_NUMBER_PROPERTY, oldValue, surveyNumber);
+    }
+
+    public String getCorrespondenceFile() {
+        return correspondenceFile;
+    }
+
+    public void setCorrespondenceFile(String correspondenceFile) {
+        String oldValue=this.correspondenceFile;
+        this.correspondenceFile = correspondenceFile;
+        propertySupport.firePropertyChange(CORRESPONDENCE_FILE_PROPERTY, oldValue, correspondenceFile);
+    }
+
+    public String getComputationFile() {
+        return computationFile;
+    }
+
+    public void setComputationFile(String computationFile) {
+        String oldValue=this.computationFile;
+        this.computationFile = computationFile;
+        propertySupport.firePropertyChange(COMPUTATION_FILE_PROPERTY, oldValue, computationFile);
+    }
+
+    public String getDrawnBy() {
+        return drawnBy;
+    }
+
+    public void setDrawnBy(String drawnBy) {
+        String oldValue=this.drawnBy;
+        this.drawnBy = drawnBy;
+        propertySupport.firePropertyChange(DRAWN_BY_PROPERTY, oldValue, drawnBy);
+    }
+
+    public String getDwgOffNumber() {
+        return dwgOffNumber;
+    }
+
+    public void setDwgOffNumber(String dwgOffNumber) {
+        String oldValue=this.dwgOffNumber;
+        this.dwgOffNumber = dwgOffNumber;
+        propertySupport.firePropertyChange(DWG_OFF_NUMBER_PROPERTY, oldValue, dwgOffNumber);
+    }
+
+    public String getCheckedBy() {
+        return checkedBy;
+    }
+
+    public void setCheckedBy(String checkedBy) {
+        String oldValue=this.checkedBy;
+        this.checkedBy = checkedBy;
+        propertySupport.firePropertyChange(CHECKED_BY_PROPERTY, oldValue, checkedBy);
+    }
+
+    public Date getCheckingDate() {
+        return checkingDate;
+    }
+
+    public void setCheckingDate(Date checkingDate) {
+        Date oldValue=this.checkingDate;
+        this.checkingDate = checkingDate;
+        propertySupport.firePropertyChange(CHECKING_DATE_PROPERTY, oldValue, checkingDate);
     }
 
     /**
@@ -580,6 +729,20 @@ public class CadastreObjectBean extends SpatialBean {
         co.setTypeCode(this.getTypeCode());
         co.setWestNeighbour(this.getWestNeighbour());
         
+        if(this.getSurveyType() != null)
+            co.setSurveyType((SurveyTypeBean)this.getSurveyType().copy());
+        else
+            co.setSurveyType(null);
+        co.setRefNameFirstpart(this.getRefNameFirstpart());
+        co.setRefNameLastpart(this.getRefNameLastpart());
+        co.setSurveyNumber(this.getSurveyNumber());
+        co.setCorrespondenceFile(this.getCorrespondenceFile());
+        co.setComputationFile(this.getComputationFile());
+        co.setDrawnBy(this.getDrawnBy());
+        co.setCheckedBy(this.getCheckedBy());
+        co.setCheckingDate(this.getCheckingDate());
+        co.setDwgOffNumber(this.getDwgOffNumber());
+        
         return co;
     }
     
@@ -635,10 +798,27 @@ public class CadastreObjectBean extends SpatialBean {
             this.setSurveyMethod(null);
         this.setTypeCode(co.getTypeCode());
         this.setWestNeighbour(co.getWestNeighbour());
+        
+        if(co.getSurveyType() != null)
+            this.setSurveyType((SurveyTypeBean)co.getSurveyType().copy());
+        else
+            this.setSurveyType(null);
+        this.setRefNameFirstpart(co.getRefNameFirstpart());
+        this.setRefNameLastpart(co.getRefNameLastpart());
+        this.setSurveyNumber(co.getSurveyNumber());
+        this.setCorrespondenceFile(co.getCorrespondenceFile());
+        this.setComputationFile(co.getComputationFile());
+        this.setDrawnBy(co.getDrawnBy());
+        this.setCheckedBy(co.getCheckedBy());
+        this.setCheckingDate(co.getCheckingDate());
+        this.setDwgOffNumber(co.getDwgOffNumber());
     }
     
     @Override
     public String toString() {
-        return String.format("%s / %s",this.nameFirstpart, this.nameLastpart);
+        if(!StringUtility.isEmpty(this.nameLastpart))
+            return String.format("%s / %s",this.nameFirstpart, this.nameLastpart);
+        else
+            return this.nameFirstpart;
     }    
 }
