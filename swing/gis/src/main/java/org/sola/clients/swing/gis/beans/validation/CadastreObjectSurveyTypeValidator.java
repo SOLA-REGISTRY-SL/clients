@@ -25,66 +25,34 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
-package org.sola.clients.swing.gis.beans;
+package org.sola.clients.swing.gis.beans.validation;
 
-import org.sola.clients.beans.AbstractBindingBean;
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
+import org.sola.clients.swing.gis.beans.CadastreObjectBean;
+import org.sola.common.StringUtility;
 
 /**
- * Bean used for the result in the Spatial Object Search Result list. Provides a customized toString
- * method for display in the list control.
- *
- * @author soladev
+ * Used to make validation for {@link CadastreObjectSurveyTypeCheck}.
  */
-public class SpatialSearchResultBean extends AbstractBindingBean implements Comparable {
+public class CadastreObjectSurveyTypeValidator implements ConstraintValidator<CadastreObjectSurveyTypeCheck, CadastreObjectBean> {
 
-    private String id;
-    private String label;
-    private byte[] theGeom;
-
-    /**
-     * Constructor for the bean. 
-     */
-    public SpatialSearchResultBean() {
-        super();
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getLabel() {
-        return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
-    }
-
-    public byte[] getTheGeom() {
-        return theGeom;
-    }
-
-    public void setTheGeom(byte[] theGeom) { //NOSONAR
-        this.theGeom = theGeom; //NOSONAR
+    @Override
+    public void initialize(CadastreObjectSurveyTypeCheck constraintAnnotation) {
     }
 
     @Override
-    public String toString() {
-        return getLabel();
-    }
-
-    /**
-     * Can be used to sort the Spatial Result List 
-     */
-    @Override
-    public int compareTo(Object compareObj) {
-        if(compareObj!=null)
-            return this.toString().compareTo(compareObj.toString());
-        else
-            return -1;
+    public boolean isValid(CadastreObjectBean co, ConstraintValidatorContext context) {
+        if (co == null) {
+            return true;
+        }
+        if (!StringUtility.isEmpty(co.getSurveyTypeCode()) && StringUtility.isEmpty(co.getRefNameFirstpart())) {
+            return false;
+        }
+        if ((!StringUtility.isEmpty(co.getRefNameFirstpart()) || !StringUtility.isEmpty(co.getRefNameLastpart()))
+                && StringUtility.isEmpty(co.getSurveyTypeCode())) {
+            return false;
+        }
+        return true;
     }
 }

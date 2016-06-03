@@ -602,14 +602,7 @@ private static String logoImage = "/images/sola/logoMinistry.png";
     public static JasperPrint getSurveyPlanReturnListReport(SurveyPlanReturnListBean surveyPlanList, Date dateFrom, Date dateTo, String searchString) {
         HashMap inputParameters = new HashMap();
         
-//        String upiCode = signingList.getSigningList().get(0).getNameLastpart();
         Integer i = surveyPlanList.getMenagementList().size();
-//        location = upiCode.substring(upiCode.indexOf("/")+1);
-//        String tmpLocation =  location.substring(location.indexOf("/")+1);
-//        String lga = location.replace("/"+tmpLocation, " Lga");
-//        String section = tmpLocation.substring(tmpLocation.indexOf("/")+1);
-//        String ward = tmpLocation.replace("/"+section, ", ");
-//        location = "Section "+section+", Ward "+ward+lga+" ( "+upiCode+" )";
     Date currentdate = new Date(System.currentTimeMillis());
     inputParameters.put("REPORT_LOCALE", Locale.getDefault());
     inputParameters.put("CURRENT_DATE", currentdate);
@@ -618,24 +611,14 @@ private static String logoImage = "/images/sola/logoMinistry.png";
     inputParameters.put("TODATE", dateTo);
 
         
-////	Date currentdate = new Date(System.currentTimeMillis());
-//        inputParameters.put("LOCATION", location);
         inputParameters.put("MINISTRY_LOGO", ReportManager.class.getResourceAsStream(logoImage));
-//        inputParameters.put("STATE", getPrefix ());
-//        inputParameters.put("LGA", lga.replace("Lga", ""));
-//        inputParameters.put("WARD", ward);
-//        inputParameters.put("SECTION", section);
         inputParameters.put("RECORDS", i);
-//        
         SurveyPlanReturnListBean[] beans = new SurveyPlanReturnListBean[1];
         beans[0] = surveyPlanList;
-//        System.out.println("SIGNING LIST "+signingList.getSigningList().get(0).getParcel());
         JRDataSource jds = new JRBeanArrayDataSource(beans);
         
         String pdReport = null;
         pdReport = "/reports/SurveyPlanListReport.jasper"; 
-//      
-//        
         try {
             return JasperFillManager.fillReport(
                     ReportManager.class.getResourceAsStream(pdReport),

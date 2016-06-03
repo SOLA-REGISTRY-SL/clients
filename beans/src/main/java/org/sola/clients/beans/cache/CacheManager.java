@@ -178,6 +178,10 @@ public final class CacheManager {
      */
     public static final String TYPE_ACTIONS_KEY = TypeActionBean.class.getName() + LIST_POSTFIX;
     /**
+     * Cache key of the {@link SurveyTypeBean} collection.
+     */
+    public static final String SURVEY_TYPES_KEY = SurveyTypeBean.class.getName() + LIST_POSTFIX;
+    /**
      * Cache key of the {@link RoleBean} collection.
      */
     public static final String ROLES_KEY = RoleBean.class.getName() + LIST_POSTFIX;
@@ -296,6 +300,7 @@ public final class CacheManager {
     private static final String GET_SOURCE_BA_UNIT_RELATION_TYPES = "getSourceBaUnitRelationTypes";
     private static final String GET_CADASTRE_OBJECT_TYPES = "getCadastreObjectTypes";
     private static final String GET_TYPE_ACTIONS = "getTypeActions";
+    private static final String GET_SURVEY_TYPES = "getSurveyTypes";
     private static final String GET_ROLES = "getRoles";
     private static final String GET_LANGUAGES = "getLanguages";
     private static final String GET_REQUEST_CATEGORY_TYPES = "getRequestCategoryTypes";
@@ -366,6 +371,12 @@ public final class CacheManager {
                 GET_TYPE_ACTIONS, TYPE_ACTIONS_KEY);
     }
 
+    public static List<SurveyTypeBean> getSurveyTypes() {
+        return getCachedBeanList(SurveyTypeBean.class,
+                WSManager.getInstance().getReferenceDataService(),
+                GET_SURVEY_TYPES, SURVEY_TYPES_KEY);
+    }
+    
     public static List<ChangeStatusTypeBean> getChangeStatusTypes() {
         return getCachedBeanList(ChangeStatusTypeBean.class,
                 WSManager.getInstance().getReferenceDataService(),

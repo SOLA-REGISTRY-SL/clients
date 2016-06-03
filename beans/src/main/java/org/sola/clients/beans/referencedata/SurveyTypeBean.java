@@ -18,14 +18,11 @@ package org.sola.clients.beans.referencedata;
 import org.sola.clients.beans.AbstractCodeBean;
 
 /**
- * Represents reference data object of the <b>cadastre.land_type</b> table.
+ * Represents reference data object of the <b>cadastre.survey_type</b> table.
  */
-public class LandTypeBean extends AbstractCodeBean {
+public class SurveyTypeBean extends AbstractCodeBean {
 
-    public static final String TYPE_PRIVATE_LAND = "private_land";
-    public static final String TYPE_STATE_LAND = "state_land";
-
-    public LandTypeBean() {
+    public SurveyTypeBean() {
         super();
     }
 }
