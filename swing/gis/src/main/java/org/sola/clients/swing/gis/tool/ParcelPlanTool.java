@@ -319,9 +319,6 @@ public class ParcelPlanTool extends ExtendedTool {
         int sketchHeight = 200;
 
         try {
-
-            MapImageGeneratorForSelectedParcel mapImage = new MapImageGeneratorForSelectedParcel(imageWidth, imageHeight, sketchWidth, sketchHeight, false, 0, 0);
-
             List<JasperPrint> jprintlist = new ArrayList<JasperPrint>();
             JasperPrint CofO = null;
             JasperPrint ParcelPlan = null;
@@ -341,7 +338,8 @@ public class ParcelPlanTool extends ExtendedTool {
                 final String featureFront = this.svgPath + "front.svg";
                 final String featureBack = this.svgPath + "back.svg";
 
-                MapImageInformation mapImageInfo = mapImage.getInformation(appBaunit.getId());
+                MapImageGeneratorForSelectedParcel mapImage = new MapImageGeneratorForSelectedParcel(appBaunit.getId(), imageWidth, imageHeight, sketchWidth, sketchHeight, false, 0, 0);
+                MapImageInformation mapImageInfo = mapImage.getInformation();
                 final String featureImageFileName = mapImageInfo.getMapImageLocation();
                 final String featureScalebarFileName = mapImageInfo.getScalebarImageLocation();
                 final Number scale = mapImageInfo.getScale();

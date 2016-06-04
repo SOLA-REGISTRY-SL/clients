@@ -30,15 +30,12 @@
 package org.sola.clients.reports;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanArrayDataSource;
 import org.sola.clients.beans.administrative.BaUnitBean;
@@ -431,6 +428,37 @@ private static String logoImage = "/images/sola/logoMinistry.png";
         }
     }
 
+    public static JasperPrint getSurveyPlanReport(boolean isPrivateLand,
+            Object co, double scale, String mapImageLocation, String scalebarImageLocation) 
+            throws IOException {
+
+        String navigatorImage = "/images/sola/north-arrow.png";
+        HashMap inputParameters = new HashMap();
+        inputParameters.put("REPORT_LOCALE", Locale.getDefault());
+        inputParameters.put("USER_NAME", SecurityBean.getCurrentUser().getFullUserName());
+        inputParameters.put("SCALE", scale);
+        inputParameters.put("MAP_IMAGE", mapImageLocation);
+        inputParameters.put("SCALE_IMAGE", scalebarImageLocation);
+
+        Object[] beans = new Object[1];
+        beans[0] = co;
+        JRDataSource jds = new JRBeanArrayDataSource(beans);
+        String reportPath = "/reports/map/SurveyPlan_PL.jasper";
+        
+        if(!isPrivateLand)
+            reportPath = "/reports/map/SurveyPlan_SL.jasper";
+        
+        try {
+            JasperPrint jasperPrint = JasperFillManager.fillReport(
+                    ReportManager.class.getResourceAsStream(reportPath), 
+                    inputParameters, jds);
+            return jasperPrint;
+        } catch (JRException ex) {
+            MessageUtility.displayMessage(ClientMessage.REPORT_GENERATION_FAILED, new Object[]{ex.getLocalizedMessage()});
+            return null;
+        }
+    }
+    
     /**
      * Generates and displays <b>Systematic registration Public display
      * report</b>.

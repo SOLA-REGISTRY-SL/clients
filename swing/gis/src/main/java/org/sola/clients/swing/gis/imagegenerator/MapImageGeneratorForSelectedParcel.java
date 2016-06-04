@@ -1,10 +1,11 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.sola.clients.swing.gis.imagegenerator;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.geom.impl.CoordinateArraySequence;
 import com.vividsolutions.jts.io.ParseException;
 import java.awt.Color;
 import java.awt.FontMetrics;
@@ -15,15 +16,21 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
+import javax.swing.JOptionPane;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.feature.SchemaException;
 import org.geotools.geometry.jts.Geometries;
+import org.geotools.geometry.GeometryBuilder;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.extended.layer.ExtendedFeatureLayer;
 import org.geotools.map.extended.layer.ExtendedLayerGraphics;
+import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.swing.extended.Map;
 import org.geotools.swing.extended.exception.InitializeLayerException;
 import org.geotools.swing.extended.exception.InitializeMapException;
@@ -34,30 +41,35 @@ import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.TransformException;
+import org.sola.clients.swing.gis.beans.CadastreObjectBean;
 import org.sola.clients.swing.gis.data.PojoDataAccess;
 import org.sola.clients.swing.gis.layer.PojoLayer;
+import org.sola.common.NumberUtility;
 import org.sola.webservices.search.ConfigMapLayerMetadataTO;
 import org.sola.webservices.search.CrsTO;
 import org.sola.webservices.search.ConfigMapLayerTO;
 import org.sola.webservices.search.SpatialResult;
 
 /**
- *
- * @author Elton Manoku
+ * Generates map image for selected parcel
  */
 public class MapImageGeneratorForSelectedParcel {
 
     private static final int DPI = 72;
     private static final String IMAGE_FORMAT = "png";
     private static final String LAYER_NAME = "target_plan_parcel";
-    private static final String LAYER_STYLE_RESOURCE = "parcel_title_plan.xml";
+    private static final String PARCELS_LAYER_SLD = "parcel_title_plan.xml";
+    private static final String LINES_LAYER_SLD = "target_parcel_sides.xml";
+    private static final String POINTS_LAYER_SLD = "target_parcel_node.xml";
     private static final String LAYER_STYLE_RESOURCE_FOR_SKETCH = "parcel_title_plan_sketch.xml";
     private static final String LAYER_FEATURE_LABEL_FIELD_NAME = "label";
     private static final String LAYER_FEATURE_TARGET_FIELD_NAME = "target";
     private static String extraSldResources = "/org/sola/clients/swing/gis/layer/resources/";
     private static final String IN_PLAN_PRODUCTION = "in-plan-production";
     private static final String IN_PLAN_SKETCH_PRODUCTION = "in-plan-sketch-production";
-    private List<ExtendedLayerGraphics> layers = new ArrayList<ExtendedLayerGraphics>();
+    private ExtendedLayerGraphics layerParcels;
+    private ExtendedLayerGraphics layerParcelPoints;
+    private ExtendedLayerGraphics layerParcelLines;
     private MapImageGenerator mapImageGenerator = null;
     private MapImageGenerator mapImageSketchGenerator = null;
     private ScalebarGenerator scalebarGenerator = null;
@@ -75,12 +87,22 @@ public class MapImageGeneratorForSelectedParcel {
     private CoordinateReferenceSystem mapCrs;
     private int mapSrid;
     private int gridCutSrid;
-    //private CoordinateReferenceSystem gridCutCrs = null;
+    private CadastreObjectBean co;
+
+    public MapImageGeneratorForSelectedParcel(String cadastreObjectId,
+            int imageWidth, int imageHeight, int sketchWidth, int sketchHeight,
+            boolean generateAlsoScaleBar, int scalebarWidth, int scalebarHeight)
+            throws InitializeLayerException, InitializeMapException, SchemaException {
+        this(PojoDataAccess.getInstance().getCadastreObject(cadastreObjectId),
+                imageWidth, imageHeight, sketchWidth, sketchHeight,
+                generateAlsoScaleBar, scalebarWidth, scalebarHeight);
+    }
 
     /**
      * Constructor of the class that generates map image and sketch map image
      * information.
      *
+     * @param cadastreObject CadstreObject
      * @param imageWidth The map image width
      * @param imageHeight The map image height
      * @param sketchWidth The sketch map image width
@@ -94,11 +116,12 @@ public class MapImageGeneratorForSelectedParcel {
      * @throws InitializeMapException
      * @throws SchemaException
      */
-    public MapImageGeneratorForSelectedParcel(
+    public MapImageGeneratorForSelectedParcel(CadastreObjectBean cadastreObject,
             int imageWidth, int imageHeight, int sketchWidth, int sketchHeight,
             boolean generateAlsoScaleBar, int scalebarWidth, int scalebarHeight)
             throws InitializeLayerException, InitializeMapException, SchemaException {
 
+        this.co = cadastreObject;
         this.imageWidth = imageWidth;
         this.imageHeight = imageHeight;
         this.sketchWidth = sketchWidth;
@@ -107,36 +130,45 @@ public class MapImageGeneratorForSelectedParcel {
                 new org.sola.clients.swing.gis.Messaging());
         ExtendedFeatureLayer.setExtraSldResources(extraSldResources);
 
-        CrsTO crs = PojoDataAccess.getInstance().getMapDefinition().getCrsList().get(0);
+        int srid = GeometryUtility.getGeometryFromWkb(co.getGeomPolygon()).getSRID();
+        List<CrsTO> crsList = PojoDataAccess.getInstance().getMapDefinition().getCrsList();
+        CrsTO crs = crsList.get(0);
+
+        for (CrsTO crsItem : crsList) {
+            if (crsItem.getSrid() == srid) {
+                crs = crsItem;
+                break;
+            }
+        }
+
         this.initializeGridCutSrid(crs.getSrid());
 
         // Initialize the map generator of the map image
         Map map = new Map(crs.getSrid(), crs.getWkt());
         mapSrid = crs.getSrid();
-        this.addLayers(map, IN_PLAN_PRODUCTION, LAYER_STYLE_RESOURCE);
+        this.addLayers(map, IN_PLAN_PRODUCTION);
         mapCrs = map.getMapContent().getCoordinateReferenceSystem();
         mapImageGenerator = new MapImageGenerator(map.getMapContent());
         mapImageGenerator.setDrawCoordinatesInTheSides(false);
         mapImageGenerator.setTextInTheMapCenter(null);
 
         // Initialize the map generator of the map sketch image
-        map = new Map(crs.getSrid(), crs.getWkt());
-        this.addLayers(map, IN_PLAN_SKETCH_PRODUCTION, LAYER_STYLE_RESOURCE_FOR_SKETCH);
-        mapImageSketchGenerator = new MapImageGenerator(map.getMapContent());
-        mapImageSketchGenerator.setDrawCoordinatesInTheSides(false);
-        mapImageSketchGenerator.setTextInTheMapCenter(null);
-
+//        map = new Map(crs.getSrid(), crs.getWkt());
+//        this.addLayers(map, IN_PLAN_SKETCH_PRODUCTION, LAYER_STYLE_RESOURCE_FOR_SKETCH);
+//        mapImageSketchGenerator = new MapImageGenerator(map.getMapContent());
+//        mapImageSketchGenerator.setDrawCoordinatesInTheSides(false);
+//        mapImageSketchGenerator.setTextInTheMapCenter(null);
         this.setScaleRange();
         if (generateAlsoScaleBar) {
             this.scalebarWidth = scalebarWidth;
             scalebarGenerator = new ScalebarGenerator();
+            scalebarGenerator.setDrawScaleText(false);
             scalebarGenerator.setHeight(scalebarHeight);
         }
-        
-        mainToSketchScaleRatio = Double.parseDouble(
-                PojoDataAccess.getInstance().getWSManager().getAdminService().getSetting(
-                "title-plan-main-sketch-scale-ratio", "2"));
-        
+
+//        mainToSketchScaleRatio = Double.parseDouble(
+//                PojoDataAccess.getInstance().getWSManager().getAdminService().getSetting(
+//                "title-plan-main-sketch-scale-ratio", "2"));
     }
 
     /**
@@ -148,14 +180,14 @@ public class MapImageGeneratorForSelectedParcel {
     private void initializeGridCutSrid(int defaultSrid) {
         gridCutSrid = defaultSrid;
         //Get grid cut SRID from setting
-        String setting = PojoDataAccess.getInstance().getWSManager().getAdminService().getSetting(
-                "title-plan-gridcut-srid", "");
-        if (!setting.isEmpty()) {
-            gridCutSrid = Integer.parseInt(setting);
-        }
+//        String setting = PojoDataAccess.getInstance().getWSManager().getAdminService().getSetting(
+//                "title-plan-gridcut-srid", "");
+//        if (!setting.isEmpty()) {
+//            gridCutSrid = Integer.parseInt(setting);
+//        }
     }
 
-    private void addLayers(Map map, String MapUsage, String cadastreObjectStyleResource)
+    private void addLayers(Map map, String MapUsage)
             throws InitializeLayerException, SchemaException {
         for (ConfigMapLayerTO configMapLayer
                 : PojoDataAccess.getInstance().getMapDefinition().getLayers()) {
@@ -167,11 +199,20 @@ public class MapImageGeneratorForSelectedParcel {
             }
         }
 
-        ExtendedLayerGraphics layer = new ExtendedLayerGraphics(
-                LAYER_NAME, Geometries.POLYGON, cadastreObjectStyleResource,
+        layerParcelLines = new ExtendedLayerGraphics(
+                LAYER_NAME, Geometries.LINESTRING, LINES_LAYER_SLD,
+                LAYER_FEATURE_LABEL_FIELD_NAME + ":String");
+        map.addLayer(layerParcelLines);
+
+        layerParcels = new ExtendedLayerGraphics(
+                LAYER_NAME, Geometries.POLYGON, PARCELS_LAYER_SLD,
                 LAYER_FEATURE_LABEL_FIELD_NAME + ":String," + LAYER_FEATURE_TARGET_FIELD_NAME + ":String");
-        map.addLayer(layer);
-        this.layers.add(layer);
+        map.addLayer(layerParcels);
+
+        layerParcelPoints = new ExtendedLayerGraphics(
+                LAYER_NAME, Geometries.POINT, POINTS_LAYER_SLD,
+                LAYER_FEATURE_LABEL_FIELD_NAME + ":String");
+        map.addLayer(layerParcelPoints);
     }
 
     /**
@@ -209,72 +250,94 @@ public class MapImageGeneratorForSelectedParcel {
      * Gets the map image and scalebar information that is used to generate the
      * title plan.
      *
-     * @param cadastreObjectID The ID of the target cadastre object
      * @return
      * @throws IOException
      * @throws FactoryException
      * @throws TransformException
      * @throws ParseException
      */
-    public MapImageInformation getInformation(String cadastreObjectID)
+    public MapImageInformation getInformation()
             throws IOException, FactoryException, TransformException, ParseException {
 
-        List<SpatialResult> cadastreObjectList =
-                PojoDataAccess.getInstance().getSearchService().getPlanCadastreObjects(cadastreObjectID);
+        List<SpatialResult> cadastreObjectList
+                = PojoDataAccess.getInstance().getSearchService().getPlanCadastreObjects(co.getId());
         if (cadastreObjectList.isEmpty()) {
-            throw new RuntimeException("CADASTRE_OBJECT_NOT_FOUND.ID:" + cadastreObjectID);
+            throw new RuntimeException("CADASTRE_OBJECT_NOT_FOUND.ID:" + co.getId());
         }
 
-        for (ExtendedLayerGraphics layer : this.layers) {
-            layer.removeFeatures(false);
-        }
+        layerParcels.removeFeatures(false);
+        layerParcelPoints.removeFeatures(false);
+        layerParcelLines.removeFeatures(false);
+
         MapImageInformation info = new MapImageInformation();
         SpatialResult targetObject = null;
         for (SpatialResult cadastreObject : cadastreObjectList) {
-            if (cadastreObject.getId().equals(cadastreObjectID)) {
+            if (cadastreObject.getId().equals(co.getId())) {
                 targetObject = cadastreObject;
                 continue;
             }
             addFeature(cadastreObject);
         }
+
         SimpleFeature targetFeature = addFeature(targetObject);
+
+        // Add parcel points and sides
+        Coordinate[] points = ((Polygon) targetFeature.getDefaultGeometry()).getCoordinates();
+
+        for (int i = 0; i < points.length - 1; i++) {
+            HashMap<String, Object> fieldValues = new HashMap<String, Object>();
+            fieldValues.put(LAYER_FEATURE_LABEL_FIELD_NAME, "E "
+                    + NumberUtility.roundDouble(points[i].x, 2) + "\nN "
+                    + NumberUtility.roundDouble(points[i].y, 2));
+            layerParcelPoints.addFeature(Integer.toString(i),
+                    (Geometry) GeometryUtility.getGeometryFactory().createPoint(points[i]),
+                    fieldValues, false);
+
+            fieldValues.clear();
+
+            fieldValues.put(LAYER_FEATURE_LABEL_FIELD_NAME,
+                    NumberUtility.roundDouble(calcDistance(points[i], points[i + 1]), 2));
+            layerParcelLines.addFeature(Integer.toString(i),
+                    (Geometry) GeometryUtility.getGeometryFactory().createLineString(
+                            new Coordinate[]{points[i], points[i + 1]}),
+                    fieldValues, false);
+        }
+
         ReferencedEnvelope extent = getProperExtent();
         double scale = getProperScale(extent);
-        String mapImageLocation = this.getMapImageAsFileLocation(
-                extent, scale, String.format("map-%s", cadastreObjectID));
+
+        String mapImageLocation = this.getMapImageAsFileLocation(extent, scale, String.format("map-%s", co.getId()));
         info.setMapImageLocation(mapImageLocation);
-        String mapSketchImageLocation = this.getMapSketchImageAsFileLocation(
-                extent, scale * mainToSketchScaleRatio, String.format("map-%s-sketch", cadastreObjectID));
-        info.setSketchMapImageLocation(mapSketchImageLocation);
+
+        //String mapSketchImageLocation = this.getMapSketchImageAsFileLocation(extent, scale * mainToSketchScaleRatio, String.format("map-%s-sketch", co.getId()));
+        //info.setSketchMapImageLocation(mapSketchImageLocation);
         info.setArea(((Geometry) targetFeature.getDefaultGeometry()).getArea());
         info.setSrid(this.gridCutSrid);
         info.setScale(scale);
+
         if (scalebarGenerator != null) {
             info.setScalebarImageLocation(this.scalebarGenerator.getImageAsFileLocation(
-                    scale, this.scalebarWidth, DPI, String.format("scalebar-%s", cadastreObjectID)));
+                    scale, this.scalebarWidth, DPI, String.format("scalebar-%s", co.getId())));
         }
         return info;
     }
 
-    private String getMapImageAsFileLocation(
-            ReferencedEnvelope extent, double scale, String fileName) throws IOException {
+    private String getMapImageAsFileLocation(ReferencedEnvelope extent, double scale, String fileName) throws IOException {
         String pathToResult = mapImageGenerator.getFullpathOfMapImage(fileName, IMAGE_FORMAT);
         File outputFile = new File(pathToResult);
-        BufferedImage mapOnlyImage = mapImageGenerator.getImage(
-                extent, getMapOnlyWidth(), getMapOnlyHeight(), scale, DPI);
+        BufferedImage mapOnlyImage = mapImageGenerator.getImage(extent, getMapOnlyWidth(),
+                getMapOnlyHeight(), scale, DPI);
 
         BufferedImage fullImage = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_INT_ARGB);
         Graphics2D graphics = fullImage.createGraphics();
-        graphics.setRenderingHint(
-                RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         graphics.drawImage(mapOnlyImage, null, imageMarginLeft, imageMarginTop);
         graphics.setColor(Color.BLACK);
         graphics.drawRect(imageMarginLeft, imageMarginTop, getMapOnlyWidth() - 1, getMapOnlyHeight() - 1);
 
         //Print gridcut
-        printGridCut(graphics, scale, getMapExtentInGridCutCrs(extent));
-
+        //printGridCut(graphics, scale, getMapExtentInGridCutCrs(extent));
         ImageIO.write(fullImage, IMAGE_FORMAT, outputFile);
         return pathToResult;
     }
@@ -288,7 +351,7 @@ public class MapImageGeneratorForSelectedParcel {
             sourceGeom.setSRID(mapSrid);
             Geometry destGeom = GeometryUtility.getGeometryFromWkb(
                     PojoDataAccess.getInstance().getSearchService().transform(
-                    GeometryUtility.getWkbFromGeometry(sourceGeom), gridCutSrid));
+                            GeometryUtility.getWkbFromGeometry(sourceGeom), gridCutSrid));
             return new ReferencedEnvelope(destGeom.getEnvelopeInternal(), null);
         } catch (Exception ex) {
             throw new RuntimeException(ex);
@@ -298,13 +361,13 @@ public class MapImageGeneratorForSelectedParcel {
     private int getProperGridCutCoordinate(int min, int max) {
         int[] gridCutIntervals = {1000, 100, 50, 10};
         int coordinate = 0;
-        for (int i = 0; i < gridCutIntervals.length; i++){
+        for (int i = 0; i < gridCutIntervals.length; i++) {
             coordinate = getProperGridCutCoordinate(min, max, gridCutIntervals[i]);
-            if (coordinate >= min && coordinate <= max){
+            if (coordinate >= min && coordinate <= max) {
                 break;
             }
         }
-        if (coordinate < min || coordinate > max){
+        if (coordinate < min || coordinate > max) {
             coordinate = min + (max - min) / 2;
         }
         return coordinate;
@@ -322,9 +385,9 @@ public class MapImageGeneratorForSelectedParcel {
         }
         return coordinate;
     }
-    
+
     private void printGridCut(Graphics2D graphics, double scale, ReferencedEnvelope extent) {
-        int marginCoordinate = (int) scale/100;
+        int marginCoordinate = (int) scale / 100;
         int xCoordinate = getProperGridCutCoordinate(
                 (int) extent.getMinX() + marginCoordinate, (int) extent.getMaxX() - marginCoordinate);
         int yCoordinate = getProperGridCutCoordinate(
@@ -338,25 +401,23 @@ public class MapImageGeneratorForSelectedParcel {
 
         //Save original graphic affinetransform
         AffineTransform originalTransform = graphics.getTransform();
-        
+
         //Rotate 90degrees
         graphics.rotate(-Math.PI / 2, 10, yLocationCoordinateToPrint);
         //Print y coordinate on the left
         graphics.drawString(coordinateToPrint, 10, yLocationCoordinateToPrint);
-        
+
         graphics.setTransform(originalTransform);
 
-         //Rotate 90degrees
+        //Rotate 90degrees
         graphics.rotate(-Math.PI / 2, getMapOnlyWidth() + imageMarginLeft + 10, yLocationCoordinateToPrint);
         //Print y coordinate on the right
         graphics.drawString(coordinateToPrint, getMapOnlyWidth() + imageMarginLeft + 10, yLocationCoordinateToPrint);
-        
+
         graphics.setTransform(originalTransform);
-        
-        
+
         coordinateToPrint = String.format("%s", xCoordinate);
-        int xLocationCoordinateToPrint =
-                xCoordinateLocation - fontMetrics.stringWidth(coordinateToPrint) / 2;
+        int xLocationCoordinateToPrint = xCoordinateLocation - fontMetrics.stringWidth(coordinateToPrint) / 2;
 
         //Print x coordinate on the top
         graphics.drawString(coordinateToPrint, xLocationCoordinateToPrint, imageMarginTop - 1);
@@ -366,33 +427,27 @@ public class MapImageGeneratorForSelectedParcel {
         graphics.setColor(gridcutLineColor);
 
         //Gridcut line on the top
-        graphics.drawLine(
-                xCoordinateLocation, imageMarginTop,
+        graphics.drawLine(xCoordinateLocation, imageMarginTop,
                 xCoordinateLocation, imageMarginTop + gridcutLineLength);
 
         //Gridcut line on the bottom
-        graphics.drawLine(
-                xCoordinateLocation, imageMarginTop + getMapOnlyHeight() - 1,
+        graphics.drawLine(xCoordinateLocation, imageMarginTop + getMapOnlyHeight() - 1,
                 xCoordinateLocation, imageMarginTop + getMapOnlyHeight() - 1 - gridcutLineLength);
 
         //Gridcut line on the left
-        graphics.drawLine(
-                imageMarginLeft, yCoordinateLocation,
+        graphics.drawLine(imageMarginLeft, yCoordinateLocation,
                 imageMarginLeft + gridcutLineLength, yCoordinateLocation);
 
         //Gridcut line on the right
-        graphics.drawLine(
-                imageMarginLeft + getMapOnlyWidth() - 1, yCoordinateLocation,
+        graphics.drawLine(imageMarginLeft + getMapOnlyWidth() - 1, yCoordinateLocation,
                 imageMarginLeft + getMapOnlyWidth() - 1 - gridcutLineLength, yCoordinateLocation);
 
         //Gridcut line horizontal in the middle
-        graphics.drawLine(
-                xCoordinateLocation - gridcutLineLength / 2, yCoordinateLocation,
+        graphics.drawLine(xCoordinateLocation - gridcutLineLength / 2, yCoordinateLocation,
                 xCoordinateLocation + gridcutLineLength / 2, yCoordinateLocation);
 
         //Gridcut line vertical in the middle
-        graphics.drawLine(
-                xCoordinateLocation, yCoordinateLocation - gridcutLineLength / 2,
+        graphics.drawLine(xCoordinateLocation, yCoordinateLocation - gridcutLineLength / 2,
                 xCoordinateLocation, yCoordinateLocation + gridcutLineLength / 2);
     }
 
@@ -411,10 +466,7 @@ public class MapImageGeneratorForSelectedParcel {
         java.util.HashMap<String, Object> fieldValues = new java.util.HashMap<String, Object>();
         fieldValues.put(LAYER_FEATURE_LABEL_FIELD_NAME, cadastreObject.getLabel());
         fieldValues.put(LAYER_FEATURE_TARGET_FIELD_NAME, cadastreObject.getFilterCategory());
-        SimpleFeature feature = null;
-        for (ExtendedLayerGraphics layer : this.layers) {
-            feature = layer.addFeature(cadastreObject.getId(), cadastreObject.getTheGeom(), fieldValues, false);
-        }
+        SimpleFeature feature = layerParcels.addFeature(cadastreObject.getId(), cadastreObject.getTheGeom(), fieldValues, false);
         return feature;
     }
 
@@ -427,7 +479,7 @@ public class MapImageGeneratorForSelectedParcel {
             scaleRange[0] = 0;
 
             for (int i = 1; i <= scaleRangeAsString.length; i++) {
-                scaleRange[i] = Double.parseDouble(scaleRangeAsString[i-1]);
+                scaleRange[i] = Double.parseDouble(scaleRangeAsString[i - 1]);
             }
         }
     }
@@ -439,8 +491,7 @@ public class MapImageGeneratorForSelectedParcel {
     private ReferencedEnvelope getProperExtent() {
 
         // Make a list of all extents in the order of parcels. Target parcel is the last one.
-        SimpleFeatureIterator featureIterator =
-                (SimpleFeatureIterator) this.layers.get(0).getFeatureCollection().features();
+        SimpleFeatureIterator featureIterator = (SimpleFeatureIterator) layerParcels.getFeatureCollection().features();
         List<ReferencedEnvelope> extents = new ArrayList<ReferencedEnvelope>();
         while (featureIterator.hasNext()) {
             extents.add(0, JTS.toEnvelope((Geometry) featureIterator.next().getDefaultGeometry()));
@@ -450,7 +501,7 @@ public class MapImageGeneratorForSelectedParcel {
         //Max total parcels that can be used in calculation
         int totalParcels = extents.size() - 1;
         //Calculate the best extent for all parcels
-        ReferencedEnvelope bestExtent = this.layers.get(0).getFeatureCollection().getBounds();
+        ReferencedEnvelope bestExtent = layerParcels.getFeatureCollection().getBounds();
         //Calculate the best scale for all parcels
         double minScale = getProperScale(bestExtent);
         //Start a cycle that calculates the best extent for the number of parcels starting
@@ -489,8 +540,7 @@ public class MapImageGeneratorForSelectedParcel {
         double[] range = this.getScaleRange();
         int scaleRangeIndex = 0;
 
-        while (!(range[scaleRangeIndex] < scale
-                && scale <= range[scaleRangeIndex + 1])) {
+        while (!(range[scaleRangeIndex] < scale && scale <= range[scaleRangeIndex + 1])) {
             scaleRangeIndex += 1;
             if (scaleRangeIndex >= range.length - 1) {
                 break;
@@ -499,7 +549,15 @@ public class MapImageGeneratorForSelectedParcel {
         scale = range[scaleRangeIndex + 1];
 
         return scale;
+    }
 
+    private double calcDistance(Coordinate coord1, Coordinate coord2) {
+        try {
+            return JTS.orthodromicDistance(coord1, coord2, mapCrs);
+        } catch (TransformException ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            return 0;
+        }
     }
 
     private int getMapOnlyWidth() {

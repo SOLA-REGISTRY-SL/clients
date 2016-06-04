@@ -17,7 +17,7 @@
                     <PolygonSymbolizer>
                         <Stroke>
                             <CssParameter name="stroke">#FF0000</CssParameter>
-                            <CssParameter name="stroke-width">4</CssParameter>
+                            <CssParameter name="stroke-width">3</CssParameter>
                         </Stroke>
                     </PolygonSymbolizer>
                     <TextSymbolizer>
@@ -53,7 +53,8 @@
                     <PolygonSymbolizer>
                         <Stroke>
                             <CssParameter name="stroke">#000000</CssParameter>
-                            <CssParameter name="stroke-width">2</CssParameter>
+                            <CssParameter name="stroke-width">1</CssParameter>
+                            <CssParameter name="stroke-dasharray">5 2</CssParameter>
                         </Stroke>
                     </PolygonSymbolizer>
                     <TextSymbolizer>
