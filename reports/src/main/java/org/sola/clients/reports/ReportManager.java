@@ -631,8 +631,6 @@ private static String logoImage = "/images/sola/logoMinistry.png";
         HashMap inputParameters = new HashMap();
         
         Integer i = surveyPlanList.getMenagementList().size();
-        System.out.println("surveyPlanList.getLSNo()    "+surveyPlanList.getLSNo());
-        System.out.println("surveyPlanList.getMenagementList().get(0).getLSNo()    "+surveyPlanList.getMenagementList().get(0).getLSNo());
     Date currentdate = new Date(System.currentTimeMillis());
     inputParameters.put("REPORT_LOCALE", Locale.getDefault());
     inputParameters.put("CURRENT_DATE", currentdate);

@@ -235,7 +235,7 @@
 	</title>
 	<pageHeader>
 		<band height="33" splitType="Stretch">
-			<textField>
+			<textField pattern="MMMMM dd, yyyy">
 				<reportElement x="205" y="10" width="100" height="20" uuid="6c117e85-54fd-4e6e-bb98-909cb94316d1"/>
 				<textElement>
 					<font size="12"/>
@@ -256,7 +256,7 @@
 				</textElement>
 				<text><![CDATA[From:]]></text>
 			</staticText>
-			<textField>
+			<textField pattern="MMMMM dd, yyyy">
 				<reportElement x="52" y="10" width="100" height="20" uuid="e5187edf-8166-4f00-ae4e-cdd57391b1a6"/>
 				<textElement>
 					<font size="12"/>
@@ -307,7 +307,7 @@
 							</textField>
 						</jr:columnHeader>
 						<jr:detailCell style="table 1_TD" height="30" rowSpan="1">
-							<textField pattern="" isBlankWhenNull="true">
+							<textField pattern="MMMMM dd, yyyy" isBlankWhenNull="true">
 								<reportElement mode="Transparent" x="0" y="0" width="52" height="25" forecolor="#000000" backcolor="#FFFFFF" uuid="8324311b-a011-4842-a83c-a623cf49de50"/>
 								<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
 									<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
