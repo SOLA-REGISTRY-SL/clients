@@ -822,7 +822,7 @@ public class DocumentSearchPanel extends javax.swing.JPanel {
         jPanel13.add(jPanel18);
 
         jPanel19.setName("jPanel19"); // NOI18N
-        jPanel19.setLayout(new java.awt.GridLayout());
+        jPanel19.setLayout(new java.awt.GridLayout(1, 0));
 
         jPanel12.setName(bundle.getString("DocumentSearchPanel.jPanel12.name")); // NOI18N
 
