@@ -262,7 +262,7 @@ public class DocumentPanel extends javax.swing.JPanel {
         browseAttachment = new org.sola.clients.swing.common.controls.BrowseControl();
         jPanel4 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
-        txtOwnerName = new javax.swing.JTextField();
+        txtOwnerName = new javax.swing.JComboBox();
         jPanel10 = new javax.swing.JPanel();
         jLabel8 = new javax.swing.JLabel();
         btnAcceptanceDate = new javax.swing.JButton();
@@ -446,10 +446,10 @@ public class DocumentPanel extends javax.swing.JPanel {
         jLabel5.setText(bundle.getString("DocumentPanel.jLabel5.text")); // NOI18N
         jLabel5.setName(bundle.getString("DocumentPanel.jLabel5.name")); // NOI18N
 
-        txtOwnerName.setName(bundle.getString("DocumentPanel.txtOwnerName.name")); // NOI18N
-        txtOwnerName.setNextFocusableComponent(browseAttachment);
+        txtOwnerName.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Private", "State" }));
+        txtOwnerName.setName("txtOwnerName"); // NOI18N
 
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${document.ownerName}"), txtOwnerName, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${document.ownerName}"), txtOwnerName, org.jdesktop.beansbinding.BeanProperty.create("selectedItem"));
         bindingGroup.addBinding(binding);
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
@@ -457,13 +457,13 @@ public class DocumentPanel extends javax.swing.JPanel {
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, 151, Short.MAX_VALUE)
-            .addComponent(txtOwnerName)
+            .addComponent(txtOwnerName, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addComponent(jLabel5)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(txtOwnerName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -762,7 +762,7 @@ public class DocumentPanel extends javax.swing.JPanel {
                 .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(45, Short.MAX_VALUE))
+                .addContainerGap(39, Short.MAX_VALUE))
         );
 
         bindingGroup.bind();
@@ -824,7 +824,7 @@ public class DocumentPanel extends javax.swing.JPanel {
     public javax.swing.JTextField txtDocRefNumber;
     public org.sola.clients.swing.common.controls.WatermarkDate txtExpiration;
     private javax.swing.JTextField txtLaNumber;
-    private javax.swing.JTextField txtOwnerName;
+    private javax.swing.JComboBox txtOwnerName;
     private org.sola.clients.swing.common.controls.WatermarkDate txtSigningDate;
     private javax.swing.JTextField txtStatus;
     public javax.swing.JFormattedTextField txtSubmissionDate;
