@@ -360,9 +360,10 @@ public class ApplicationPanel extends ContentPanel {
             btnCertificate.setEnabled(false);
             documentsPanel.setAllowEdit(editAllowed);
             cadastreObjectSearch.setEnabled(editAllowed);
-            if (appBean.getStatusCode().equals("approved")) {
-                btnCertificate.setEnabled(true);
-            }
+//            TOBEUNCOMMENTED WHEN REGISTRATION COMPONENT ENABLED
+//            if (appBean.getStatusCode().equals("approved")) {
+//                btnCertificate.setEnabled(true);
+//            }
         } else {
             if (!SecurityBean.isInRole(RolesConstants.APPLICATION_CREATE_APPS)) {
                 btnSave.setEnabled(false);

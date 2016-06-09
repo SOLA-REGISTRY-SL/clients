@@ -40,11 +40,15 @@ import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.WKBWriter;
 import com.vividsolutions.jts.io.WKTReader;
 import java.awt.Dimension;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import javax.swing.JDialog;
+import javax.swing.JPanel;
 import org.geotools.swing.extended.util.GeometryUtility;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 import org.sola.clients.beans.security.SecurityBean;
+import org.sola.clients.reports.ReportManager;
 import org.sola.clients.swing.gis.beans.CadastreObjectBean;
 import org.sola.clients.swing.gis.beans.TransactionCadastreChangeBean;
 import org.sola.clients.swing.gis.ui.controlsbundle.ControlsBundleForBaUnit;
@@ -54,6 +58,8 @@ import org.sola.clients.swing.gis.imagegenerator.MapImageGeneratorForSelectedPar
 import org.sola.clients.swing.gis.imagegenerator.MapImageInformation;
 import org.sola.clients.swing.gis.mapaction.TestAction;
 import org.sola.clients.swing.gis.ui.controlsbundle.*;
+import org.sola.clients.swing.ui.reports.ReportViewerForm;
+import org.sola.clients.swing.ui.reports.SaveFormat;
 import org.sola.services.boundary.wsclients.WSManager;
 import org.sola.webservices.search.MapDefinitionTO;
 import org.sola.webservices.transferobjects.administrative.BaUnitTO;
@@ -77,13 +83,13 @@ public class Development {
         this.displayControlsBundleForm(ctrl);
     }
 
-    //@Ignore
+    @Ignore
     @Test
     public void testUIControlsBundleForSpatialUnitGroupManagement() throws Exception {
         System.out.println("Test ControlsBundle for Spatial unit group");
         SecurityBean.authenticate("test", "test".toCharArray(), this.getWSConfig());
-        ControlsBundleForSpatialUnitGroupEditor ctrl = 
-                new ControlsBundleForSpatialUnitGroupEditor();
+        ControlsBundleForSpatialUnitGroupEditor ctrl
+                = new ControlsBundleForSpatialUnitGroupEditor();
         this.displayControlsBundleForm(ctrl);
     }
 
@@ -95,10 +101,9 @@ public class Development {
     public void testUIControlsBundleForPublicDisplay() throws Exception {
         System.out.println("Test ControlsBundle for public display");
         SecurityBean.authenticate("test", "test".toCharArray(), this.getWSConfig());
-        ControlsBundleForPublicDisplay ctrl = new ControlsBundleForPublicDisplay();
-        this.displayControlsBundleForm(ctrl);
+        //ControlsBundleForPublicDisplay ctrl = new ControlsBundleForPublicDisplay();
+        //this.displayControlsBundleForm(ctrl);
     }
-
 
     /**
      * Test the controls bundle for setting the location of an application
@@ -108,7 +113,7 @@ public class Development {
     public void testUIControlsBundleForBaUnit() throws Exception {
         System.out.println("Test ControlsBundle for setting cadastre objects");
         SecurityBean.authenticate("test", "test".toCharArray(), this.getWSConfig());
-        BaUnitTO baUnitTO =WSManager.getInstance().getAdministrative().getBaUnitById("3068323");
+        BaUnitTO baUnitTO = WSManager.getInstance().getAdministrative().getBaUnitById("3068323");
         BaUnitBean baUnitBean = new BaUnitBean();
         TypeConverters.TransferObjectToBean(baUnitTO, BaUnitBean.class, baUnitBean);
 
@@ -165,7 +170,7 @@ public class Development {
         fromFieldsOnly[0] = "nameFirstpart";
         fromFieldsOnly[1] = "nameLastpart";
         Map result = bean.getValues(fromFieldsOnly);
-        
+
         HashMap<String, Object> values = new HashMap<String, Object>();
         values.put("nameFirstpart", "test2");
         values.put("nameLastpart", "test2-last");
@@ -174,16 +179,15 @@ public class Development {
 
         WKTReader wktReader = new WKTReader();
         Geometry geom = wktReader.read("POINT(1782978 5926627)");
-        byte[] geomAsBytes = GeometryUtility.getWkbFromGeometry((Geometry)geom.clone());
+        byte[] geomAsBytes = GeometryUtility.getWkbFromGeometry((Geometry) geom.clone());
         Geometry geom2 = GeometryUtility.getGeometryFromWkb(geomAsBytes.clone());
-        
+
         SecurityBean.authenticate("test", "test".toCharArray(), this.getWSConfig());
-        
+
         ControlsBundleForCadastreChange ctrl = new ControlsBundleForCadastreChange(
                 this.getApplicationBean("3001"), "4000", "3078053", "parcel");
-        
-        //ctrl.setReadOnly(true);
 
+        //ctrl.setReadOnly(true);
         this.displayControlsBundleForm(ctrl);
     }
 
@@ -194,17 +198,16 @@ public class Development {
     @Test
     public void testUIControlsBundleForCadastreChangeById() throws Exception {
         System.out.println("Test ControlsBundle for cadastre change");
-        
-        SecurityBean.authenticate("test", "test".toCharArray(), this.getWSConfig());
-                    String transactionId = "0e9625c4-c723-4ec3-bc5c-138b47c3f56c";
 
-        TransactionCadastreChangeBean trns = 
-                PojoDataAccess.getInstance().getTransactionCadastreChangeById(transactionId);
+        SecurityBean.authenticate("test", "test".toCharArray(), this.getWSConfig());
+        String transactionId = "0e9625c4-c723-4ec3-bc5c-138b47c3f56c";
+
+        TransactionCadastreChangeBean trns
+                = PojoDataAccess.getInstance().getTransactionCadastreChangeById(transactionId);
         ControlsBundleForCadastreChange ctrl = new ControlsBundleForCadastreChange(
                 trns, "parcel", "AAAA");
-        
-        //ctrl.setReadOnly(true);
 
+        //ctrl.setReadOnly(true);
         this.displayControlsBundleForm(ctrl);
     }
 
@@ -215,9 +218,9 @@ public class Development {
 
         SecurityBean.authenticate("test", "test".toCharArray(), this.getWSConfig());
 
-        ControlsBundleForCadastreRedefinition ctrl =
-                new ControlsBundleForCadastreRedefinition(
-                this.getApplicationBean("3001"), "4011", "3068323", "parcel");
+        ControlsBundleForCadastreRedefinition ctrl
+                = new ControlsBundleForCadastreRedefinition(
+                        this.getApplicationBean("3001"), "4011", "3068323", "parcel");
         this.displayControlsBundleForm(ctrl);
     }
 
@@ -226,11 +229,11 @@ public class Development {
     public void testUIControlsBundleForSpatialUnitManagement() throws Exception {
         System.out.println("Test ControlsBundle for Spatial unit");
         SecurityBean.authenticate("test", "test".toCharArray(), this.getWSConfig());
-        ControlsBundleForSpatialUnitEditor ctrl = 
-                new ControlsBundleForSpatialUnitEditor();
+        ControlsBundleForSpatialUnitEditor ctrl
+                = new ControlsBundleForSpatialUnitEditor();
         this.displayControlsBundleForm(ctrl);
     }
-    
+
     @Ignore
     @Test
     public void TestThroughAction() throws Exception {
@@ -246,16 +249,50 @@ public class Development {
     public void TestTitlePlan() throws Exception {
         System.out.println("Test title plan");
         SecurityBean.authenticate("test", "test".toCharArray(), this.getWSConfig());
-        MapImageGeneratorForSelectedParcel gen = 
-                new MapImageGeneratorForSelectedParcel(520, 300,200,200, true, 100,20);
+        MapImageGeneratorForSelectedParcel gen
+                = new MapImageGeneratorForSelectedParcel(
+                        "ac879323-3098-4307-ab9a-f5f84aa263ff",
+                        520, 300, 200, 200, true, 300, 40);
         //""138","174","227","231","139","232","457","737","246","233""
-        MapImageInformation info = gen.getInformation("4695222");
-        //MapImageInformation info = gen.getInformation("1e4f0e12-1773-4f87-bec8-f84bf0115011");
+        MapImageInformation info = gen.getInformation();
         System.out.println(info);
-        //info = gen.getInformation("4821936");
-        //System.out.println(info);
     }
-    
+
+    @Ignore
+    @Test
+    public void TestTitlePlanReport() throws Exception {
+        System.out.println("Test title plan report");
+        SecurityBean.authenticate("test", "test".toCharArray(), this.getWSConfig());
+        CadastreObjectBean co = PojoDataAccess.getInstance().getCadastreObject("ac879323-3098-4307-ab9a-f5f84aa263ff");
+
+        MapImageGeneratorForSelectedParcel gen
+                = new MapImageGeneratorForSelectedParcel(
+                        co, 665, 423, 200, 200, true, 300, 40);
+        MapImageInformation info = gen.getInformation();
+
+        ReportViewerForm form = new ReportViewerForm(
+                ReportManager.getSurveyPlanReport(true,
+                        co,
+                        info.getScale(),
+                        info.getMapImageLocation(), info.getScalebarImageLocation()));
+        form.setSaveFormats(SaveFormat.Pdf, SaveFormat.Docx, SaveFormat.Odt, SaveFormat.Html);
+        form.setVisible(true);
+        displayControlsBundleForm(new JPanel());
+    }
+
+    private void lockExecution() {
+        final Lock lock = new ReentrantLock();
+        final Condition goAhead = lock.newCondition();
+        /* Here goes everything you need to do before "pausing" */
+        lock.lock();
+        try {
+            goAhead.await(20, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+
+        } finally {
+            lock.unlock();
+        }
+    }
     //    //@Ignore
 //    @Test
 //    public void testImportPanel() throws Exception {
@@ -279,12 +316,12 @@ public class Development {
         wsConfig.put("SOLA_WS_ADMINISTRATIVE_SERVICE_URL", "http://localhost:8080/sola/webservices/administrative-service?wsdl");
         return wsConfig;
     }
-    
-    private ApplicationBean getApplicationBean(String applicationId){
-        ApplicationTO appTO =
-                PojoDataAccess.getInstance().getWSManager().getCaseManagementService().getApplication(
-                applicationId);
-        
-        return TypeConverters.TransferObjectToBean(appTO, ApplicationBean.class, null);        
+
+    private ApplicationBean getApplicationBean(String applicationId) {
+        ApplicationTO appTO
+                = PojoDataAccess.getInstance().getWSManager().getCaseManagementService().getApplication(
+                        applicationId);
+
+        return TypeConverters.TransferObjectToBean(appTO, ApplicationBean.class, null);
     }
 }

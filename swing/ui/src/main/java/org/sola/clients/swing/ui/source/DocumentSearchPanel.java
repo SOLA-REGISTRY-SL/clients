@@ -194,7 +194,7 @@ public class DocumentSearchPanel extends javax.swing.JPanel {
         txtRefNumber.setText(null);
         txtSubmissionDateFrom.setValue(null);
         txtSubmissionDateTo.setValue(null);
-        txtOwnerName.setText(null);
+        txtOwnerName.setSelectedIndex(-1);
         txtDescription.setText(null);
     }
 
@@ -383,7 +383,7 @@ public class DocumentSearchPanel extends javax.swing.JPanel {
         cbxSourceType = new javax.swing.JComboBox();
         jPanel15 = new javax.swing.JPanel();
         jLabel11 = new javax.swing.JLabel();
-        txtOwnerName = new javax.swing.JTextField();
+        txtOwnerName = new javax.swing.JComboBox();
         jPanel19 = new javax.swing.JPanel();
         jPanel12 = new javax.swing.JPanel();
         jLabel12 = new javax.swing.JLabel();
@@ -796,17 +796,18 @@ public class DocumentSearchPanel extends javax.swing.JPanel {
         jLabel11.setText(bundle.getString("DocumentSearchPanel.jLabel11.text")); // NOI18N
         jLabel11.setName(bundle.getString("DocumentSearchPanel.jLabel11.name")); // NOI18N
 
-        txtOwnerName.setName(bundle.getString("DocumentSearchPanel.txtOwnerName.name")); // NOI18N
+        txtOwnerName.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Private", "State" }));
+        txtOwnerName.setName("txtOwnerName"); // NOI18N
 
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, searchParams, org.jdesktop.beansbinding.ELProperty.create("${ownerName}"), txtOwnerName, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, searchParams, org.jdesktop.beansbinding.ELProperty.create("${ownerName}"), txtOwnerName, org.jdesktop.beansbinding.BeanProperty.create("selectedItem"));
         bindingGroup.addBinding(binding);
 
         javax.swing.GroupLayout jPanel15Layout = new javax.swing.GroupLayout(jPanel15);
         jPanel15.setLayout(jPanel15Layout);
         jPanel15Layout.setHorizontalGroup(
             jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(txtOwnerName)
             .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, 161, Short.MAX_VALUE)
+            .addComponent(txtOwnerName, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel15Layout.setVerticalGroup(
             jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -814,7 +815,7 @@ public class DocumentSearchPanel extends javax.swing.JPanel {
                 .addComponent(jLabel11)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtOwnerName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(12, Short.MAX_VALUE))
         );
 
         jPanel18.add(jPanel15);
@@ -822,7 +823,7 @@ public class DocumentSearchPanel extends javax.swing.JPanel {
         jPanel13.add(jPanel18);
 
         jPanel19.setName("jPanel19"); // NOI18N
-        jPanel19.setLayout(new java.awt.GridLayout());
+        jPanel19.setLayout(new java.awt.GridLayout(1, 0));
 
         jPanel12.setName(bundle.getString("DocumentSearchPanel.jPanel12.name")); // NOI18N
 
@@ -1231,7 +1232,7 @@ public class DocumentSearchPanel extends javax.swing.JPanel {
     private org.sola.clients.swing.common.controls.WatermarkDate txtDateTo;
     private javax.swing.JTextField txtDescription;
     private javax.swing.JTextField txtLaNr;
-    private javax.swing.JTextField txtOwnerName;
+    private javax.swing.JComboBox txtOwnerName;
     private javax.swing.JTextField txtRefNumber;
     private org.sola.clients.swing.common.controls.WatermarkDate txtSubmissionDateFrom;
     private org.sola.clients.swing.common.controls.WatermarkDate txtSubmissionDateTo;

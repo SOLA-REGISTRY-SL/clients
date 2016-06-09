@@ -698,13 +698,12 @@ public class CadastreObjectBean extends SpatialBean {
         co.setClassificationCode(this.getClassificationCode());
         co.setEastNeighbour(this.getEastNeighbour());
         co.setEntityAction(this.getEntityAction());
-        System.out.println("QUI 1!!!!   ");
         co.setFeatureGeom(this.getFeatureGeom());
-        int srid = GeometryUtility.getGeometryFromWkb(GeometryUtility.getWkbFromGeometry(this.getFeatureGeom())).getSRID();
+        //int srid = GeometryUtility.getGeometryFromWkb(GeometryUtility.getWkbFromGeometry(this.getFeatureGeom())).getSRID();
        
-       if (getTypeCode().contentEquals("parcel")) {
-        MessageUtility.displayMessage(GisMessage.CADASTRE_CHANGE_SURVEY_PLAN_SRID, new Object[]{srid});
-       }
+       //if (getTypeCode().contentEquals("parcel")) {
+       // MessageUtility.displayMessage(GisMessage.CADASTRE_CHANGE_SURVEY_PLAN_SRID, new Object[]{srid});
+       //}
         co.setGeomPolygon(this.getGeomPolygon());
         co.setId(this.getId());
         if(this.getLandType() != null)
@@ -830,4 +829,16 @@ public class CadastreObjectBean extends SpatialBean {
         else
             return this.nameFirstpart;
     }    
+    
+    /**
+     * Returns collection of {@link CadastreObjectBean} objects. This method is
+     * used by Jasper report designer to extract properties of application bean
+     * to help design a report.
+     */
+    public static java.util.Collection generateCollection() {
+        java.util.Vector collection = new java.util.Vector();
+        CadastreObjectBean bean = new CadastreObjectBean();
+        collection.add(bean);
+        return collection;
+    }
 }

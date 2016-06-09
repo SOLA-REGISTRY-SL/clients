@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="d165c113-82fb-4413-a3a5-8e165e0dd261">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="258"/>
+	<style name="border">
+		<box leftPadding="5">
+			<pen lineWidth="1.0"/>
+			<topPen lineWidth="1.0"/>
+			<leftPen lineWidth="1.0"/>
+			<bottomPen lineWidth="1.0"/>
+			<rightPen lineWidth="1.0"/>
+		</box>
+	</style>
+	<parameter name="USER_NAME" class="java.lang.String">
+		<parameterDescription><![CDATA[USER_NAME]]></parameterDescription>
+	</parameter>
+	<parameter name="MAP_IMAGE" class="java.lang.String">
+		<parameterDescription><![CDATA[MAP_IMAGE]]></parameterDescription>
+		<defaultValueExpression><![CDATA["../../images/pixel.gif"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SCALE_IMAGE" class="java.lang.String">
+		<parameterDescription><![CDATA[SCALE_IMAGE]]></parameterDescription>
+		<defaultValueExpression><![CDATA["../../images/pixel.gif"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SCALE" class="java.lang.Double">
+		<defaultValueExpression><![CDATA[0]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="address" class="java.lang.String">
+		<fieldDescription><![CDATA[address]]></fieldDescription>
+	</field>
+	<field name="beaconNumber" class="java.lang.String">
+		<fieldDescription><![CDATA[beaconNumber]]></fieldDescription>
+	</field>
+	<field name="chartingOfficer" class="org.sola.clients.beans.party.PartySummaryBean">
+		<fieldDescription><![CDATA[chartingOfficer]]></fieldDescription>
+	</field>
+	<field name="checkedBy" class="java.lang.String">
+		<fieldDescription><![CDATA[checkedBy]]></fieldDescription>
+	</field>
+	<field name="checkingDate" class="java.util.Date">
+		<fieldDescription><![CDATA[checkingDate]]></fieldDescription>
+	</field>
+	<field name="computationFile" class="java.lang.String">
+		<fieldDescription><![CDATA[computationFile]]></fieldDescription>
+	</field>
+	<field name="correspondenceFile" class="java.lang.String">
+		<fieldDescription><![CDATA[correspondenceFile]]></fieldDescription>
+	</field>
+	<field name="drawnBy" class="java.lang.String">
+		<fieldDescription><![CDATA[drawnBy]]></fieldDescription>
+	</field>
+	<field name="dwgOffNumber" class="java.lang.String">
+		<fieldDescription><![CDATA[dwgOffNumber]]></fieldDescription>
+	</field>
+	<field name="eastNeighbour" class="java.lang.String">
+		<fieldDescription><![CDATA[eastNeighbour]]></fieldDescription>
+	</field>
+	<field name="landType" class="org.sola.clients.beans.referencedata.LandTypeBean">
+		<fieldDescription><![CDATA[landType]]></fieldDescription>
+	</field>
+	<field name="licensedSurveyor" class="org.sola.clients.beans.party.PartySummaryBean">
+		<fieldDescription><![CDATA[licensedSurveyor]]></fieldDescription>
+	</field>
+	<field name="nameFirstpart" class="java.lang.String">
+		<fieldDescription><![CDATA[nameFirstpart]]></fieldDescription>
+	</field>
+	<field name="nameLastpart" class="java.lang.String">
+		<fieldDescription><![CDATA[nameLastpart]]></fieldDescription>
+	</field>
+	<field name="northNeighbour" class="java.lang.String">
+		<fieldDescription><![CDATA[northNeighbour]]></fieldDescription>
+	</field>
+	<field name="ownerName" class="java.lang.String">
+		<fieldDescription><![CDATA[ownerName]]></fieldDescription>
+	</field>
+	<field name="parcelAreaAcres" class="java.lang.Double">
+		<fieldDescription><![CDATA[parcelAreaAcres]]></fieldDescription>
+	</field>
+	<field name="refNameFirstpart" class="java.lang.String">
+		<fieldDescription><![CDATA[refNameFirstpart]]></fieldDescription>
+	</field>
+	<field name="refNameLastpart" class="java.lang.String">
+		<fieldDescription><![CDATA[refNameLastpart]]></fieldDescription>
+	</field>
+	<field name="southNeighbour" class="java.lang.String">
+		<fieldDescription><![CDATA[southNeighbour]]></fieldDescription>
+	</field>
+	<field name="stateLandClearingOfficer" class="org.sola.clients.beans.party.PartySummaryBean">
+		<fieldDescription><![CDATA[stateLandClearingOfficer]]></fieldDescription>
+	</field>
+	<field name="surveyDate" class="java.util.Date">
+		<fieldDescription><![CDATA[surveyDate]]></fieldDescription>
+	</field>
+	<field name="surveyMethod" class="org.sola.clients.beans.referencedata.SurveyingMethodTypeBean">
+		<fieldDescription><![CDATA[surveyMethod]]></fieldDescription>
+	</field>
+	<field name="surveyNumber" class="java.lang.String">
+		<fieldDescription><![CDATA[surveyNumber]]></fieldDescription>
+	</field>
+	<field name="surveyType" class="org.sola.clients.beans.referencedata.SurveyTypeBean">
+		<fieldDescription><![CDATA[surveyType]]></fieldDescription>
+	</field>
+	<field name="westNeighbour" class="java.lang.String">
+		<fieldDescription><![CDATA[westNeighbour]]></fieldDescription>
+	</field>
+	<field name="chiefdomType" class="org.sola.clients.beans.referencedata.ChiefdomTypeBean">
+		<fieldDescription><![CDATA[chiefdomType]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="154" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="555" height="70" uuid="27ebbcdd-87f7-40c9-857c-6b221a2a2992"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="25"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Ministry of Lands, Country Planning and Environment"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="70" width="555" height="28" uuid="b2d0588b-c0e0-478c-954d-a3ed966d9f70"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["STATE LAND LEASED TO " + $F{ownerName}.toUpperCase()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="100" width="555" height="25" uuid="d3330ec1-ae56-4fed-afb1-45180d69d5ee"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14"/>
+				</textElement>
+				<text><![CDATA[BOUNDARY SHOWN IN RED]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="0" y="125" width="555" height="28" uuid="bbddc42c-3661-425c-8ffb-f38c683a1116"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["AREA = " + new java.text.DecimalFormat("#,##0.0").format($F{parcelAreaAcres}) + " ACRE(S)"]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<detail>
+		<band height="434" splitType="Stretch">
+			<textField pattern="">
+				<reportElement positionType="Float" x="0" y="301" width="555" height="28" uuid="ef8962d0-7040-4bd2-93e0-6793257aff4c"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["SCALE 1:" + new java.text.DecimalFormat("# ##0").format($P{SCALE})]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="0" y="376" width="555" height="28" uuid="9d19bc56-f465-4ae5-9901-f686117bb689"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{surveyMethod}.toString()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="0" y="404" width="555" height="28" uuid="c89b0a3e-1386-41e7-9333-d62fe6ad6bb1"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($F{surveyType} == null ? "" : $F{surveyType}.getDisplayValue().toString()) +
+($F{refNameFirstpart} == null ? "" : "  " + $F{refNameFirstpart}) +
+($F{refNameLastpart} == null || $F{refNameLastpart}.equals("") ? "" : "/" + $F{refNameLastpart})]]></textFieldExpression>
+			</textField>
+			<image scaleImage="RealSize" hAlign="Center" vAlign="Middle">
+				<reportElement x="27" y="1" width="500" height="300" uuid="9f126ab6-6e10-43ff-974b-3f0e0f614cf4"/>
+				<imageExpression><![CDATA[$P{MAP_IMAGE}]]></imageExpression>
+			</image>
+			<image scaleImage="RealSize" hAlign="Center">
+				<reportElement positionType="Float" x="139" y="330" width="277" height="37" uuid="faa7b7f7-e8f9-4cdf-a692-06bf2f488311"/>
+				<imageExpression><![CDATA[$P{SCALE_IMAGE}]]></imageExpression>
+			</image>
+		</band>
+	</detail>
+	<summary>
+		<band height="169" splitType="Stretch">
+			<staticText>
+				<reportElement x="297" y="6" width="258" height="25" uuid="65a2af5e-009d-463f-b162-65413280b221"/>
+				<textElement verticalAlignment="Middle">
+					<font size="14" isStrikeThrough="false"/>
+				</textElement>
+				<text><![CDATA[DIRECTOR OF SURVEYS AND LANDS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="427" y="38" width="115" height="45" uuid="6aafe0de-cf62-4736-9d8c-5c7296588ddb"/>
+				<textElement textAlignment="Center" verticalAlignment="Bottom">
+					<font size="10" isStrikeThrough="false"/>
+				</textElement>
+				<text><![CDATA[__________________
+(date)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="302" y="38" width="115" height="45" uuid="d99b6fe1-2913-4f23-81a8-b0ea673dea39"/>
+				<textElement textAlignment="Center" verticalAlignment="Bottom">
+					<font size="10" isStrikeThrough="false"/>
+				</textElement>
+				<text><![CDATA[__________________
+(signature)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="border" x="3" y="6" width="104" height="18" uuid="3ad75ca0-ace1-4baa-90ff-701766c06550"/>
+				<textElement verticalAlignment="Middle" markup="none">
+					<font size="10" isStrikeThrough="false"/>
+				</textElement>
+				<text><![CDATA[L O A]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="border" x="3" y="24" width="104" height="18" uuid="b8763540-cf4c-42d7-82be-68cf62987e66"/>
+				<textElement verticalAlignment="Middle" markup="none">
+					<font size="10" isStrikeThrough="false"/>
+				</textElement>
+				<text><![CDATA[SURVEY No]]></text>
+			</staticText>
+			<textField>
+				<reportElement style="border" x="107" y="6" width="174" height="18" uuid="e8aa12ea-a1c3-4a4b-b902-f1f0df6b1647"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nameFirstpart}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="border" x="107" y="24" width="174" height="18" uuid="6d6067cc-6feb-4e84-9747-3c16e563f7c2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{surveyNumber}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="border" x="3" y="42" width="104" height="18" uuid="ea3ad0ff-4d6d-40db-9658-526e33602308"/>
+				<textElement verticalAlignment="Middle" markup="none">
+					<font size="10" isStrikeThrough="false"/>
+				</textElement>
+				<text><![CDATA[CORRESP FILE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="border" x="3" y="60" width="104" height="18" uuid="a58fb475-9c31-4f33-a745-b66c62eabc83"/>
+				<textElement verticalAlignment="Middle" markup="none">
+					<font size="10" isStrikeThrough="false"/>
+				</textElement>
+				<text><![CDATA[COMPS FILE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="border" x="3" y="114" width="104" height="18" uuid="1511bd6e-0810-485e-88db-13571f5adf66"/>
+				<textElement verticalAlignment="Middle" markup="none">
+					<font size="10" isStrikeThrough="false"/>
+				</textElement>
+				<text><![CDATA[DWG OF No]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="border" x="3" y="78" width="104" height="18" uuid="158165d8-6744-4c5d-bdfc-21659835a1a4"/>
+				<textElement verticalAlignment="Middle" markup="none">
+					<font size="10" isStrikeThrough="false"/>
+				</textElement>
+				<text><![CDATA[SURVEYED BY]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="border" x="3" y="132" width="104" height="18" uuid="5a7842e6-c09e-434b-bd2d-1f02eda1ca39"/>
+				<textElement verticalAlignment="Middle" markup="none">
+					<font size="10" isStrikeThrough="false"/>
+				</textElement>
+				<text><![CDATA[CHECKED BY]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="border" x="3" y="96" width="104" height="18" uuid="0e9f45b1-b731-46ba-bfd2-932a78af613c"/>
+				<textElement verticalAlignment="Middle" markup="none">
+					<font size="10" isStrikeThrough="false"/>
+				</textElement>
+				<text><![CDATA[DRAWN BY]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="border" x="3" y="150" width="104" height="18" uuid="135fbd7b-ca2c-4760-8119-dedbbaa0ba4b"/>
+				<textElement verticalAlignment="Middle" markup="none">
+					<font size="10" isStrikeThrough="false"/>
+				</textElement>
+				<text><![CDATA[DATE]]></text>
+			</staticText>
+			<textField>
+				<reportElement style="border" x="107" y="60" width="174" height="18" uuid="96b3239f-eacd-4562-9445-6157a54ef400"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{computationFile}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="border" x="107" y="42" width="174" height="18" uuid="4c5c16e1-9958-4abc-9d9e-9d7b65577c67"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{correspondenceFile}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="border" x="107" y="114" width="174" height="18" uuid="06a7d879-69cb-420f-bf33-018000c582d3"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dwgOffNumber}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="border" x="107" y="96" width="174" height="18" uuid="0675ca7f-d127-4908-96b3-72d2685dbb77"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{drawnBy}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="border" x="107" y="132" width="174" height="18" uuid="a4ad5430-de7b-493e-ab97-3bdf2d7996c6"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{checkedBy}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="border" x="107" y="78" width="174" height="18" uuid="d43b93ed-378b-420b-8b87-43bcedeee938"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{licensedSurveyor}.getFullName()]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement style="border" x="107" y="150" width="174" height="18" uuid="d4139f90-8f40-407f-aaf5-0ddd8787d9f0"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{checkingDate}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

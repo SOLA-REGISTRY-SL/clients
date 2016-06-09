@@ -45,6 +45,7 @@ import org.sola.clients.swing.gis.layer.CadastreChangeNewSurveyPointLayer;
 import org.sola.clients.swing.gis.mapaction.CadastreChangePointSurveyListFormShow;
 import org.sola.clients.swing.gis.mapaction.RemoveCadastreObjects;
 import org.sola.clients.swing.gis.mapaction.SurveyPlanDetails;
+import org.sola.clients.swing.gis.mapaction.SurveyPlanPrint;
 import org.sola.clients.swing.gis.tool.CadastreChangeNewCadastreObjectTool;
 import org.sola.clients.swing.gis.tool.CadastreChangeNodeTool;
 
@@ -103,6 +104,7 @@ public final class ControlsBundleForNewParcel extends ControlsBundleForTransacti
                         getMap().getMapActionByName(CadastreChangeNewCadastreObjectTool.NAME).setEnabled(false);
                         getMap().getMapActionByName(RemoveCadastreObjects.NAME).setEnabled(true);
                         getMap().getMapActionByName(SurveyPlanDetails.MAPACTION_NAME).setEnabled(true);
+                        getMap().getMapActionByName(SurveyPlanPrint.MAPACTION_NAME).setEnabled(true);
                         getCrsControl().setEnabled(false);
                     }
 
@@ -111,6 +113,7 @@ public final class ControlsBundleForNewParcel extends ControlsBundleForTransacti
                         getMap().getMapActionByName(CadastreChangeNewCadastreObjectTool.NAME).setEnabled(list.size() < 1);
                         getMap().getMapActionByName(RemoveCadastreObjects.NAME).setEnabled(list.size() > 0);
                         getMap().getMapActionByName(SurveyPlanDetails.MAPACTION_NAME).setEnabled(list.size() > 0);
+                        getMap().getMapActionByName(SurveyPlanPrint.MAPACTION_NAME).setEnabled(list.size() > 0);
                         getCrsControl().setEnabled(list.size() < 1);
                     }
 
@@ -234,6 +237,8 @@ public final class ControlsBundleForNewParcel extends ControlsBundleForTransacti
         this.getMap().addTool(newCadastreObjectTool, this.getToolbar(), true);
         this.getMap().addMapAction(new SurveyPlanDetails(this.getMap(), newCadastreObjectLayer),
                 this.getToolbar(), false);
+        this.getMap().addMapAction(new SurveyPlanPrint(this.getMap(), newCadastreObjectLayer),
+                this.getToolbar(), false);
         this.getMap().addMapAction(new RemoveCadastreObjects(this.getMap(), newCadastreObjectLayer),
                 this.getToolbar(), false);
 
@@ -243,20 +248,20 @@ public final class ControlsBundleForNewParcel extends ControlsBundleForTransacti
     @Override
     public void setReadOnly(boolean readOnly) {
         super.setReadOnly(readOnly);
+        boolean hasCadastreObjects = newCadastreObjectLayer.getBeanList().size() > 0;
         this.getMap().getMapActionByName(
                 CadastreChangePointSurveyListFormShow.MAPACTION_NAME).setEnabled(!readOnly);
         this.getMap().getMapActionByName(CadastreChangeNodeTool.NAME).setEnabled(!readOnly);
         this.getMap().getMapActionByName(CadastreChangeNewCadastreObjectTool.NAME).setEnabled(!readOnly);
-        getCrsControl().setEnabled(newCadastreObjectLayer.getBeanList().size() < 1);
+        getCrsControl().setEnabled(!hasCadastreObjects);
+        
         ((SurveyPlanDetails)getMap().getMapActionByName(SurveyPlanDetails.MAPACTION_NAME)).setReadOnly(readOnly);
-        getMap().getMapActionByName(SurveyPlanDetails.MAPACTION_NAME)
-                .setEnabled(newCadastreObjectLayer.getBeanList().size() > 0);
+        getMap().getMapActionByName(SurveyPlanDetails.MAPACTION_NAME).setEnabled(hasCadastreObjects);
+        this.getMap().getMapActionByName(SurveyPlanPrint.MAPACTION_NAME).setEnabled(hasCadastreObjects);
         
         if (!readOnly) {
-            this.getMap().getMapActionByName(CadastreChangeNewCadastreObjectTool.NAME)
-                    .setEnabled(newCadastreObjectLayer.getBeanList().size() < 1);
-            this.getMap().getMapActionByName(RemoveCadastreObjects.NAME).setEnabled(
-                    newCadastreObjectLayer.getBeanList().size() > 0);
+            this.getMap().getMapActionByName(CadastreChangeNewCadastreObjectTool.NAME).setEnabled(!hasCadastreObjects);
+            this.getMap().getMapActionByName(RemoveCadastreObjects.NAME).setEnabled(hasCadastreObjects);
         }
     }
 
