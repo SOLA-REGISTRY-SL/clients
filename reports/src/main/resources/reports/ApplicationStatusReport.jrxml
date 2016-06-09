@@ -146,19 +146,15 @@
 					<pen lineWidth="3.0"/>
 				</graphicElement>
 			</line>
-			<image>
-				<reportElement x="0" y="0" width="73" height="62" uuid="243d0159-5ef9-4181-87b6-793b41e0bb5f"/>
-				<imageExpression><![CDATA["C:\\Users\\USER\\Desktop\\Client Logo.jpg"]]></imageExpression>
-			</image>
 			<textField>
-				<reportElement x="73" y="25" width="446" height="37" forecolor="#4DA771" backcolor="#43A771" uuid="775533e8-84c2-4219-9940-23d1d482a2b5"/>
+				<reportElement x="79" y="27" width="446" height="37" forecolor="#4DA771" backcolor="#43A771" uuid="775533e8-84c2-4219-9940-23d1d482a2b5"/>
 				<textElement markup="none">
 					<font fontName="SansSerif" size="24" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$R{title}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="74" y="0" width="388" height="20" uuid="468a01a1-315a-4137-b6e5-8cdb63316364"/>
+				<reportElement x="80" y="2" width="388" height="20" uuid="468a01a1-315a-4137-b6e5-8cdb63316364"/>
 				<textElement>
 					<font fontName="Calibri" size="15"/>
 				</textElement>
@@ -293,7 +289,7 @@
 				<textFieldExpression><![CDATA[$F{fax}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="106" y="159" width="442" height="20" uuid="7b3453aa-8efc-45bf-a54c-e5b38f5079bf"/>
+				<reportElement x="51" y="158" width="442" height="20" uuid="7b3453aa-8efc-45bf-a54c-e5b38f5079bf"/>
 				<textElement>
 					<font fontName="SansSerif" size="12" isBold="true"/>
 				</textElement>
@@ -615,6 +611,10 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$F{status}]]></textFieldExpression>
 			</textField>
+			<image>
+				<reportElement x="-2" y="-76" width="97" height="70" uuid="adb423ef-8042-4741-a2f1-4a2ca1da1510"/>
+				<imageExpression><![CDATA["C:\\Users\\USER\\Desktop\\Client Logo.jpg"]]></imageExpression>
+			</image>
 		</band>
 	</detail>
 	<pageFooter>

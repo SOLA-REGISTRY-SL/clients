@@ -9,7 +9,7 @@
       <Title>Road newwork</Title>
       <Abstract>A symbology defintion for SOLA cadastre map point</Abstract>
       <!-- FeatureTypeStyles describe how to render different features -->
-      <!-- A FeatureTypeStyle for rendering lines -->
+      <!-- A FeatureTypeStyle for renderinroag lines -->
       <FeatureTypeStyle>
 	  <Rule>
        <Name>Scale &lt; 2500</Name>
