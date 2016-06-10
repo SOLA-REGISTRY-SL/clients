@@ -76,7 +76,8 @@ public abstract class ControlsBundleForSpatialUnitGenericEditor extends SolaCont
 
         this.getMap().addTool(new AddDirectImageTool(this.imageLayer), this.getToolbar(), true);
         this.getMap().addMapAction(new RemoveDirectImage(this.getMap()), this.getToolbar(), true);
-
+//        QUI
+        
         JLabel label = new JLabel();
         label.setText(String.format(" %s ", resource.getString(
                 "ControlsBundleForSpatialUnitGenericEditor.selectUnitType.text")));
