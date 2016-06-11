@@ -29,6 +29,7 @@ package org.sola.clients.swing.gis.mapaction;
 
 import org.geotools.swing.extended.Map;
 import org.geotools.swing.mapaction.extended.ExtendedAction;
+import org.sola.clients.beans.referencedata.RequestTypeBean;
 import org.sola.clients.swing.gis.layer.CadastreChangeNewCadastreObjectLayer;
 import org.sola.clients.swing.gis.ui.control.SurveyPlanDetailsDialog;
 import org.sola.common.WindowUtility;
@@ -47,7 +48,7 @@ public final class SurveyPlanDetails extends ExtendedAction {
     private CadastreChangeNewCadastreObjectLayer newCadastreObjectLayer = null;
     private Map map;
     private boolean readOnly;
-
+    private String requestTypeCode;
     public boolean isReadOnly() {
         return readOnly;
     }
@@ -61,21 +62,25 @@ public final class SurveyPlanDetails extends ExtendedAction {
      *
      * @param map The map control that will be interacting with the map action
      * @param newCadastreObjectLayer New cadastre objects layer
+     * @param requestTypeCode Request type code
      */
-    public SurveyPlanDetails(Map map, CadastreChangeNewCadastreObjectLayer newCadastreObjectLayer) {
+    public SurveyPlanDetails(Map map, 
+            CadastreChangeNewCadastreObjectLayer newCadastreObjectLayer,
+            String requestTypeCode) {
         super(map, MAPACTION_NAME,
                 MessageUtility.getLocalizedMessage(
                         GisMessage.CADASTRE_CHANGE_SURVEY_PLAN).getMessage(),
                 "resources/text_signature.png");
         this.map = map;
         this.newCadastreObjectLayer = newCadastreObjectLayer;
+        this.requestTypeCode = requestTypeCode;
     }
 
     @Override
     public void onClick() {
         if (newCadastreObjectLayer.getBeanList() != null && newCadastreObjectLayer.getBeanList().size() > 0) {
             SurveyPlanDetailsDialog dlg = new SurveyPlanDetailsDialog(null, true, 
-                    newCadastreObjectLayer.getBeanList().get(0), readOnly);
+                    newCadastreObjectLayer.getBeanList().get(0), requestTypeCode, readOnly);
             WindowUtility.centerForm(dlg);
             dlg.setVisible(true);
         }

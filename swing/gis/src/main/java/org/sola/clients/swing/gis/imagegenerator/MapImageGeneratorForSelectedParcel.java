@@ -130,7 +130,7 @@ public class MapImageGeneratorForSelectedParcel {
                 new org.sola.clients.swing.gis.Messaging());
         ExtendedFeatureLayer.setExtraSldResources(extraSldResources);
 
-        int srid = GeometryUtility.getGeometryFromWkb(co.getGeomPolygon()).getSRID();
+        int srid = co.getFeatureGeom().getSRID();
         List<CrsTO> crsList = PojoDataAccess.getInstance().getMapDefinition().getCrsList();
         CrsTO crs = crsList.get(0);
 

@@ -9,6 +9,7 @@ import org.sola.clients.beans.referencedata.ChiefdomTypeListBean;
 import org.sola.clients.beans.referencedata.LandTypeBean;
 import org.sola.clients.beans.referencedata.LandTypeListBean;
 import org.sola.clients.beans.referencedata.PartyRoleTypeBean;
+import org.sola.clients.beans.referencedata.RequestTypeBean;
 import org.sola.clients.beans.referencedata.SurveyTypeListBean;
 import org.sola.clients.beans.referencedata.SurveyingMethodTypeListBean;
 import org.sola.clients.swing.common.controls.CalendarForm;
@@ -27,9 +28,10 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
      * Creates new form
      */
     private CadastreObjectBean originalCadastreObject;
+    private boolean autoAreaCalc = false;
 
     public SurveyPlanDetailsDialog(java.awt.Frame parent, boolean modal,
-            CadastreObjectBean cadastreObject, boolean readOnly) {
+            CadastreObjectBean cadastreObject, String requestTypeCode, boolean readOnly) {
         super(parent, modal);
         if (StringUtility.isEmpty(cadastreObject.getLandTypeCode())) {
             if (JOptionPane.showConfirmDialog(this, "Do you want to create private land?",
@@ -42,6 +44,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
         }
         this.originalCadastreObject = cadastreObject;
         this.cadastreObjectBean = cadastreObject.copy();
+        autoAreaCalc = requestTypeCode.equals(RequestTypeBean.CODE_EXISTING_PARCEL);
         initComponents();
         setReadOnly(!readOnly);
         postInit();
@@ -75,7 +78,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
         txtAddress1.setEnabled(enabled);
         cbxAddress2.setEnabled(enabled);
         txtSurveyDate.setEnabled(enabled);
-        txtParcelArea.setEnabled(enabled);
+        txtParcelArea.setEnabled(enabled && !autoAreaCalc);
         txtBeaconNumber.setEnabled(enabled);
         //cbxLandType.setEnabled(enabled);
         cbxSurveyMethod.setEnabled(enabled);

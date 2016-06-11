@@ -48,7 +48,8 @@ import org.sola.common.messaging.GisMessage;
 public abstract class SpatialBean extends AbstractVersionedBean{
 
     private Geometry featureGeom;
-
+    public static String FEATURE_GEOM_PROPERTY = "featureGeom";
+        
     /**
      * Gets the geometry of the bean
      * @return 
@@ -64,6 +65,7 @@ public abstract class SpatialBean extends AbstractVersionedBean{
      */
     public void setFeatureGeom(Geometry geometryValue){
         featureGeom = geometryValue;
+        propertySupport.firePropertyChange(FEATURE_GEOM_PROPERTY, null, geometryValue);
     }
     
     /**

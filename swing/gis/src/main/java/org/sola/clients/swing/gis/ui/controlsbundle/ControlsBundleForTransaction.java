@@ -58,9 +58,9 @@ import org.sola.clients.swing.gis.ui.control.MapDocumentsPanel;
 import org.sola.common.messaging.GisMessage;
 
 /**
- * An abstract bundle that defines common functionality that is used in the cadastre transaction
- * related changes. It defines also abstract methods that need to be overridden by each cadastre
- * transaction.
+ * An abstract bundle that defines common functionality that is used in the
+ * cadastre transaction related changes. It defines also abstract methods that
+ * need to be overridden by each cadastre transaction.
  *
  * @author Elton Manoku
  */
@@ -80,39 +80,42 @@ public abstract class ControlsBundleForTransaction extends SolaControlsBundle {
 
     /**
      * Creates a controls bundle for transaction component.
-     * 
+     *
      * @param applicationBean The application bean of the application from where
      * the transaction starts
-     * @param transactionStarterId The id of the starter of the transaction. This will be the 
-     * service id.
+     * @param transactionStarterId The id of the starter of the transaction.
+     * This will be the service id.
      */
     public ControlsBundleForTransaction(
-            ApplicationBean applicationBean, 
-            String transactionStarterId){
+            ApplicationBean applicationBean,
+            String transactionStarterId) {
         super();
         this.applicationBean = applicationBean;
         this.transactionStarterId = transactionStarterId;
     }
-    
+
     /**
-     * Gets an instance of a transaction bundle depending in the type of the request
-     * 
-     * @param requestTypeCode The type of the request for which to create the transaction bundle
-     * @param applicationBean The application bean of the application where the transaction is
-     * starting
-     * @param transactionStarterId The transaction starter id. It will be the id of the service
-     * that will start the transaction
-     * @param baUnitId The id of the ba unit which will be used to identify the 
+     * Gets an instance of a transaction bundle depending in the type of the
+     * request
+     *
+     * @param requestTypeCode The type of the request for which to create the
+     * transaction bundle
+     * @param applicationBean The application bean of the application where the
+     * transaction is starting
+     * @param transactionStarterId The transaction starter id. It will be the id
+     * of the service that will start the transaction
+     * @param baUnitId The id of the ba unit which will be used to identify the
      * cadastre object being targeted
-     * @param targetCadastreObjectType the type of the cadastre object type being targeted
-     * @return 
+     * @param targetCadastreObjectType the type of the cadastre object type
+     * being targeted
+     * @return
      */
     public static ControlsBundleForTransaction getInstance(
             String requestTypeCode,
             ApplicationBean applicationBean,
             String transactionStarterId,
             String baUnitId,
-            String targetCadastreObjectType){
+            String targetCadastreObjectType) {
         ControlsBundleForTransaction instance = null;
         if (requestTypeCode.equals(RequestTypeBean.CODE_CADASTRE_CHANGE)) {
             instance = new ControlsBundleForCadastreChange(
@@ -121,19 +124,19 @@ public abstract class ControlsBundleForTransaction extends SolaControlsBundle {
             instance = new ControlsBundleForCadastreRedefinition(
                     applicationBean, transactionStarterId, baUnitId, targetCadastreObjectType);
         } else if (requestTypeCode.equals(RequestTypeBean.CODE_MAP_EXISTINGPARCEL)) {
-              instance = new ControlsBundleForMapExistingParcel(        
+            instance = new ControlsBundleForMapExistingParcel(
                     applicationBean, transactionStarterId, baUnitId, targetCadastreObjectType);
-        } else if (requestTypeCode.equals(RequestTypeBean.CODE_NEW_PARCEL)) {
-            instance = new ControlsBundleForNewParcel(applicationBean, transactionStarterId);
+        } else if (requestTypeCode.equals(RequestTypeBean.CODE_NEW_PARCEL)
+                || requestTypeCode.equals(RequestTypeBean.CODE_EXISTING_PARCEL))  {
+            instance = new ControlsBundleForNewParcel(requestTypeCode, applicationBean, transactionStarterId);
         }
         return instance;
     }
-    
-    
-      /**
-     * It sets up the bundle. It calls the adding layer method and adding tools method. It also
-     * identifies the pending layer which will be refreshed if a transaction is being saved in the
-     * database.
+
+    /**
+     * It sets up the bundle. It calls the adding layer method and adding tools
+     * method. It also identifies the pending layer which will be refreshed if a
+     * transaction is being saved in the database.
      *
      * @param pojoDataAccess
      */
@@ -161,7 +164,7 @@ public abstract class ControlsBundleForTransaction extends SolaControlsBundle {
             }
         }
     }
-    
+
     @Override
     protected void setupToolbar() {
         this.getMap().addMapAction(new SaveTransaction(this), this.getToolbar(), true);
@@ -169,8 +172,10 @@ public abstract class ControlsBundleForTransaction extends SolaControlsBundle {
     }
 
     /**
-     * Gets the panel where the documents attached to the transaction are managed
-     * @return 
+     * Gets the panel where the documents attached to the transaction are
+     * managed
+     *
+     * @return
      */
     protected final MapDocumentsPanel getDocumentsPanel() {
         return documentsPanel;
@@ -178,12 +183,13 @@ public abstract class ControlsBundleForTransaction extends SolaControlsBundle {
 
     /**
      * Gets the transaction starter id
-     * @return 
+     *
+     * @return
      */
     protected String getTransactionStarterId() {
         return transactionStarterId;
     }
-    
+
     /**
      * It zooms in the map where the transaction is happening
      *
@@ -195,8 +201,8 @@ public abstract class ControlsBundleForTransaction extends SolaControlsBundle {
             byte[] applicationLocation) {
         if (interestingArea == null && applicationLocation != null) {
             try {
-                Geometry applicationLocationGeometry =
-                        PojoFeatureSource.getWkbReader().read(applicationLocation);
+                Geometry applicationLocationGeometry
+                        = PojoFeatureSource.getWkbReader().read(applicationLocation);
                 interestingArea = JTS.toEnvelope(applicationLocationGeometry);
             } catch (ParseException ex) {
                 Messaging.getInstance().show(GisMessage.CADASTRE_CHANGE_ERROR_SETUP);
@@ -215,26 +221,27 @@ public abstract class ControlsBundleForTransaction extends SolaControlsBundle {
      * @return
      */
     public abstract TransactionBean getTransactionBean();
-    
+
     /**
      * It sets the transaction.
      */
     public abstract void setTransaction();
-    
+
     /**
-     * It refreshes the transaction by retrieving its information again from the server.
+     * It refreshes the transaction by retrieving its information again from the
+     * server.
      */
     public abstract void refreshTransactionFromServer();
 
     /**
      * Gets if the transaction is already started before.
      *
-     * @return True if the transaction was already started and now is read back for modifications
+     * @return True if the transaction was already started and now is read back
+     * for modifications
      */
     protected abstract boolean transactionIsStarted();
 
-      
-     /**
+    /**
      * Adds layers that are needed for the transaction
      *
      * @throws InitializeLayerException
@@ -242,13 +249,12 @@ public abstract class ControlsBundleForTransaction extends SolaControlsBundle {
     @Override
     protected void addLayers() throws InitializeLayerException, SchemaException {
         super.addLayers();
-        this.imageLayer = new ExtendedImageLayer(IMAGE_LAYER_NAME, 
-                ((Messaging)Messaging.getInstance()).getLayerTitle(IMAGE_LAYER_NAME));
+        this.imageLayer = new ExtendedImageLayer(IMAGE_LAYER_NAME,
+                ((Messaging) Messaging.getInstance()).getLayerTitle(IMAGE_LAYER_NAME));
         this.getMap().addLayer(this.imageLayer);
         this.cadastreBoundaryPointLayer = new CadastreBoundaryPointLayer();
         this.getMap().addLayer(this.cadastreBoundaryPointLayer);
     }
-
 
     /**
      * Adds tools and commands that are relevant to the transaction
@@ -257,38 +263,40 @@ public abstract class ControlsBundleForTransaction extends SolaControlsBundle {
     protected void addToolsAndCommands() {
         this.getMap().addTool(new AddDirectImageTool(this.imageLayer), this.getToolbar(), true);
         this.getMap().addMapAction(new RemoveDirectImage(this.getMap()), this.getToolbar(), true);
-        if (this.applicationBean != null){
+        if (this.applicationBean != null) {
             this.setApplicationId(this.applicationBean.getId());
         }
     }
 
     /**
      * It refreshes the map control part of the bundle.
+     *
      * @param force If true it forces the refresh of the pending layer
      */
     @Override
     public void refresh(boolean force) {
-        if (this.pendingLayer!= null) {
-         this.pendingLayer.setForceRefresh(force);
+        if (this.pendingLayer != null) {
+            this.pendingLayer.setForceRefresh(force);
         }
         super.refresh(force);
     }
 
     /**
-     * It disables/enables the changing tools and commands in order to prohibit user changing the
-     * transaction.
+     * It disables/enables the changing tools and commands in order to prohibit
+     * user changing the transaction.
      *
      * @param readOnly
      */
     public void setReadOnly(boolean readOnly) {
         this.getMap().getMapActionByName(SaveTransaction.MAPACTION_NAME).setEnabled(!readOnly);
     }
-    
+
     /**
-     * It configures the tools to handle the given type of cadastre objects.
-     * It must be called after the Setup method because the Setup method initiates the tools.
-     * 
-     * @param targetCadastreObjectType 
+     * It configures the tools to handle the given type of cadastre objects. It
+     * must be called after the Setup method because the Setup method initiates
+     * the tools.
+     *
+     * @param targetCadastreObjectType
      */
     protected abstract void setTargetCadastreObjectTypeConfiguration(
             String targetCadastreObjectType);
@@ -297,27 +305,29 @@ public abstract class ControlsBundleForTransaction extends SolaControlsBundle {
      * It adds the panel where the documents are managed
      */
     private void addDocumentsPanel() {
-        if (this.applicationBean == null){
+        if (this.applicationBean == null) {
             return;
         }
-        this.documentsPanel = new  MapDocumentsPanel(this, this.applicationBean);
+        this.documentsPanel = new MapDocumentsPanel(this, this.applicationBean);
         this.addInLeftPanel(Messaging.getInstance().getMessageText(
                 GisMessage.LEFT_PANEL_TAB_DOCUMENTS_TITLE), this.documentsPanel);
     }
 
     /**
-     * It adds a layer in the list of snapping layers for a given tool.
-     * It expects that all layers are already added to the map control.
-     * The layer will be added in the snapping layers of the tools if it exist and if it is 
-     * a navigation layer of type ExtendedFeatureLayer.
-     * @param forTool The tool that will target features of the given layer for snapping
+     * It adds a layer in the list of snapping layers for a given tool. It
+     * expects that all layers are already added to the map control. The layer
+     * will be added in the snapping layers of the tools if it exist and if it
+     * is a navigation layer of type ExtendedFeatureLayer.
+     *
+     * @param forTool The tool that will target features of the given layer for
+     * snapping
      * @param targetLayerName The layer name
      */
     protected final void addSnappingLayerToTool(
-            ExtendedDrawToolWithSnapping forTool, String targetLayerName){
+            ExtendedDrawToolWithSnapping forTool, String targetLayerName) {
         if (this.getMap().getSolaLayers().containsKey(targetLayerName)) {
-            ExtendedLayer snappingTargetLayer = 
-                    this.getMap().getSolaLayers().get(targetLayerName);
+            ExtendedLayer snappingTargetLayer
+                    = this.getMap().getSolaLayers().get(targetLayerName);
             if (snappingTargetLayer instanceof ExtendedFeatureLayer) {
                 forTool.getTargetSnappingLayers().add((ExtendedFeatureLayer) snappingTargetLayer);
             }
