@@ -1218,7 +1218,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
     private javax.swing.JTextField txtAddress1;
     private javax.swing.JTextField txtBeaconNumber;
     private javax.swing.JTextField txtCheckedBy;
-    private org.sola.clients.swing.common.controls.WatermarkDate txtCheckingDate;
+    public org.sola.clients.swing.common.controls.WatermarkDate txtCheckingDate;
     private javax.swing.JTextField txtComputationFile;
     private javax.swing.JTextField txtCorrespondenceFile;
     private javax.swing.JTextField txtDrawingOfficeNumber;
