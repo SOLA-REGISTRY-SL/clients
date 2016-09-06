@@ -55,7 +55,7 @@ import org.sola.webservices.search.SpatialResult;
  */
 public class MapImageGeneratorForSelectedParcel {
 
-    private static final int DPI = 72;
+    private static final int DPI = 96;
     private static final String IMAGE_FORMAT = "png";
     private static final String LAYER_NAME = "target_plan_parcel";
     private static final String PARCELS_LAYER_SLD = "parcel_title_plan.xml";
@@ -162,6 +162,7 @@ public class MapImageGeneratorForSelectedParcel {
         if (generateAlsoScaleBar) {
             this.scalebarWidth = scalebarWidth;
             scalebarGenerator = new ScalebarGenerator();
+            scalebarGenerator.setNumberOfSegments(5);
             scalebarGenerator.setDrawScaleText(false);
             scalebarGenerator.setHeight(scalebarHeight);
         }

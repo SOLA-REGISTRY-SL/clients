@@ -58,10 +58,11 @@ public class ScalebarGeneratorTest {
     //@Ignore
     public void testGetImageAsFileLocation() throws Exception {
         System.out.println("getImageAsFileLocation");
-        double imageWidth = 200.0;
+        double imageWidth = 231.0;
         double scale = 1500.0;
         int dpi = 96;
         ScalebarGenerator instance = new ScalebarGenerator();
+        instance.setNumberOfSegments(6);
         String result = instance.getImageAsFileLocation(scale, imageWidth, dpi);
         System.out.print("Map image generated in:" + result);
     }

@@ -43,17 +43,17 @@ import java.text.DecimalFormat;
 import javax.imageio.ImageIO;
 
 /**
- * This utility generates an image presenting a scalebar of the map based in the give scale.<br/> It
- * can be customized to apply different colors for segments (even, uneven) height, margins, text
- * colors. <br/> The scalebar switches as needed to measure from mm up to km depending in the scale
- * and required width.
+ * This utility generates an image presenting a scalebar of the map based in the
+ * give scale.<br/> It can be customized to apply different colors for segments
+ * (even, uneven) height, margins, text colors. <br/> The scalebar switches as
+ * needed to measure from mm up to km depending in the scale and required width.
  *
  * @author Elton Manoku
  */
 public class ScalebarGenerator {
 
-    private final static String TEMPORARY_IMAGE_FILE_LOCATION =
-            System.getProperty("user.home") + File.separator + "sola";
+    private final static String TEMPORARY_IMAGE_FILE_LOCATION
+            = System.getProperty("user.home") + File.separator + "sola";
     private final static String TEMPORARY_IMAGE_FILE = "scalebar";
     private final static String IMAGE_FORMAT = "png";
 
@@ -128,8 +128,9 @@ public class ScalebarGenerator {
     }
 
     /**
-     * Sets the height of the entire image. The height of the scale bar is calculated from height -
-     * (lrbMargin + topMargin). The default image height is 40. The default scale bar height is 10.
+     * Sets the height of the entire image. The height of the scale bar is
+     * calculated from height - (lrbMargin + topMargin). The default image
+     * height is 40. The default scale bar height is 10.
      *
      * @param height
      */
@@ -138,20 +139,21 @@ public class ScalebarGenerator {
     }
 
     /**
-     * Sets the margin for the left, right and bottom of the control. The margin is the distance
-     * from the edge of the image to the scale bar. This margin must be big enough to allow display
-     * of the distance text. The default value is 15.
+     * Sets the margin for the left, right and bottom of the control. The margin
+     * is the distance from the edge of the image to the scale bar. This margin
+     * must be big enough to allow display of the distance text. The default
+     * value is 15.
      *
-     * @param margin The size of the margin to set around the left, right and bottom of the scalebar
-     * image.
+     * @param margin The size of the margin to set around the left, right and
+     * bottom of the scalebar image.
      */
     public void setLrbMargin(int lrbMargin) {
         this.lrbMargin = lrbMargin;
     }
 
     /**
-     * Sets the size of the margin above the scale bar. Default value is 15. This value can be reset
-     * to 2 if the scale text is not displayed.
+     * Sets the size of the margin above the scale bar. Default value is 15.
+     * This value can be reset to 2 if the scale text is not displayed.
      *
      * @param topMargin The size of the margin above the scale bar.
      */
@@ -177,20 +179,6 @@ public class ScalebarGenerator {
         this.textFont = textFont;
     }
 
-    /**
-     * Generate the image of the scalebar. If the scale is small (e.g. &lt; 0.01), the scale bar
-     * will not be generated.
-     *
-     * Note that due to different screen resolutions, generating a 100% accurate scale bar for on
-     * screen display is next to impossible. The scale should be used as indicative only.
-     *
-     * @param scale The scale for which to generate the image
-     * @param width The initial width of the scalebar in points. There are approx 2.83 points per
-     * mm. The real width will change to round the measurement of the segments.
-     * @param dpi DPI used on the display device. e.g. for a standard printout, 72 is suitable. For
-     * screen display, 96 is better.
-     * @return
-     */
     public BufferedImage getImage(Double scale, double width, double dpi) {
 
         double extentWidth = 2.54 * scale / 100;
@@ -232,7 +220,8 @@ public class ScalebarGenerator {
         int scalebarDrawingWidth = (int) Math.round(finalWidthInMeters * screenWidth / extentWidth);
         int segmentDrawingWidth = scalebarDrawingWidth / this.numberOfSegments;
         int finalScalebarWidth = scalebarDrawingWidth + (this.lrbMargin * 2);
-
+        //int finalScalebarWidth = (int)width + (this.lrbMargin * 2);
+                
         BufferedImage bi = new BufferedImage(
                 finalScalebarWidth, height, BufferedImage.TYPE_INT_ARGB);
 
@@ -275,14 +264,104 @@ public class ScalebarGenerator {
 
         return bi;
     }
-
+    
     /**
-     * Generate the image of the scalebar, stores it in a temporary location and returns the file
-     * location.
+     * Generate the image of the scalebar for printing purposes. 
+     * It has fixed width of scale segments of 1 centimeter.
+     * If the scale is small (e.g. &lt; * 0.01), the scale bar will not be generated.
+     *
+     * Note that due to different screen resolutions, generating a 100% accurate
+     * scale bar for on screen display is next to impossible. The scale should
+     * be used as indicative only.
      *
      * @param scale The scale for which to generate the image
-     * @param width The width of the scalebar. The real width will change to round the measurement
-     * of the segments.
+     * @param width The initial width of the scalebar in points. There are
+     * approx 2.83 points per mm. The real width will change to round the
+     * measurement of the segments.
+     * @param dpi DPI used on the display device. e.g. for a standard printout,
+     * 72 is suitable. For screen display, 96 is better.
+     * @return
+     */
+    public BufferedImage getImageForPrint(Double scale, double width, double dpi) {
+        double segmentInMeters = scale / 100;
+        int segmentInPixels = (int) (dpi / 2.5);
+        
+        if (segmentInMeters < 0.001) {
+            // Scale is too small to draw a reasonable scalebar. 
+            return null;
+        }
+
+        // Uses the widthInMeters to determine the appropriate unit of measure and rounding
+        // factor to use for the scale bar
+        this.segmentMeasureUnit = segmentMeasureUnitType.m;
+        if (segmentInMeters >= 1000) {
+            this.segmentMeasureUnit = segmentMeasureUnitType.km;
+        } else if (segmentInMeters < 0.01) {
+            this.segmentMeasureUnit = segmentMeasureUnitType.mm;
+        } else if (segmentInMeters < 1) {
+            this.segmentMeasureUnit = segmentMeasureUnitType.cm;
+        }
+
+        int finalScalebarWidth = (int) width + (this.lrbMargin * 2);
+        int segNum = this.numberOfSegments;
+        if (segNum * segmentInPixels > width) {
+            segNum = (int) (width / segmentInPixels);
+        }
+
+        if (segNum < 1) {
+            return null;
+        }
+
+        BufferedImage bi = new BufferedImage(finalScalebarWidth, height, BufferedImage.TYPE_INT_ARGB);
+
+        int segmentHeight = this.height - (this.lrbMargin + this.topMargin);
+        Graphics2D g2D = (Graphics2D) bi.getGraphics();
+        g2D.setColor(this.colorBorderSegment);
+        g2D.fillRect(this.lrbMargin - 1, this.topMargin - 1,
+                segNum * segmentInPixels + 2,
+                segmentHeight + 2);
+
+        for (int segmentInd = 0; segmentInd < segNum; segmentInd++) {
+            int x = this.lrbMargin + segmentInd * segmentInPixels;
+            int y = this.topMargin;
+            if (segmentInd % 2 == 0) {
+                g2D.setColor(this.colorSegmentEven);
+            } else {
+                g2D.setColor(this.colorSegmentUneven);
+            }
+            g2D.fillRect(x, y, segmentInPixels, segmentHeight);
+            this.drawSegmentText(g2D,
+                    segmentInd * segmentInMeters,
+                    this.lrbMargin + segmentInd * segmentInPixels,
+                    this.height);
+        }
+        this.drawSegmentText(g2D,
+                segNum * segmentInMeters,
+                this.lrbMargin + segNum * segmentInPixels,
+                this.height);
+
+        if (scale != null && drawScaleText) {
+            String scaleText;
+            DecimalFormat df = new DecimalFormat("#,###,###");
+            df.setRoundingMode(RoundingMode.HALF_UP);
+            if (scale < 1) {
+                df = new DecimalFormat("0.##");
+            }
+            scaleText = df.format(scale);
+            scaleText = String.format("1: %s", scaleText);
+            this.drawText(g2D, scaleText, finalScalebarWidth / 2, this.topMargin - 2);
+        }
+
+        return bi;
+    }
+
+    /**
+     * Generate the image of the scalebar, stores it in a temporary location and
+     * returns the file location.
+     *
+     * @param scale The scale for which to generate the image
+     * @param width The width of the scalebar. The real width will change to
+     * round the measurement of the segments.
      * @param dpi DPI used
      * @return The absolute path of the image
      * @throws IOException
@@ -291,9 +370,9 @@ public class ScalebarGenerator {
             Double scale, double width, double dpi) throws IOException {
         return getImageAsFileLocation(scale, width, dpi, TEMPORARY_IMAGE_FILE);
     }
-    
+
     public String getImageAsFileLocation(
-            Double scale, double width, double dpi, String fileNameWithoutExtension) throws IOException{
+            Double scale, double width, double dpi, String fileNameWithoutExtension) throws IOException {
         File location = new File(TEMPORARY_IMAGE_FILE_LOCATION);
         if (!location.exists()) {
             location.mkdirs();
@@ -301,10 +380,10 @@ public class ScalebarGenerator {
         String pathToResult = TEMPORARY_IMAGE_FILE_LOCATION + File.separator
                 + fileNameWithoutExtension + "." + IMAGE_FORMAT;
         File outputFile = new File(pathToResult);
-        BufferedImage bufferedImage = this.getImage(scale, width, dpi);
+        BufferedImage bufferedImage = this.getImageForPrint(scale, width, dpi);
         ImageIO.write(bufferedImage, IMAGE_FORMAT, outputFile);
         return pathToResult;
-        
+
     }
 
     private void drawText(Graphics2D g2D, String txt, int x, int y) {
@@ -341,7 +420,7 @@ public class ScalebarGenerator {
             DecimalFormat decFormat = new DecimalFormat("#");
             measureToWrite = decFormat.format(segmentMeasureInMeters);
         }
-        measureToWrite = String.format("%s %s", measureToWrite, this.segmentMeasureUnit);
+        measureToWrite = String.format("%s%s", measureToWrite, this.segmentMeasureUnit);
         this.drawText(g2D, measureToWrite, x, y);
     }
 }

@@ -258,16 +258,16 @@ public class Development {
         System.out.println(info);
     }
 
-    @Ignore
+    //@Ignore
     @Test
     public void TestTitlePlanReport() throws Exception {
         System.out.println("Test title plan report");
         SecurityBean.authenticate("test", "test".toCharArray(), this.getWSConfig());
-        CadastreObjectBean co = PojoDataAccess.getInstance().getCadastreObject("ac879323-3098-4307-ab9a-f5f84aa263ff");
+        CadastreObjectBean co = PojoDataAccess.getInstance().getCadastreObject("2e21acda-d190-4105-866f-4bdf59e875ca");
 
         MapImageGeneratorForSelectedParcel gen
                 = new MapImageGeneratorForSelectedParcel(
-                        co, 665, 423, 200, 200, true, 300, 40);
+                        co, 665, 423, 200, 200, true, 192, 40);
         MapImageInformation info = gen.getInformation();
 
         ReportViewerForm form = new ReportViewerForm(
@@ -279,30 +279,6 @@ public class Development {
         form.setVisible(true);
         displayControlsBundleForm(new JPanel());
     }
-
-    private void lockExecution() {
-        final Lock lock = new ReentrantLock();
-        final Condition goAhead = lock.newCondition();
-        /* Here goes everything you need to do before "pausing" */
-        lock.lock();
-        try {
-            goAhead.await(20, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-
-        } finally {
-            lock.unlock();
-        }
-    }
-    //    //@Ignore
-//    @Test
-//    public void testImportPanel() throws Exception {
-//        System.out.println("Test import panel");
-//
-//       // SecurityBean.authenticate("test", "test".toCharArray(), this.getWSConfig());
-//
-//        ImportSpatialPanel ctrl = new ImportSpatialPanel();
-//        this.displayControlsBundleForm(ctrl);
-//    }
 
     private HashMap<String, String> getWSConfig() {
         HashMap<String, String> wsConfig = new HashMap<String, String>();

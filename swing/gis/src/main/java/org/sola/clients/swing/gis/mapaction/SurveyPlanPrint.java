@@ -56,7 +56,7 @@ public class SurveyPlanPrint extends ExtendedAction {
                 
                 MapImageGeneratorForSelectedParcel gen
                         = new MapImageGeneratorForSelectedParcel(
-                                co, 665, 423, 200, 200, true, 300, 40);
+                                co, 665, 423, 200, 200, true, 192, 40);
                 MapImageInformation info = gen.getInformation();
                 
                 ReportViewerForm form = new ReportViewerForm(

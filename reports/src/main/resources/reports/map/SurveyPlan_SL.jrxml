@@ -175,7 +175,7 @@
 				<imageExpression><![CDATA[$P{MAP_IMAGE}]]></imageExpression>
 			</image>
 			<image scaleImage="RealSize" hAlign="Center">
-				<reportElement positionType="Float" x="139" y="330" width="277" height="37" uuid="faa7b7f7-e8f9-4cdf-a692-06bf2f488311"/>
+				<reportElement positionType="Float" x="194" y="330" width="166" height="30" uuid="faa7b7f7-e8f9-4cdf-a692-06bf2f488311"/>
 				<imageExpression><![CDATA[$P{SCALE_IMAGE}]]></imageExpression>
 			</image>
 		</band>
