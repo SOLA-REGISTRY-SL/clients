@@ -3265,9 +3265,9 @@ public class ApplicationPanel extends ContentPanel {
      */
     private void startService() {
         final ApplicationServiceBean selectedService = appBean.getSelectedService();
-
-        if (selectedService != null) {
-
+         if (selectedService != null) {
+                 System.out.println("SERVIZIO     "+appBean.getSelectedService().getRequestTypeCode());
+       
             SolaTask t = new SolaTask<Void, Void>() {
                 List<ValidationResultBean> result;
 

@@ -44,7 +44,8 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
         }
         this.originalCadastreObject = cadastreObject;
         this.cadastreObjectBean = cadastreObject.copy();
-        autoAreaCalc = requestTypeCode.equals(RequestTypeBean.CODE_EXISTING_PARCEL);
+//        autoAreaCalc = requestTypeCode.equals(RequestTypeBean.CODE_EXISTING_PARCEL);
+        autoAreaCalc = requestTypeCode.equals(RequestTypeBean.CODE_NEW_PARCEL);
         initComponents();
         setReadOnly(!readOnly);
         postInit();
@@ -479,7 +480,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
                 .addComponent(btnSurveyDate))
             .addGroup(jPanel14Layout.createSequentialGroup()
                 .addComponent(jLabel14)
-                .addGap(0, 72, Short.MAX_VALUE))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         jPanel14Layout.setVerticalGroup(
             jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -967,7 +968,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
             jPanel35Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel35Layout.createSequentialGroup()
                 .addComponent(jLabel27)
-                .addGap(0, 106, Short.MAX_VALUE))
+                .addGap(0, 0, Short.MAX_VALUE))
             .addComponent(txtCheckedBy)
         );
         jPanel35Layout.setVerticalGroup(
@@ -1099,7 +1100,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(pnlMainGrid, javax.swing.GroupLayout.DEFAULT_SIZE, 634, Short.MAX_VALUE)
+                    .addComponent(pnlMainGrid, javax.swing.GroupLayout.PREFERRED_SIZE, 634, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(btnSave, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)))
