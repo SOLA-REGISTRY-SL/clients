@@ -104,6 +104,7 @@ public class CadastreObjectBean extends AbstractTransactionedBean {
     public static String CHECKING_DATE_PROPERTY = "checkingDate";
     public static String SURVEY_TYPE_PROPERTY = "surveyType";
     public static String DWG_OFF_NUMBER_PROPERTY = "dwgOffNumber";
+    public static String STATE_LAND_CLEARANCE_PROPERTY = "stateLandClearance";
     
     private Date approvalDatetime;
     private Date historicDatetime;
@@ -151,6 +152,7 @@ public class CadastreObjectBean extends AbstractTransactionedBean {
     private String checkedBy;
     private String dwgOffNumber;
     private Date checkingDate;
+    private boolean stateLandClearance;
     
     public CadastreObjectBean() {
         super();
@@ -624,6 +626,16 @@ public class CadastreObjectBean extends AbstractTransactionedBean {
         Date oldValue=this.checkingDate;
         this.checkingDate = checkingDate;
         propertySupport.firePropertyChange(CHECKING_DATE_PROPERTY, oldValue, checkingDate);
+    }
+    
+    public boolean isStateLandClearance() {
+        return stateLandClearance;
+    }
+
+    public void setStateLandClearance(boolean stateLandClearance) {
+        boolean oldValue=this.stateLandClearance;
+        this.stateLandClearance = stateLandClearance;
+        propertySupport.firePropertyChange(STATE_LAND_CLEARANCE_PROPERTY, oldValue, stateLandClearance);
     }
     
     public byte[] getGeomPolygon() {

@@ -149,7 +149,7 @@ public class MapImageGeneratorForSelectedParcel {
         this.addLayers(map, IN_PLAN_PRODUCTION);
         mapCrs = map.getMapContent().getCoordinateReferenceSystem();
         mapImageGenerator = new MapImageGenerator(map.getMapContent());
-        mapImageGenerator.setDrawCoordinatesInTheSides(false);
+        mapImageGenerator.setDrawCoordinatesInTheSides(true);
         mapImageGenerator.setTextInTheMapCenter(null);
 
         // Initialize the map generator of the map sketch image
@@ -326,8 +326,7 @@ public class MapImageGeneratorForSelectedParcel {
     private String getMapImageAsFileLocation(ReferencedEnvelope extent, double scale, String fileName) throws IOException {
         String pathToResult = mapImageGenerator.getFullpathOfMapImage(fileName, IMAGE_FORMAT);
         File outputFile = new File(pathToResult);
-        BufferedImage mapOnlyImage = mapImageGenerator.getImage(extent, getMapOnlyWidth(),
-                getMapOnlyHeight(), scale, DPI);
+        BufferedImage mapOnlyImage = mapImageGenerator.getImage(extent, getMapOnlyWidth(), getMapOnlyHeight(), scale, DPI);
 
         BufferedImage fullImage = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_INT_ARGB);
         Graphics2D graphics = fullImage.createGraphics();

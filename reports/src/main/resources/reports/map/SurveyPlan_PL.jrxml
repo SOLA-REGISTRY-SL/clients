@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="d165c113-82fb-4413-a3a5-8e165e0dd261">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="232"/>
+	<property name="ireport.y" value="0"/>
 	<style name="border">
 		<box leftPadding="5">
 			<pen lineWidth="1.0"/>
@@ -114,63 +114,62 @@
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="154" splitType="Stretch">
+		<band height="145" splitType="Stretch">
 			<textField>
-				<reportElement x="0" y="0" width="555" height="39" uuid="27ebbcdd-87f7-40c9-857c-6b221a2a2992"/>
+				<reportElement x="0" y="0" width="555" height="30" uuid="27ebbcdd-87f7-40c9-857c-6b221a2a2992"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="25"/>
+					<font size="22" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Survey plan - " + $F{nameFirstpart} +
-($F{nameLastpart} == null || $F{nameFirstpart}.equals("") ? "" : "/" + $F{nameLastpart})]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Survey plan"]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="0" y="43" width="555" height="28" uuid="b2d0588b-c0e0-478c-954d-a3ed966d9f70"/>
+				<reportElement x="0" y="33" width="555" height="28" uuid="b2d0588b-c0e0-478c-954d-a3ed966d9f70"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="14" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA["PROPERTY OF " + $F{ownerName}.toUpperCase()]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="0" y="71" width="555" height="28" uuid="9973bb4c-316a-4dac-871c-540e26e23b81"/>
+				<reportElement x="0" y="61" width="555" height="28" uuid="9973bb4c-316a-4dac-871c-540e26e23b81"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="14" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA["SITUATED AT: " + $F{address}.toUpperCase() + ", " + $F{chiefdomType}.getDisplayValue().toUpperCase()]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="0" y="100" width="555" height="25" uuid="d3330ec1-ae56-4fed-afb1-45180d69d5ee"/>
+				<reportElement x="0" y="90" width="555" height="25" uuid="d3330ec1-ae56-4fed-afb1-45180d69d5ee"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="14"/>
 				</textElement>
 				<text><![CDATA[BOUNDARY SHOWN IN RED]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="0" y="125" width="555" height="28" uuid="bbddc42c-3661-425c-8ffb-f38c683a1116"/>
+				<reportElement x="0" y="115" width="555" height="28" uuid="bbddc42c-3661-425c-8ffb-f38c683a1116"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="14" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA["AREA = " + new java.text.DecimalFormat("#,##0.0").format($F{parcelAreaAcres}) + " ACRE(S)"]]></textFieldExpression>
+				<textFieldExpression><![CDATA["AREA = " + new java.text.DecimalFormat("#,##0.####").format($F{parcelAreaAcres}) + " ACRE(S)"]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>
 	<detail>
-		<band height="434" splitType="Stretch">
+		<band height="453" splitType="Stretch">
 			<textField pattern="">
-				<reportElement positionType="Float" x="0" y="301" width="555" height="28" uuid="ef8962d0-7040-4bd2-93e0-6793257aff4c"/>
+				<reportElement positionType="Float" x="0" y="328" width="555" height="28" uuid="ef8962d0-7040-4bd2-93e0-6793257aff4c"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="14" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA["SCALE 1:" + new java.text.DecimalFormat("# ##0").format($P{SCALE})]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="0" y="376" width="555" height="28" uuid="9d19bc56-f465-4ae5-9901-f686117bb689"/>
+				<reportElement positionType="Float" x="0" y="394" width="555" height="28" uuid="9d19bc56-f465-4ae5-9901-f686117bb689"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="14" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{surveyMethod}.toString()]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement positionType="Float" x="0" y="404" width="555" height="28" uuid="c89b0a3e-1386-41e7-9333-d62fe6ad6bb1"/>
+				<reportElement positionType="Float" x="0" y="422" width="555" height="28" uuid="c89b0a3e-1386-41e7-9333-d62fe6ad6bb1"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="14" isBold="false"/>
 				</textElement>
@@ -183,29 +182,37 @@
 				<imageExpression><![CDATA[$P{MAP_IMAGE}]]></imageExpression>
 			</image>
 			<image scaleImage="RealSize" hAlign="Center">
-				<reportElement positionType="Float" x="194" y="330" width="166" height="30" uuid="faa7b7f7-e8f9-4cdf-a692-06bf2f488311"/>
+				<reportElement positionType="Float" x="194" y="357" width="166" height="30" uuid="faa7b7f7-e8f9-4cdf-a692-06bf2f488311"/>
 				<imageExpression><![CDATA[$P{SCALE_IMAGE}]]></imageExpression>
 			</image>
+			<textField>
+				<reportElement positionType="Float" x="0" y="302" width="555" height="25" uuid="18ddbbf9-a952-495f-b1d7-9f651385da7e"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="16" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nameFirstpart} +
+($F{nameLastpart} == null || $F{nameFirstpart}.equals("") ? "" : "/" + $F{nameLastpart})]]></textFieldExpression>
+			</textField>
 		</band>
 	</detail>
 	<summary>
-		<band height="139" splitType="Stretch">
+		<band height="109" splitType="Stretch">
 			<staticText>
-				<reportElement x="3" y="6" width="240" height="25" uuid="3cb3f915-76b8-481a-95a3-6d3d0586022b"/>
+				<reportElement x="315" y="21" width="240" height="25" uuid="3cb3f915-76b8-481a-95a3-6d3d0586022b"/>
 				<textElement verticalAlignment="Middle">
 					<font size="14" isStrikeThrough="false"/>
 				</textElement>
 				<text><![CDATA[LICENSED SURVEYOR]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="297" y="6" width="258" height="25" uuid="65a2af5e-009d-463f-b162-65413280b221"/>
+				<reportElement x="2" y="21" width="258" height="25" uuid="65a2af5e-009d-463f-b162-65413280b221"/>
 				<textElement verticalAlignment="Middle">
 					<font size="14" isStrikeThrough="false"/>
 				</textElement>
 				<text><![CDATA[DIRECTOR OF SURVEYS AND LANDS]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="3" y="31" width="115" height="45" uuid="bdf6b65c-e6f9-4faf-ade2-5f79b4f9fe50"/>
+				<reportElement x="315" y="60" width="115" height="45" uuid="bdf6b65c-e6f9-4faf-ade2-5f79b4f9fe50"/>
 				<textElement textAlignment="Center" verticalAlignment="Bottom">
 					<font size="10" isStrikeThrough="false"/>
 				</textElement>
@@ -213,7 +220,7 @@
 (signature)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="128" y="31" width="115" height="45" uuid="4bf7c26c-b1a1-4d75-a89b-c836c6fa3793"/>
+				<reportElement x="440" y="60" width="115" height="45" uuid="4bf7c26c-b1a1-4d75-a89b-c836c6fa3793"/>
 				<textElement textAlignment="Center" verticalAlignment="Bottom">
 					<font size="10" isStrikeThrough="false"/>
 				</textElement>
@@ -221,7 +228,7 @@
 (date)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="427" y="31" width="115" height="45" uuid="6aafe0de-cf62-4736-9d8c-5c7296588ddb"/>
+				<reportElement x="132" y="60" width="115" height="45" uuid="6aafe0de-cf62-4736-9d8c-5c7296588ddb"/>
 				<textElement textAlignment="Center" verticalAlignment="Bottom">
 					<font size="10" isStrikeThrough="false"/>
 				</textElement>
@@ -229,41 +236,13 @@
 (date)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="302" y="31" width="115" height="45" uuid="d99b6fe1-2913-4f23-81a8-b0ea673dea39"/>
+				<reportElement x="7" y="60" width="115" height="45" uuid="d99b6fe1-2913-4f23-81a8-b0ea673dea39"/>
 				<textElement textAlignment="Center" verticalAlignment="Bottom">
 					<font size="10" isStrikeThrough="false"/>
 				</textElement>
 				<text><![CDATA[__________________
 (signature)]]></text>
 			</staticText>
-			<staticText>
-				<reportElement style="border" x="3" y="95" width="180" height="21" uuid="3ad75ca0-ace1-4baa-90ff-701766c06550"/>
-				<textElement verticalAlignment="Middle" markup="none">
-					<font size="10" isStrikeThrough="false"/>
-				</textElement>
-				<text><![CDATA[CHARTING OFFICER]]></text>
-			</staticText>
-			<staticText>
-				<reportElement style="border" x="3" y="116" width="180" height="21" uuid="b8763540-cf4c-42d7-82be-68cf62987e66"/>
-				<textElement verticalAlignment="Middle" markup="none">
-					<font size="10" isStrikeThrough="false"/>
-				</textElement>
-				<text><![CDATA[STATE LAND CLEARING OFFICER]]></text>
-			</staticText>
-			<textField>
-				<reportElement style="border" x="183" y="95" width="273" height="21" uuid="e8aa12ea-a1c3-4a4b-b902-f1f0df6b1647"/>
-				<textElement verticalAlignment="Middle">
-					<font size="10" isBold="false"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{chartingOfficer}.getFullName()]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement style="border" x="183" y="116" width="273" height="21" uuid="6d6067cc-6feb-4e84-9747-3c16e563f7c2"/>
-				<textElement verticalAlignment="Middle">
-					<font size="10" isBold="false"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{stateLandClearingOfficer}.getFullName()]]></textFieldExpression>
-			</textField>
 		</band>
 	</summary>
 </jasperReport>

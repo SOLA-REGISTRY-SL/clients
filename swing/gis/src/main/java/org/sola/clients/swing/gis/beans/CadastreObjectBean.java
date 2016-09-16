@@ -40,6 +40,7 @@ import org.geotools.swing.extended.util.GeometryUtility;
 import org.geotools.swing.extended.util.Messaging;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.sola.clients.beans.cache.CacheManager;
+import org.sola.clients.beans.converters.TypeConverters;
 import org.sola.clients.swing.gis.beans.validation.PrivateLandValidationGroup;
 import org.sola.clients.swing.gis.beans.validation.StateLandValidationGroup;
 import org.sola.clients.beans.party.PartySummaryBean;
@@ -48,7 +49,9 @@ import org.sola.clients.beans.referencedata.LandTypeBean;
 import org.sola.clients.beans.referencedata.SurveyTypeBean;
 import org.sola.clients.beans.referencedata.SurveyingMethodTypeBean;
 import org.sola.clients.beans.validation.Localized;
+import org.sola.clients.beans.validation.ValidationResultBean;
 import org.sola.clients.swing.gis.beans.validation.CadastreObjectSurveyTypeCheck;
+import org.sola.clients.swing.gis.data.PojoDataAccess;
 import org.sola.common.StringUtility;
 import org.sola.common.messaging.ClientMessage;
 import org.sola.common.messaging.GisMessage;
@@ -96,6 +99,7 @@ public class CadastreObjectBean extends SpatialBean {
     public static String CHECKING_DATE_PROPERTY = "checkingDate";
     public static String SURVEY_TYPE_PROPERTY = "surveyType";
     public static String DWG_OFF_NUMBER_PROPERTY = "dwgOffNumber";
+    public static String STATE_LAND_CLEARANCE_PROPERTY = "stateLandClearance";
     
     private String id;
     @NotEmpty(message = ClientMessage.CHECK_NOTNULL_FIRSTPART, payload = Localized.class)
@@ -149,6 +153,7 @@ public class CadastreObjectBean extends SpatialBean {
     @NotNull(message = ClientMessage.CHECK_NOTNULL_CHECKING_DATE, payload = Localized.class, groups = StateLandValidationGroup.class)
     @Past(message = ClientMessage.CHECK_NOTNULL_CHECKING_DATE_IN_PAST, payload = Localized.class, groups = StateLandValidationGroup.class)
     private Date checkingDate;
+    private boolean stateLandClearance;
     
     /**
      * Creates a cadastre object bean
@@ -575,6 +580,16 @@ public class CadastreObjectBean extends SpatialBean {
         propertySupport.firePropertyChange(DWG_OFF_NUMBER_PROPERTY, oldValue, dwgOffNumber);
     }
 
+    public boolean isStateLandClearance() {
+        return stateLandClearance;
+    }
+
+    public void setStateLandClearance(boolean stateLandClearance) {
+        boolean oldValue=this.stateLandClearance;
+        this.stateLandClearance = stateLandClearance;
+        propertySupport.firePropertyChange(STATE_LAND_CLEARANCE_PROPERTY, oldValue, stateLandClearance);
+    }
+
     public String getCheckedBy() {
         return checkedBy;
     }
@@ -750,7 +765,7 @@ public class CadastreObjectBean extends SpatialBean {
         co.setCheckedBy(this.getCheckedBy());
         co.setCheckingDate(this.getCheckingDate());
         co.setDwgOffNumber(this.getDwgOffNumber());
-        
+        co.setStateLandClearance(this.isStateLandClearance());
         return co;
     }
     
@@ -820,6 +835,11 @@ public class CadastreObjectBean extends SpatialBean {
         this.setCheckedBy(co.getCheckedBy());
         this.setCheckingDate(co.getCheckingDate());
         this.setDwgOffNumber(co.getDwgOffNumber());
+        this.setStateLandClearance(co.isStateLandClearance());
+    }
+    
+    public boolean makeStateLandClearance(boolean cleared){
+        return PojoDataAccess.getInstance().getCadastreService().makeStateLandClearance(getId(), cleared);
     }
     
     @Override

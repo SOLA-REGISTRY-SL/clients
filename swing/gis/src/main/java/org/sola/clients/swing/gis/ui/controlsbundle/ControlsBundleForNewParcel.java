@@ -40,6 +40,7 @@ import org.sola.clients.beans.application.ApplicationBean;
 import org.sola.clients.beans.controls.SolaObservableList;
 import org.sola.clients.beans.referencedata.CadastreObjectTypeBean;
 import org.sola.clients.beans.referencedata.RequestTypeBean;
+import org.sola.clients.beans.security.SecurityBean;
 import org.sola.clients.swing.gis.beans.CadastreObjectBean;
 import org.sola.clients.swing.gis.beans.SpatialBean;
 import org.sola.clients.swing.gis.beans.TransactionCadastreChangeBean;
@@ -48,10 +49,12 @@ import org.sola.clients.swing.gis.layer.CadastreChangeNewCadastreObjectLayer;
 import org.sola.clients.swing.gis.layer.CadastreChangeNewSurveyPointLayer;
 import org.sola.clients.swing.gis.mapaction.CadastreChangePointSurveyListFormShow;
 import org.sola.clients.swing.gis.mapaction.RemoveCadastreObjects;
+import org.sola.clients.swing.gis.mapaction.SaveTransaction;
 import org.sola.clients.swing.gis.mapaction.SurveyPlanDetails;
 import org.sola.clients.swing.gis.mapaction.SurveyPlanPrint;
 import org.sola.clients.swing.gis.tool.CadastreChangeNewCadastreObjectTool;
 import org.sola.clients.swing.gis.tool.CadastreChangeNodeTool;
+import org.sola.common.RolesConstants;
 
 /**
  * A control bundle that is used for creating new parcel. The necessary tools
@@ -290,6 +293,9 @@ public final class ControlsBundleForNewParcel extends ControlsBundleForTransacti
     @Override
     public void setReadOnly(boolean readOnly) {
         super.setReadOnly(readOnly);
+        if(!readOnly && SecurityBean.getCurrentUser().isInRole(RolesConstants.STATE_LAND_CLEARANCE)){
+            this.getMap().getMapActionByName(SaveTransaction.MAPACTION_NAME).setEnabled(false);
+        }
         boolean hasCadastreObjects = newCadastreObjectLayer.getBeanList().size() > 0;
         this.getMap().getMapActionByName(
                 CadastreChangePointSurveyListFormShow.MAPACTION_NAME).setEnabled(!readOnly);

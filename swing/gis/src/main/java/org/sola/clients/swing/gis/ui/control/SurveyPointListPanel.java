@@ -34,9 +34,10 @@ package org.sola.clients.swing.gis.ui.control;
 import com.vividsolutions.jts.geom.Coordinate;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.io.File;
+import java.util.List;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.extended.layer.ExtendedLayer;
 import org.geotools.swing.extended.Map;
@@ -46,7 +47,9 @@ import org.sola.clients.swing.gis.beans.AbstractListSpatialBean;
 import org.sola.clients.swing.gis.beans.SpatialBean;
 import org.sola.clients.swing.gis.beans.SurveyPointBean;
 import org.sola.clients.swing.gis.beans.SurveyPointListBean;
+import org.sola.clients.swing.gis.data.ExternalFileImporterSurveyPointBeans;
 import org.sola.clients.swing.gis.layer.CadastreChangeNewSurveyPointLayer;
+import org.sola.common.FileUtility;
 import org.sola.common.messaging.GisMessage;
 
 /**
@@ -156,6 +159,42 @@ public class SurveyPointListPanel extends javax.swing.JPanel {
         }
     }
 
+    private void addPointsFromScv() {
+        JFileChooser chooser = new JFileChooser();
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("CSV files", "csv");
+        chooser.setFileFilter(filter);
+        int returnVal = chooser.showOpenDialog(this);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            ExternalFileImporterSurveyPointBeans.getInstance().setLineIndexToStartFrom(1);
+            List<SurveyPointBean> pointBeans = ExternalFileImporterSurveyPointBeans.getInstance().getBeans(chooser.getSelectedFile().getAbsolutePath());
+            for (SurveyPointBean bean : pointBeans) {
+                addPoint(bean.getX(), bean.getY());
+            }
+        }
+    }
+
+    private void addPoint(Double x, Double y) {
+        if (cbxCrs.getSelectedIndex() == 1) {
+            // Colonial is selected
+            Coordinate coord;
+            if (((CrsItem) cbxCrs.getItemAt(0)).getSrid() == 32628) {
+                coord = GeometryUtility.convertFromColonialToUTM28(x, y);
+            } else {
+                coord = GeometryUtility.convertFromColonialToUTM29(x, y);
+            }
+            if (coord != null) {
+                x = coord.x;
+                y = coord.y;
+            }
+        }
+
+        SurveyPointBean bean = new SurveyPointBean();
+        bean.setSrid(((CrsItem) cbxCrs.getItemAt(0)).getSrid());
+        bean.setX(x);
+        bean.setY(y);
+        this.theBean.getBeanList().add(bean);
+    }
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -176,6 +215,7 @@ public class SurveyPointListPanel extends javax.swing.JPanel {
         cbxCrs = new javax.swing.JComboBox();
         lblCrs = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
+        btnBrowse = new javax.swing.JButton();
 
         addAncestorListener(new javax.swing.event.AncestorListener() {
             public void ancestorMoved(javax.swing.event.AncestorEvent evt) {
@@ -261,6 +301,15 @@ public class SurveyPointListPanel extends javax.swing.JPanel {
             }
         });
 
+        btnBrowse.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/sola/clients/swing/gis/ui/control/document-excel-csv.png"))); // NOI18N
+        btnBrowse.setText(bundle.getString("SurveyPointListPanel.btnBrowse.text")); // NOI18N
+        btnBrowse.setToolTipText(bundle.getString("SurveyPointListPanel.btnBrowse.toolTipText")); // NOI18N
+        btnBrowse.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBrowseActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -268,12 +317,14 @@ public class SurveyPointListPanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 660, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(cmdRemove)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnBrowse)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton1)
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(lblCrs, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(cbxCrs, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -286,16 +337,21 @@ public class SurveyPointListPanel extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtY, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(cmdAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addComponent(cmdAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 14, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton1, javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jButton1, javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(cmdRemove)
+                            .addComponent(btnBrowse)))
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(cmdRemove)
                         .addComponent(lblCrs)
                         .addComponent(cbxCrs, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(txtY, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -313,32 +369,9 @@ public class SurveyPointListPanel extends javax.swing.JPanel {
 
     private void cmdAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdAddActionPerformed
         try {
-            Double x = Double.valueOf(this.txtX.getText());
-            Double y = Double.valueOf(this.txtY.getText());
-
-            if (cbxCrs.getSelectedIndex() == 1) {
-                // Colonial is selected
-                Coordinate coord;
-                if (((CrsItem) cbxCrs.getItemAt(0)).getSrid() == 32628) {
-                    coord = GeometryUtility.convertFromColonialToUTM28(x, y);
-                } else {
-                    coord = GeometryUtility.convertFromColonialToUTM29(x, y);
-                }
-                if (coord != null) {
-                    x = coord.x;
-                    y = coord.y;
-                }
-            }
-
-            SurveyPointBean bean = new SurveyPointBean();
-            bean.setSrid(((CrsItem) cbxCrs.getItemAt(0)).getSrid());
-            bean.setX(x);
-            bean.setY(y);
-            this.theBean.getBeanList().add(bean);
-
+            addPoint(Double.valueOf(this.txtX.getText()), Double.valueOf(this.txtY.getText()));
             txtX.setText("");
             txtY.setText("");
-
         } catch (NumberFormatException ex) {
             Messaging.getInstance().show(GisMessage.CADASTRE_SURVEY_ADD_POINT);
         }
@@ -359,7 +392,12 @@ public class SurveyPointListPanel extends javax.swing.JPanel {
         zoomToPoints();
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void btnBrowseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBrowseActionPerformed
+        addPointsFromScv();
+    }//GEN-LAST:event_btnBrowseActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnBrowse;
     private javax.swing.JComboBox cbxCrs;
     private javax.swing.JButton cmdAdd;
     private javax.swing.JButton cmdRemove;

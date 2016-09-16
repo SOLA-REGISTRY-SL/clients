@@ -205,21 +205,20 @@ public class MapImageGenerator {
             graphics.setFont(this.textFont);
             graphics.setColor(this.textColor);
 
-            this.drawText(graphics, String.format("%s N", (int) extent.getMaxY()),
+            this.drawText(graphics, String.format("N %s", (int) extent.getMaxY()),
                     imageWidth / 2, 10, true);
-            this.drawText(graphics, String.format("%s N", (int) extent.getMinY()),
+            this.drawText(graphics, String.format("N %s", (int) extent.getMinY()),
                     imageWidth / 2, imageHeight - 3, true);
             AffineTransform originalTransform = graphics.getTransform();
-            graphics.rotate(-Math.PI / 2, 10, imageHeight / 2);
-            this.drawText(graphics, String.format("%s E", (int) extent.getMinX()),
-                    10, imageHeight / 2, false);
+            graphics.rotate(-Math.PI / 2, 10, (imageHeight / 2)+20);
+            this.drawText(graphics, String.format("E %s", (int) extent.getMinX()),
+                    10, (imageHeight / 2)+20, false);
             graphics.setTransform(originalTransform);
-            graphics.rotate(Math.PI / 2, imageWidth - 10, imageHeight / 2);
-            this.drawText(graphics, String.format("%s E", (int) extent.getMaxX()),
-                    imageWidth - 100, imageHeight / 2, false);
+            graphics.rotate(Math.PI / 2, imageWidth - 10, (imageHeight / 2) - 20);
+            this.drawText(graphics, String.format("E %s", (int) extent.getMaxX()),
+                    imageWidth - 10, (imageHeight / 2) - 20, false);
 
             graphics.setTransform(originalTransform);
-
         }
         if (this.textInTheMapCenter != null) {
             this.drawText(graphics, textInTheMapCenter, imageWidth / 2, imageHeight / 2, true);

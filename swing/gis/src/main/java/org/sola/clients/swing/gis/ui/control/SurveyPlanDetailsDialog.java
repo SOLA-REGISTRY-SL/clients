@@ -12,12 +12,17 @@ import org.sola.clients.beans.referencedata.PartyRoleTypeBean;
 import org.sola.clients.beans.referencedata.RequestTypeBean;
 import org.sola.clients.beans.referencedata.SurveyTypeListBean;
 import org.sola.clients.beans.referencedata.SurveyingMethodTypeListBean;
+import org.sola.clients.beans.security.SecurityBean;
 import org.sola.clients.swing.common.controls.CalendarForm;
 import org.sola.clients.swing.common.utils.FormattersFactory;
 import org.sola.clients.swing.gis.beans.CadastreObjectBean;
 import org.sola.clients.swing.gis.beans.validation.PrivateLandValidationGroup;
 import org.sola.clients.swing.gis.beans.validation.StateLandValidationGroup;
+import org.sola.common.RolesConstants;
 import org.sola.common.StringUtility;
+import org.sola.common.messaging.ClientMessage;
+import org.sola.common.messaging.GisMessage;
+import org.sola.common.messaging.MessageUtility;
 
 /**
  * Survey plan details form
@@ -29,6 +34,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
      */
     private CadastreObjectBean originalCadastreObject;
     private boolean autoAreaCalc = false;
+    private boolean readOnly = false;
 
     public SurveyPlanDetailsDialog(java.awt.Frame parent, boolean modal,
             CadastreObjectBean cadastreObject, String requestTypeCode, boolean readOnly) {
@@ -47,12 +53,16 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
 //        autoAreaCalc = requestTypeCode.equals(RequestTypeBean.CODE_EXISTING_PARCEL);
         autoAreaCalc = requestTypeCode.equals(RequestTypeBean.CODE_NEW_PARCEL);
         initComponents();
+        this.readOnly = readOnly;
         setReadOnly(!readOnly);
         postInit();
     }
 
     private void postInit() {
         // Show/hide panels depending on land type
+        pnlClearance.setVisible(false);
+        pnlSaveButton.setVisible(true);
+        
         if (isPrivateLand()) {
             pnlMainGrid.remove(pnlSurveyNumCorrFile);
             pnlMainGrid.remove(pnlCompFileDwgOffNum);
@@ -61,6 +71,13 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
 
             ((GridLayout) pnlMainGrid.getLayout()).setRows(8);
             this.setSize((int) this.getSize().getWidth(), (int) this.getSize().getHeight() - 120);
+            if (!readOnly && showStateLandClearance()) {
+                setReadOnly(false);
+                pnlSaveButton.setVisible(false);
+                pnlClearance.setVisible(true);
+                pnlSave.setVisible(true);
+                cbxClearance.setSelected(cadastreObjectBean.isStateLandClearance());
+            }
         } else {
             pnlMainGrid.remove(pnlStateLandOfficer);
             pnlMainGrid.remove(pnlChartingOfficer);
@@ -70,6 +87,10 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
             ((GridLayout) pnlMainGrid.getLayout()).setRows(9);
             this.setSize((int) this.getSize().getWidth(), (int) this.getSize().getHeight() - 60);
         }
+    }
+
+    private boolean showStateLandClearance() {
+        return !cadastreObjectBean.isNew() && SecurityBean.getCurrentUser().isInRole(RolesConstants.STATE_LAND_CLEARANCE) && isPrivateLand();
     }
 
     private void setReadOnly(boolean enabled) {
@@ -102,7 +123,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
         txtDrawnBy.setEnabled(enabled);
         btnSurveyDate.setEnabled(enabled);
         btnCheckingDate.setEnabled(enabled);
-        btnSave.setVisible(enabled);
+        pnlSave.setVisible(enabled);
     }
 
     /**
@@ -193,11 +214,22 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
         } else if (cadastreObjectBean.validate(true, Default.class, StateLandValidationGroup.class).size() > 0) {
             return false;
         }
-        
+
         originalCadastreObject.copyFromObject(cadastreObjectBean);
         return true;
     }
 
+    private void makeStateLandClearance(){
+        if(cadastreObjectBean.isStateLandClearance() != cbxClearance.isSelected()){
+            cadastreObjectBean.makeStateLandClearance(cbxClearance.isSelected());
+            if(cbxClearance.isSelected())
+                MessageUtility.displayMessage(GisMessage.CADASTRE_CHANGE_CLEARANCE_GRANTED);
+            else
+                MessageUtility.displayMessage(GisMessage.CADASTRE_CHANGE_CLEARANCE_REVOKED);
+            this.setVisible(false);
+        }
+    }
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -211,7 +243,6 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
         chartingOfficers = createChartingOfficersList();
         clearingStateLandOfficers = createClearingStateLandOfficiersList();
         surveyTypeListBean = createSurveyTypesList();
-        btnSave = new javax.swing.JButton();
         pnlMainGrid = new javax.swing.JPanel();
         pnlParcelNumber = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
@@ -303,17 +334,16 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
         jPanel12 = new javax.swing.JPanel();
         jLabel12 = new javax.swing.JLabel();
         txtNeighbourEast = new javax.swing.JTextField();
+        pnlSave = new javax.swing.JPanel();
+        pnlClearance = new javax.swing.JPanel();
+        cbxClearance = new javax.swing.JCheckBox();
+        btnSaveClearance = new javax.swing.JButton();
+        pnlSaveButton = new javax.swing.JPanel();
+        btnSave = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Survey plan details");
         setMaximumSize(new java.awt.Dimension(665, 433));
-
-        btnSave.setText("Save");
-        btnSave.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSaveActionPerformed(evt);
-            }
-        });
 
         pnlMainGrid.setMaximumSize(new java.awt.Dimension(647, 370));
         pnlMainGrid.setLayout(new java.awt.GridLayout(10, 2, 15, 15));
@@ -332,7 +362,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jLabel1)
-                .addGap(0, 59, Short.MAX_VALUE))
+                .addGap(0, 52, Short.MAX_VALUE))
             .addComponent(txtNameFirstPart)
         );
         jPanel1Layout.setVerticalGroup(
@@ -357,7 +387,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
             pnlNameLastPartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlNameLastPartLayout.createSequentialGroup()
                 .addComponent(jLabel2)
-                .addGap(0, 61, Short.MAX_VALUE))
+                .addGap(0, 54, Short.MAX_VALUE))
             .addComponent(txtNameLastPart)
         );
         pnlNameLastPartLayout.setVerticalGroup(
@@ -384,7 +414,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addComponent(jLabel3)
-                .addGap(0, 230, Short.MAX_VALUE))
+                .addGap(0, 231, Short.MAX_VALUE))
             .addComponent(txtOwnerName)
         );
         jPanel3Layout.setVerticalGroup(
@@ -437,7 +467,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addComponent(jLabel4)
-                .addGap(0, 246, Short.MAX_VALUE))
+                .addGap(0, 252, Short.MAX_VALUE))
             .addComponent(cbxAddress2, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel4Layout.setVerticalGroup(
@@ -458,7 +488,6 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
 
         btnSurveyDate.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/common/calendar.png"))); // NOI18N
         btnSurveyDate.setText(bundle.getString("DocumentPanel.btnExpirationDate.text")); // NOI18N
-        btnSurveyDate.setBorder(null);
         btnSurveyDate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnSurveyDateActionPerformed(evt);
@@ -497,7 +526,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
         jLabel7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/sola/clients/swing/gis/ui/control/red_asterisk.gif"))); // NOI18N
         jLabel7.setText("Parcel area (acres)");
 
-        txtParcelArea.setFormatterFactory(FormattersFactory.getInstance().getDoubleFormatterFactory(3));
+        txtParcelArea.setFormatterFactory(FormattersFactory.getInstance().getDoubleFormatterFactory(4));
 
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, cadastreObjectBean, org.jdesktop.beansbinding.ELProperty.create("${parcelAreaAcres}"), txtParcelArea, org.jdesktop.beansbinding.BeanProperty.create("value"));
         bindingGroup.addBinding(binding);
@@ -508,7 +537,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addComponent(jLabel7)
-                .addGap(0, 44, Short.MAX_VALUE))
+                .addGap(0, 33, Short.MAX_VALUE))
             .addComponent(txtParcelArea)
         );
         jPanel7Layout.setVerticalGroup(
@@ -562,7 +591,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addComponent(jLabel5)
-                .addGap(0, 138, Short.MAX_VALUE))
+                .addGap(0, 133, Short.MAX_VALUE))
             .addComponent(cbxLandType, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel5Layout.setVerticalGroup(
@@ -608,7 +637,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel8Layout.createSequentialGroup()
                 .addComponent(jLabel8)
-                .addGap(0, 204, Short.MAX_VALUE))
+                .addGap(0, 202, Short.MAX_VALUE))
             .addComponent(cbxSurveyMethod, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel8Layout.setVerticalGroup(
@@ -636,7 +665,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
             jPanel17Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel17Layout.createSequentialGroup()
                 .addComponent(lblSurveyor)
-                .addGap(0, 204, Short.MAX_VALUE))
+                .addGap(0, 203, Short.MAX_VALUE))
             .addComponent(cbxLicensedSurveyor, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel17Layout.setVerticalGroup(
@@ -663,7 +692,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
             jPanel22Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel22Layout.createSequentialGroup()
                 .addComponent(jLabel18)
-                .addGap(0, 207, Short.MAX_VALUE))
+                .addGap(0, 205, Short.MAX_VALUE))
             .addComponent(cbxSurveyType, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel22Layout.setVerticalGroup(
@@ -689,7 +718,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
             jPanel24Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel24Layout.createSequentialGroup()
                 .addComponent(jLabel19)
-                .addGap(0, 49, Short.MAX_VALUE))
+                .addGap(0, 39, Short.MAX_VALUE))
             .addComponent(txtRefNameFirstPart)
         );
         jPanel24Layout.setVerticalGroup(
@@ -713,7 +742,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
             jPanel25Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel25Layout.createSequentialGroup()
                 .addComponent(jLabel20)
-                .addGap(0, 52, Short.MAX_VALUE))
+                .addGap(0, 42, Short.MAX_VALUE))
             .addComponent(txtRefNameLastPart)
         );
         jPanel25Layout.setVerticalGroup(
@@ -771,7 +800,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
             pnlStateLandOfficerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlStateLandOfficerLayout.createSequentialGroup()
                 .addComponent(jLabel16)
-                .addGap(0, 168, Short.MAX_VALUE))
+                .addGap(0, 158, Short.MAX_VALUE))
             .addComponent(cbxClearingStateLandOfficer, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         pnlStateLandOfficerLayout.setVerticalGroup(
@@ -798,7 +827,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
             jPanel27Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel27Layout.createSequentialGroup()
                 .addComponent(jLabel21)
-                .addGap(0, 58, Short.MAX_VALUE))
+                .addGap(0, 51, Short.MAX_VALUE))
             .addComponent(txtSurveyNumber)
         );
         jPanel27Layout.setVerticalGroup(
@@ -823,7 +852,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
             jPanel28Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel28Layout.createSequentialGroup()
                 .addComponent(jLabel22)
-                .addGap(0, 19, Short.MAX_VALUE))
+                .addGap(0, 0, Short.MAX_VALUE))
             .addComponent(txtCorrespondenceFile)
         );
         jPanel28Layout.setVerticalGroup(
@@ -852,7 +881,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
             jPanel30Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel30Layout.createSequentialGroup()
                 .addComponent(jLabel23)
-                .addGap(0, 37, Short.MAX_VALUE))
+                .addGap(0, 26, Short.MAX_VALUE))
             .addComponent(txtComputationFile)
         );
         jPanel30Layout.setVerticalGroup(
@@ -877,7 +906,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
             jPanel31Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel31Layout.createSequentialGroup()
                 .addComponent(jLabel24)
-                .addGap(0, 23, Short.MAX_VALUE))
+                .addGap(0, 0, Short.MAX_VALUE))
             .addComponent(txtDrawingOfficeNumber)
         );
         jPanel31Layout.setVerticalGroup(
@@ -904,7 +933,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
             pnlDrawnByLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlDrawnByLayout.createSequentialGroup()
                 .addComponent(jLabel25)
-                .addGap(0, 245, Short.MAX_VALUE))
+                .addGap(0, 251, Short.MAX_VALUE))
             .addComponent(txtDrawnBy)
         );
         pnlDrawnByLayout.setVerticalGroup(
@@ -919,7 +948,6 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
 
         btnCheckingDate.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/common/calendar.png"))); // NOI18N
         btnCheckingDate.setText(bundle.getString("DocumentPanel.btnExpirationDate.text")); // NOI18N
-        btnCheckingDate.setBorder(null);
         btnCheckingDate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnCheckingDateActionPerformed(evt);
@@ -1032,7 +1060,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
             jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel11Layout.createSequentialGroup()
                 .addComponent(jLabel11)
-                .addGap(0, 213, Short.MAX_VALUE))
+                .addGap(0, 211, Short.MAX_VALUE))
             .addComponent(txtNeighbourSouth)
         );
         jPanel11Layout.setVerticalGroup(
@@ -1056,7 +1084,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
             jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel13Layout.createSequentialGroup()
                 .addComponent(jLabel13)
-                .addGap(0, 217, Short.MAX_VALUE))
+                .addGap(0, 215, Short.MAX_VALUE))
             .addComponent(txtNeighbourWest)
         );
         jPanel13Layout.setVerticalGroup(
@@ -1080,7 +1108,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
             jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel12Layout.createSequentialGroup()
                 .addComponent(jLabel12)
-                .addGap(0, 219, Short.MAX_VALUE))
+                .addGap(0, 218, Short.MAX_VALUE))
             .addComponent(txtNeighbourEast)
         );
         jPanel12Layout.setVerticalGroup(
@@ -1093,17 +1121,68 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
 
         pnlMainGrid.add(jPanel12);
 
+        pnlSave.setLayout(new java.awt.CardLayout());
+
+        cbxClearance.setText("State Land Clearance");
+
+        btnSaveClearance.setText("Save");
+        btnSaveClearance.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSaveClearanceActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout pnlClearanceLayout = new javax.swing.GroupLayout(pnlClearance);
+        pnlClearance.setLayout(pnlClearanceLayout);
+        pnlClearanceLayout.setHorizontalGroup(
+            pnlClearanceLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlClearanceLayout.createSequentialGroup()
+                .addComponent(cbxClearance)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
+                .addComponent(btnSaveClearance, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+        pnlClearanceLayout.setVerticalGroup(
+            pnlClearanceLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlClearanceLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addComponent(cbxClearance)
+                .addComponent(btnSaveClearance))
+        );
+
+        pnlSave.add(pnlClearance, "card3");
+
+        btnSave.setText("Save");
+        btnSave.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSaveActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout pnlSaveButtonLayout = new javax.swing.GroupLayout(pnlSaveButton);
+        pnlSaveButton.setLayout(pnlSaveButtonLayout);
+        pnlSaveButtonLayout.setHorizontalGroup(
+            pnlSaveButtonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlSaveButtonLayout.createSequentialGroup()
+                .addGap(0, 179, Short.MAX_VALUE)
+                .addComponent(btnSave, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+        pnlSaveButtonLayout.setVerticalGroup(
+            pnlSaveButtonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(btnSave)
+        );
+
+        pnlSave.add(pnlSaveButton, "card2");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(pnlMainGrid, javax.swing.GroupLayout.PREFERRED_SIZE, 634, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(btnSave, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(pnlSave, javax.swing.GroupLayout.PREFERRED_SIZE, 264, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(pnlMainGrid, javax.swing.GroupLayout.DEFAULT_SIZE, 664, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -1111,9 +1190,9 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(pnlMainGrid, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnSave)
-                .addContainerGap())
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(pnlSave, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         bindingGroup.bind();
@@ -1135,13 +1214,19 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
         showCalendar(txtCheckingDate);
     }//GEN-LAST:event_btnCheckingDateActionPerformed
 
+    private void btnSaveClearanceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveClearanceActionPerformed
+        makeStateLandClearance();
+    }//GEN-LAST:event_btnSaveClearanceActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCheckingDate;
     private javax.swing.JButton btnSave;
+    private javax.swing.JButton btnSaveClearance;
     private javax.swing.JButton btnSurveyDate;
     private org.sola.clients.swing.gis.beans.CadastreObjectBean cadastreObjectBean;
     private javax.swing.JComboBox<String> cbxAddress2;
     private javax.swing.JComboBox<String> cbxChartingOfficer;
+    private javax.swing.JCheckBox cbxClearance;
     private javax.swing.JComboBox<String> cbxClearingStateLandOfficer;
     private javax.swing.JComboBox<String> cbxLandType;
     private javax.swing.JComboBox<String> cbxLicensedSurveyor;
@@ -1207,11 +1292,14 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
     private org.sola.clients.beans.party.PartySearchResultListBean licensedSurveyors;
     private javax.swing.JPanel pnlChartingOfficer;
     private javax.swing.JPanel pnlCheckedByAndDate;
+    private javax.swing.JPanel pnlClearance;
     private javax.swing.JPanel pnlCompFileDwgOffNum;
     private javax.swing.JPanel pnlDrawnBy;
     private javax.swing.JPanel pnlMainGrid;
     private javax.swing.JPanel pnlNameLastPart;
     private javax.swing.JPanel pnlParcelNumber;
+    private javax.swing.JPanel pnlSave;
+    private javax.swing.JPanel pnlSaveButton;
     private javax.swing.JPanel pnlStateLandOfficer;
     private javax.swing.JPanel pnlSurveyNumCorrFile;
     private org.sola.clients.beans.referencedata.SurveyTypeListBean surveyTypeListBean;

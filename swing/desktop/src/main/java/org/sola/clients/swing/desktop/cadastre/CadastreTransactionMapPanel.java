@@ -33,10 +33,12 @@ import org.sola.clients.beans.application.ApplicationBean;
 import org.sola.clients.beans.application.ApplicationPropertyBean;
 import org.sola.clients.beans.application.ApplicationServiceBean;
 import org.sola.clients.beans.referencedata.CadastreObjectTypeBean;
+import org.sola.clients.beans.security.SecurityBean;
 import org.sola.clients.swing.desktop.MainForm;
 import org.sola.clients.swing.gis.mapaction.SaveTransaction;
 import org.sola.clients.swing.gis.ui.controlsbundle.ControlsBundleForTransaction;
 import org.sola.clients.swing.ui.ContentPanel;
+import org.sola.common.RolesConstants;
 import org.sola.services.boundary.wsclients.WSManager;
 import org.sola.webservices.transferobjects.administrative.BaUnitTO;
 
@@ -52,42 +54,44 @@ public class CadastreTransactionMapPanel extends ContentPanel {
     private String targetCadastreObjectType = CadastreObjectTypeBean.CODE_PARCEL;
 
     /**
-     * It initiates the panel with the target cadastre object type as being parcel.
-     * 
+     * It initiates the panel with the target cadastre object type as being
+     * parcel.
+     *
      * @param applicationBean
      * @param applicationService
-     * @param applicationProperty 
+     * @param applicationProperty
      */
     public CadastreTransactionMapPanel(
             ApplicationBean applicationBean,
             ApplicationServiceBean applicationService,
             ApplicationPropertyBean applicationProperty) {
-        this(applicationBean, applicationService, 
+        this(applicationBean, applicationService,
                 applicationProperty, CadastreObjectTypeBean.CODE_PARCEL);
         saveTransactionState();
     }
-    
+
     /**
-     * It initiates the panel with the target cadastre object type as being parcel.
-     * 
+     * It initiates the panel with the target cadastre object type as being
+     * parcel.
+     *
      * @param applicationBean
      * @param applicationService
      */
     public CadastreTransactionMapPanel(
             ApplicationBean applicationBean,
             ApplicationServiceBean applicationService) {
-        this(applicationBean, applicationService, 
+        this(applicationBean, applicationService,
                 null, CadastreObjectTypeBean.CODE_PARCEL);
         saveTransactionState();
     }
 
     /**
      * It initiates the panel with the target cadastre object type as parameter.
-     * 
+     *
      * @param applicationBean
      * @param applicationService
      * @param applicationProperty
-     * @param targetCadastreObjectType 
+     * @param targetCadastreObjectType
      */
     public CadastreTransactionMapPanel(
             ApplicationBean applicationBean,
@@ -109,12 +113,12 @@ public class CadastreTransactionMapPanel extends ContentPanel {
 
     private void initializeMap() {
         this.mapControl = ControlsBundleForTransaction.getInstance(
-                applicationService.getRequestType().getCode(), this.applicationBean, 
+                applicationService.getRequestType().getCode(), this.applicationBean,
                 this.applicationService.getId(), this.getBaUnitId(), getTargetCadastreObjectType());
         this.mapControl.setReadOnly(!this.applicationService.isManagementAllowed());
     }
-    
-    private String getTargetCadastreObjectType(){
+
+    private String getTargetCadastreObjectType() {
         return targetCadastreObjectType;
     }
 
@@ -143,7 +147,7 @@ public class CadastreTransactionMapPanel extends ContentPanel {
             }
         }
         headerPanel.setTitleText(title);
-     }
+    }
 
     private String getBaUnitId() {
         String baUnitId = null;
@@ -156,33 +160,35 @@ public class CadastreTransactionMapPanel extends ContentPanel {
         }
         return baUnitId;
     }
-     
-    
+
     private void saveTransactionState() {
         MainForm.saveBeanState(this.mapControl.getTransactionBean());
     }
-    
+
     private boolean saveTransaction() {
-       SaveTransaction actionSave = new SaveTransaction(this.mapControl);
-       actionSave.onClick();
-       close();
+        SaveTransaction actionSave = new SaveTransaction(this.mapControl);
+        actionSave.onClick();
+        close();
         saveTransactionState();
         return true;
     }
+
     @Override
     protected boolean panelClosing() {
-        ExtendedAction saveAction = this.mapControl.getMap().getMapActionByName(SaveTransaction.MAPACTION_NAME);
-        if ((saveAction == null || saveAction.isEnabled()) 
-                && MainForm.checkSaveBeforeClose(this.mapControl.getTransactionBean())) {
-            return saveTransaction();
+        if (!SecurityBean.getCurrentUser().isInRole(RolesConstants.STATE_LAND_CLEARANCE)) {
+            ExtendedAction saveAction = this.mapControl.getMap().getMapActionByName(SaveTransaction.MAPACTION_NAME);
+            if ((saveAction == null || saveAction.isEnabled())
+                    && MainForm.checkSaveBeforeClose(this.mapControl.getTransactionBean())) {
+                return saveTransaction();
+            }
         }
         return true;
     }
-    
-    
+
     /**
-     * This method is called from within the constructor to initialize the form. WARNING: Do NOT
-     * modify this code. The content of this method is always regenerated by the Form Editor.
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
