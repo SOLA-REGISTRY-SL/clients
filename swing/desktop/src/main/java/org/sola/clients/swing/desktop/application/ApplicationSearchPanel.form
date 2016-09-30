@@ -196,7 +196,7 @@
                 <BindingParameter name="javax.swing.binding.ParameterKeys.COLUMN_CLASS" value="String.class"/>
                 <BindingParameter name="javax.swing.binding.ParameterKeys.EDITABLE" value="false"/>
               </Subbinding>
-              <Subbinding sourcePath="${agent}">
+              <Subbinding sourcePath="${parcel}">
                 <BindingParameter name="javax.swing.binding.ParameterKeys.COLUMN_CLASS" value="String.class"/>
                 <BindingParameter name="javax.swing.binding.ParameterKeys.EDITABLE" value="false"/>
               </Subbinding>
@@ -629,7 +629,7 @@
                 <Property name="name" type="java.lang.String" value="txtAgentName" noResource="true"/>
               </Properties>
               <BindingProperties>
-                <BindingProperty name="text" source="searchParams" sourcePath="${agent}" target="txtAgentName" targetPath="text" updateStrategy="0" immediately="false">
+                <BindingProperty name="text" source="searchParams" sourcePath="${parcel}" target="txtAgentName" targetPath="text" updateStrategy="0" immediately="false">
                   <BindingParameter name="javax.swing.binding.ParameterKeys.TEXT_CHANGE_STRATEGY" value="javax.swing.binding.TextChangeStrategy.ON_TYPE"/>
                 </BindingProperty>
               </BindingProperties>

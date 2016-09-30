@@ -44,11 +44,20 @@ public class ApplicationSearchResultBean extends ApplicationSummaryBean {
     private String agent;
     private String serviceList; 
     private boolean checked;
+    private String parcel;
     
     public ApplicationSearchResultBean(){
         super();
     }
+    
+    public String getParcel() {
+        return parcel;
+    }
 
+    public void setParcel(String parcel) {
+        this.parcel = parcel;
+    }
+    
     public String getAgent() {
         return agent;
     }
