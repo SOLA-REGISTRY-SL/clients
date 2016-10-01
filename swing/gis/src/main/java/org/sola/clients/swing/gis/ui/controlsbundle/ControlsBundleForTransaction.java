@@ -127,7 +127,9 @@ public abstract class ControlsBundleForTransaction extends SolaControlsBundle {
             instance = new ControlsBundleForMapExistingParcel(
                     applicationBean, transactionStarterId, baUnitId, targetCadastreObjectType);
         } else if (requestTypeCode.equals(RequestTypeBean.CODE_NEW_PARCEL)
-                || requestTypeCode.equals(RequestTypeBean.CODE_EXISTING_PARCEL))  {
+                || requestTypeCode.equals(RequestTypeBean.CODE_EXISTING_PARCEL)
+                || requestTypeCode.equals(RequestTypeBean.CODE_NEW_PARCEL_SL)
+                || requestTypeCode.equals(RequestTypeBean.CODE_EXISTING_PARCEL_SL))  {
             instance = new ControlsBundleForNewParcel(requestTypeCode, applicationBean, transactionStarterId);
         }
         return instance;

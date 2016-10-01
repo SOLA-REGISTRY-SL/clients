@@ -113,7 +113,8 @@ public final class ControlsBundleForNewParcel extends ControlsBundleForTransacti
                 if (evt.getPropertyName().equalsIgnoreCase(SpatialBean.FEATURE_GEOM_PROPERTY)) {
                     // Recalculate area
 //                    if (requestTypeCode.equalsIgnoreCase(RequestTypeBean.CODE_EXISTING_PARCEL)) {
-                    if (requestTypeCode.equalsIgnoreCase(RequestTypeBean.CODE_NEW_PARCEL)) {
+                    if (requestTypeCode.equalsIgnoreCase(RequestTypeBean.CODE_NEW_PARCEL)
+                      ||requestTypeCode.equalsIgnoreCase(RequestTypeBean.CODE_NEW_PARCEL_SL)) {
                         CadastreObjectBean co = (CadastreObjectBean)evt.getSource();
                         co.setParcelArea(co.getFeatureGeom().getArea());
                     }
@@ -143,7 +144,8 @@ public final class ControlsBundleForNewParcel extends ControlsBundleForTransacti
                             bean.addPropertyChangeListener(coBeanListener);
                             // Calulate parcel area automatically
 //                            if (requestTypeCode.equalsIgnoreCase(RequestTypeBean.CODE_EXISTING_PARCEL)) {
-                            if (requestTypeCode.equalsIgnoreCase(RequestTypeBean.CODE_NEW_PARCEL)) {
+                            if (requestTypeCode.equalsIgnoreCase(RequestTypeBean.CODE_NEW_PARCEL)
+                                    ||requestTypeCode.equalsIgnoreCase(RequestTypeBean.CODE_NEW_PARCEL_SL)) {
                                 bean.setParcelArea(bean.getFeatureGeom().getArea());
                             }
                         }

@@ -52,6 +52,10 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
         this.cadastreObjectBean = cadastreObject.copy();
 //        autoAreaCalc = requestTypeCode.equals(RequestTypeBean.CODE_EXISTING_PARCEL);
         autoAreaCalc = requestTypeCode.equals(RequestTypeBean.CODE_NEW_PARCEL);
+        if (!autoAreaCalc) {
+            autoAreaCalc = requestTypeCode.equals(RequestTypeBean.CODE_NEW_PARCEL_SL);
+        }
+        
         initComponents();
         this.readOnly = readOnly;
         setReadOnly(!readOnly);
