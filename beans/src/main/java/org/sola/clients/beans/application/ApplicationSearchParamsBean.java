@@ -29,6 +29,8 @@ package org.sola.clients.beans.application;
 
 import java.util.Date;
 import org.sola.clients.beans.AbstractBindingBean;
+import org.sola.clients.beans.cache.CacheManager;
+import org.sola.clients.beans.referencedata.LandTypeBean;
 import org.sola.webservices.transferobjects.search.ApplicationSearchParamsTO;
 
 /**
@@ -52,8 +54,20 @@ public class ApplicationSearchParamsBean extends AbstractBindingBean {
     private String documentNumber;
     private String documentReference;
     private String parcel;
+    private LandTypeBean landType;
+
+    public LandTypeBean getLandTypes() {
+        return landType;
+    }
+
+    public void setLandTypes(LandTypeBean landType) {
+        this.landType = landType;
+    }
     
-    
+    public String getLandType() {
+        return getLandTypes().getCode();
+    }
+
     public ApplicationSearchParamsBean() {
         super();
     }

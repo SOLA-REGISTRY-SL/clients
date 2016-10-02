@@ -45,7 +45,15 @@ public class ApplicationSearchResultBean extends ApplicationSummaryBean {
     private String serviceList; 
     private boolean checked;
     private String parcel;
+    private String landType;
     
+    public String getLandType() {
+        return landType;
+    }
+
+    public void setLandType(String landType) {
+        this.landType = landType;
+    }
     public ApplicationSearchResultBean(){
         super();
     }

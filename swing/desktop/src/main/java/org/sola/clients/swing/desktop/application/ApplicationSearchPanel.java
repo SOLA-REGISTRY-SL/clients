@@ -216,6 +216,8 @@ public class ApplicationSearchPanel extends ContentPanel {
         searchParams = new org.sola.clients.beans.application.ApplicationSearchParamsBean();
         popupSearchResults = new javax.swing.JPopupMenu();
         menuOpenApplication = new javax.swing.JMenuItem();
+        landTypeBean1 = new org.sola.clients.beans.referencedata.LandTypeBean();
+        landTypeListBean1 = new org.sola.clients.beans.referencedata.LandTypeListBean();
         appListPanel = new javax.swing.JScrollPane();
         tbAppList = new org.sola.clients.swing.common.controls.JTableWithDefaultStyles();
         jToolBar1 = new javax.swing.JToolBar();
@@ -244,6 +246,9 @@ public class ApplicationSearchPanel extends ContentPanel {
         labTo = new javax.swing.JLabel();
         btnShowCalendarTo = new javax.swing.JButton();
         txtToDate = new org.sola.clients.swing.common.controls.WatermarkDate();
+        jPanel5 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jComboBox1 = new javax.swing.JComboBox();
         jPanel2 = new javax.swing.JPanel();
         labAgentName = new javax.swing.JLabel();
         txtAgentName = new javax.swing.JTextField();
@@ -253,7 +258,6 @@ public class ApplicationSearchPanel extends ContentPanel {
         jPanel16 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         txtDocumentReference = new javax.swing.JTextField();
-        jPanel5 = new javax.swing.JPanel();
 
         popupSearchResults.setName("popupSearchResults"); // NOI18N
 
@@ -580,6 +584,37 @@ public class ApplicationSearchPanel extends ContentPanel {
 
         jPanel4.add(jPanel3);
 
+        jPanel5.setName("jPanel5"); // NOI18N
+
+        jLabel1.setText(bundle.getString("ApplicationSearchPanel.jLabel1.text_1")); // NOI18N
+        jLabel1.setName("jLabel1"); // NOI18N
+
+        jComboBox1.setName("jComboBox1"); // NOI18N
+
+        eLProperty = org.jdesktop.beansbinding.ELProperty.create("${landTypeList}");
+        org.jdesktop.swingbinding.JComboBoxBinding jComboBoxBinding = org.jdesktop.swingbinding.SwingBindings.createJComboBoxBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, landTypeListBean1, eLProperty, jComboBox1);
+        bindingGroup.addBinding(jComboBoxBinding);
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, searchParams, org.jdesktop.beansbinding.ELProperty.create("${landTypes}"), jComboBox1, org.jdesktop.beansbinding.BeanProperty.create("selectedItem"));
+        bindingGroup.addBinding(binding);
+
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 127, Short.MAX_VALUE)
+            .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jPanel4.add(jPanel5);
+
         jPanel2.setName("jPanel2"); // NOI18N
 
         labAgentName.setText(bundle.getString("ApplicationSearchPanel.labAgentName.text")); // NOI18N
@@ -669,21 +704,6 @@ public class ApplicationSearchPanel extends ContentPanel {
         );
 
         jPanel4.add(jPanel16);
-
-        jPanel5.setName("jPanel5"); // NOI18N
-
-        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
-        jPanel5.setLayout(jPanel5Layout);
-        jPanel5Layout.setHorizontalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 127, Short.MAX_VALUE)
-        );
-        jPanel5Layout.setVerticalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 51, Short.MAX_VALUE)
-        );
-
-        jPanel4.add(jPanel5);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -800,6 +820,8 @@ public class ApplicationSearchPanel extends ContentPanel {
     private javax.swing.JButton btnShowCalendarTo;
     private javax.swing.JButton btnUnassign;
     private org.sola.clients.swing.ui.HeaderPanel headerPanel1;
+    private javax.swing.JComboBox jComboBox1;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
@@ -820,6 +842,8 @@ public class ApplicationSearchPanel extends ContentPanel {
     private javax.swing.JLabel labFrom;
     private javax.swing.JLabel labResults;
     private javax.swing.JLabel labTo;
+    private org.sola.clients.beans.referencedata.LandTypeBean landTypeBean1;
+    private org.sola.clients.beans.referencedata.LandTypeListBean landTypeListBean1;
     private javax.swing.JLabel lblSearchResults;
     private javax.swing.JMenuItem menuOpenApplication;
     private javax.swing.JPopupMenu popupSearchResults;
