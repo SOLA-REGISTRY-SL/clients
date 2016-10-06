@@ -37,10 +37,8 @@ import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import org.geotools.swing.extended.util.GeometryUtility;
-import org.geotools.swing.extended.util.Messaging;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.sola.clients.beans.cache.CacheManager;
-import org.sola.clients.beans.converters.TypeConverters;
 import org.sola.clients.swing.gis.beans.validation.PrivateLandValidationGroup;
 import org.sola.clients.swing.gis.beans.validation.StateLandValidationGroup;
 import org.sola.clients.beans.party.PartySummaryBean;
@@ -49,13 +47,10 @@ import org.sola.clients.beans.referencedata.LandTypeBean;
 import org.sola.clients.beans.referencedata.SurveyTypeBean;
 import org.sola.clients.beans.referencedata.SurveyingMethodTypeBean;
 import org.sola.clients.beans.validation.Localized;
-import org.sola.clients.beans.validation.ValidationResultBean;
 import org.sola.clients.swing.gis.beans.validation.CadastreObjectSurveyTypeCheck;
 import org.sola.clients.swing.gis.data.PojoDataAccess;
 import org.sola.common.StringUtility;
 import org.sola.common.messaging.ClientMessage;
-import org.sola.common.messaging.GisMessage;
-import org.sola.common.messaging.MessageUtility;
 
 /**
  * Defines a cadastre object bean.
@@ -100,6 +95,8 @@ public class CadastreObjectBean extends SpatialBean {
     public static String SURVEY_TYPE_PROPERTY = "surveyType";
     public static String DWG_OFF_NUMBER_PROPERTY = "dwgOffNumber";
     public static String STATE_LAND_CLEARANCE_PROPERTY = "stateLandClearance";
+    public static String PLANNING_CLEARANCE_PROPERTY = "planningClearance";
+    public static String ENVIRONMENT_CLEARANCE_PROPERTY = "environmentClearance";
     
     private String id;
     @NotEmpty(message = ClientMessage.CHECK_NOTNULL_FIRSTPART, payload = Localized.class)
@@ -154,6 +151,8 @@ public class CadastreObjectBean extends SpatialBean {
     @Past(message = ClientMessage.CHECK_NOTNULL_CHECKING_DATE_IN_PAST, payload = Localized.class, groups = StateLandValidationGroup.class)
     private Date checkingDate;
     private boolean stateLandClearance;
+    private boolean planningClearance;
+    private boolean environmentClearance;
     
     /**
      * Creates a cadastre object bean
@@ -590,6 +589,26 @@ public class CadastreObjectBean extends SpatialBean {
         propertySupport.firePropertyChange(STATE_LAND_CLEARANCE_PROPERTY, oldValue, stateLandClearance);
     }
 
+    public boolean isPlanningClearance() {
+        return planningClearance;
+    }
+
+    public void setPlanningClearance(boolean planningClearance) {
+        boolean oldValue=this.planningClearance;
+        this.planningClearance = planningClearance;
+        propertySupport.firePropertyChange(PLANNING_CLEARANCE_PROPERTY, oldValue, planningClearance);
+    }
+
+    public boolean isEnvironmentClearance() {
+        return environmentClearance;
+    }
+
+    public void setEnvironmentClearance(boolean environmentClearance) {
+        boolean oldValue=this.environmentClearance;
+        this.environmentClearance = environmentClearance;
+        propertySupport.firePropertyChange(ENVIRONMENT_CLEARANCE_PROPERTY, oldValue, environmentClearance);
+    }
+    
     public String getCheckedBy() {
         return checkedBy;
     }
@@ -766,6 +785,8 @@ public class CadastreObjectBean extends SpatialBean {
         co.setCheckingDate(this.getCheckingDate());
         co.setDwgOffNumber(this.getDwgOffNumber());
         co.setStateLandClearance(this.isStateLandClearance());
+        co.setPlanningClearance(this.isPlanningClearance());
+        co.setEnvironmentClearance(this.isEnvironmentClearance());
         return co;
     }
     
@@ -836,10 +857,20 @@ public class CadastreObjectBean extends SpatialBean {
         this.setCheckingDate(co.getCheckingDate());
         this.setDwgOffNumber(co.getDwgOffNumber());
         this.setStateLandClearance(co.isStateLandClearance());
+        this.setPlanningClearance(co.isPlanningClearance());
+        this.setEnvironmentClearance(co.isEnvironmentClearance());
     }
     
     public boolean makeStateLandClearance(boolean cleared){
         return PojoDataAccess.getInstance().getCadastreService().makeStateLandClearance(getId(), cleared);
+    }
+    
+    public boolean makePlanningClearance(boolean cleared){
+        return PojoDataAccess.getInstance().getCadastreService().makePlanningClearance(getId(), cleared);
+    }
+    
+    public boolean makeEnvironmentClearance(boolean cleared){
+        return PojoDataAccess.getInstance().getCadastreService().makeEnvironmentClearance(getId(), cleared);
     }
     
     @Override

@@ -105,6 +105,8 @@ public class CadastreObjectBean extends AbstractTransactionedBean {
     public static String SURVEY_TYPE_PROPERTY = "surveyType";
     public static String DWG_OFF_NUMBER_PROPERTY = "dwgOffNumber";
     public static String STATE_LAND_CLEARANCE_PROPERTY = "stateLandClearance";
+    public static String PLANNING_CLEARANCE_PROPERTY = "planningClearance";
+    public static String ENVIRONMENT_CLEARANCE_PROPERTY = "environmentClearance";
     
     private Date approvalDatetime;
     private Date historicDatetime;
@@ -153,6 +155,8 @@ public class CadastreObjectBean extends AbstractTransactionedBean {
     private String dwgOffNumber;
     private Date checkingDate;
     private boolean stateLandClearance;
+    private boolean planningClearance;
+    private boolean environmentClearance;
     
     public CadastreObjectBean() {
         super();
@@ -636,6 +640,26 @@ public class CadastreObjectBean extends AbstractTransactionedBean {
         boolean oldValue=this.stateLandClearance;
         this.stateLandClearance = stateLandClearance;
         propertySupport.firePropertyChange(STATE_LAND_CLEARANCE_PROPERTY, oldValue, stateLandClearance);
+    }
+
+    public boolean isPlanningClearance() {
+        return planningClearance;
+    }
+
+    public void setPlanningClearance(boolean planningClearance) {
+        boolean oldValue=this.planningClearance;
+        this.planningClearance = planningClearance;
+        propertySupport.firePropertyChange(PLANNING_CLEARANCE_PROPERTY, oldValue, planningClearance);
+    }
+
+    public boolean isEnvironmentClearance() {
+        return environmentClearance;
+    }
+
+    public void setEnvironmentClearance(boolean environmentClearance) {
+        boolean oldValue=this.environmentClearance;
+        this.environmentClearance = environmentClearance;
+        propertySupport.firePropertyChange(ENVIRONMENT_CLEARANCE_PROPERTY, oldValue, environmentClearance);
     }
     
     public byte[] getGeomPolygon() {

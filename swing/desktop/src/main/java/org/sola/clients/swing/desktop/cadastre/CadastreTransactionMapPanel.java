@@ -175,7 +175,9 @@ public class CadastreTransactionMapPanel extends ContentPanel {
 
     @Override
     protected boolean panelClosing() {
-        if (!SecurityBean.getCurrentUser().isInRole(RolesConstants.STATE_LAND_CLEARANCE)) {
+        if (!SecurityBean.getCurrentUser().isInRole(RolesConstants.STATE_LAND_CLEARANCE) && 
+                !SecurityBean.getCurrentUser().isInRole(RolesConstants.PLANNING_CLEARANCE) &&
+                !SecurityBean.getCurrentUser().isInRole(RolesConstants.ENVIRONMENT_CLEARANCE)) {
             ExtendedAction saveAction = this.mapControl.getMap().getMapActionByName(SaveTransaction.MAPACTION_NAME);
             if ((saveAction == null || saveAction.isEnabled())
                     && MainForm.checkSaveBeforeClose(this.mapControl.getTransactionBean())) {

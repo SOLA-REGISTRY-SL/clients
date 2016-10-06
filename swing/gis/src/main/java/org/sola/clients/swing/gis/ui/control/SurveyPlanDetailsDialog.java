@@ -40,8 +40,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
             CadastreObjectBean cadastreObject, String requestTypeCode, boolean readOnly) {
         super(parent, modal);
         if (StringUtility.isEmpty(cadastreObject.getLandTypeCode())) {
-            if (JOptionPane.showConfirmDialog(this, "Do you want to create private land?",
-                    "Land type", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+            if (requestTypeCode.equals(RequestTypeBean.CODE_NEW_PARCEL) || requestTypeCode.equals(RequestTypeBean.CODE_EXISTING_PARCEL)) {
                 cadastreObject.setLandTypeCode(LandTypeBean.TYPE_PRIVATE_LAND);
             } else {
                 cadastreObject.setLandTypeCode(LandTypeBean.TYPE_STATE_LAND);
@@ -55,7 +54,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
         if (!autoAreaCalc) {
             autoAreaCalc = requestTypeCode.equals(RequestTypeBean.CODE_NEW_PARCEL_SL);
         }
-        
+
         initComponents();
         this.readOnly = readOnly;
         setReadOnly(!readOnly);
@@ -66,7 +65,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
         // Show/hide panels depending on land type
         pnlClearance.setVisible(false);
         pnlSaveButton.setVisible(true);
-        
+
         if (isPrivateLand()) {
             pnlMainGrid.remove(pnlSurveyNumCorrFile);
             pnlMainGrid.remove(pnlCompFileDwgOffNum);
@@ -75,12 +74,19 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
 
             ((GridLayout) pnlMainGrid.getLayout()).setRows(8);
             this.setSize((int) this.getSize().getWidth(), (int) this.getSize().getHeight() - 120);
-            if (!readOnly && showStateLandClearance()) {
+            if (!readOnly && showClearancePanel()) {
                 setReadOnly(false);
                 pnlSaveButton.setVisible(false);
                 pnlClearance.setVisible(true);
                 pnlSave.setVisible(true);
-                cbxClearance.setSelected(cadastreObjectBean.isStateLandClearance());
+
+                cbxStateLandClearance.setSelected(cadastreObjectBean.isStateLandClearance());
+                cbxPlanningClearance.setSelected(cadastreObjectBean.isPlanningClearance());
+                cbxEnvClearance.setSelected(cadastreObjectBean.isEnvironmentClearance());
+
+                cbxStateLandClearance.setEnabled(SecurityBean.getCurrentUser().isInRole(RolesConstants.STATE_LAND_CLEARANCE));
+                cbxPlanningClearance.setEnabled(SecurityBean.getCurrentUser().isInRole(RolesConstants.PLANNING_CLEARANCE));
+                cbxEnvClearance.setEnabled(SecurityBean.getCurrentUser().isInRole(RolesConstants.ENVIRONMENT_CLEARANCE));
             }
         } else {
             pnlMainGrid.remove(pnlStateLandOfficer);
@@ -93,8 +99,11 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
         }
     }
 
-    private boolean showStateLandClearance() {
-        return !cadastreObjectBean.isNew() && SecurityBean.getCurrentUser().isInRole(RolesConstants.STATE_LAND_CLEARANCE) && isPrivateLand();
+    private boolean showClearancePanel() {
+        return !cadastreObjectBean.isNew() && isPrivateLand()
+                && (SecurityBean.getCurrentUser().isInRole(RolesConstants.STATE_LAND_CLEARANCE)
+                || SecurityBean.getCurrentUser().isInRole(RolesConstants.PLANNING_CLEARANCE)
+                || SecurityBean.getCurrentUser().isInRole(RolesConstants.ENVIRONMENT_CLEARANCE));
     }
 
     private void setReadOnly(boolean enabled) {
@@ -223,17 +232,37 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
         return true;
     }
 
-    private void makeStateLandClearance(){
-        if(cadastreObjectBean.isStateLandClearance() != cbxClearance.isSelected()){
-            cadastreObjectBean.makeStateLandClearance(cbxClearance.isSelected());
-            if(cbxClearance.isSelected())
+    private void makeClearance() {
+        if (cbxStateLandClearance.isEnabled()&& cadastreObjectBean.isStateLandClearance() != cbxStateLandClearance.isSelected()) {
+            cadastreObjectBean.makeStateLandClearance(cbxStateLandClearance.isSelected());
+            if (cbxStateLandClearance.isSelected()) {
                 MessageUtility.displayMessage(GisMessage.CADASTRE_CHANGE_CLEARANCE_GRANTED);
-            else
+            } else {
                 MessageUtility.displayMessage(GisMessage.CADASTRE_CHANGE_CLEARANCE_REVOKED);
-            this.setVisible(false);
+            }
         }
+
+        if (cbxPlanningClearance.isEnabled() && cadastreObjectBean.isPlanningClearance() != cbxPlanningClearance.isSelected()) {
+            cadastreObjectBean.makePlanningClearance(cbxPlanningClearance.isSelected());
+            if (cbxPlanningClearance.isSelected()) {
+                MessageUtility.displayMessage(GisMessage.CADASTRE_CHANGE_PLANNING_CLEARANCE_GRANTED);
+            } else {
+                MessageUtility.displayMessage(GisMessage.CADASTRE_CHANGE_PLANNING_CLEARANCE_REVOKED);
+            }
+        }
+
+        if (cbxEnvClearance.isEnabled() && cadastreObjectBean.isEnvironmentClearance() != cbxEnvClearance.isSelected()) {
+            cadastreObjectBean.makeEnvironmentClearance(cbxEnvClearance.isSelected());
+            if (cbxEnvClearance.isSelected()) {
+                MessageUtility.displayMessage(GisMessage.CADASTRE_CHANGE_ENVIRONMENT_CLEARANCE_GRANTED);
+            } else {
+                MessageUtility.displayMessage(GisMessage.CADASTRE_CHANGE_ENVIRONMENT_CLEARANCE_REVOKED);
+            }
+        }
+
+        this.setVisible(false);
     }
-    
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -340,14 +369,16 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
         txtNeighbourEast = new javax.swing.JTextField();
         pnlSave = new javax.swing.JPanel();
         pnlClearance = new javax.swing.JPanel();
-        cbxClearance = new javax.swing.JCheckBox();
+        cbxStateLandClearance = new javax.swing.JCheckBox();
         btnSaveClearance = new javax.swing.JButton();
+        cbxEnvClearance = new javax.swing.JCheckBox();
+        cbxPlanningClearance = new javax.swing.JCheckBox();
         pnlSaveButton = new javax.swing.JPanel();
         btnSave = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Survey plan details");
-        setMaximumSize(new java.awt.Dimension(665, 433));
+        setMaximumSize(new java.awt.Dimension(745, 673));
 
         pnlMainGrid.setMaximumSize(new java.awt.Dimension(647, 370));
         pnlMainGrid.setLayout(new java.awt.GridLayout(10, 2, 15, 15));
@@ -366,7 +397,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jLabel1)
-                .addGap(0, 52, Short.MAX_VALUE))
+                .addGap(0, 47, Short.MAX_VALUE))
             .addComponent(txtNameFirstPart)
         );
         jPanel1Layout.setVerticalGroup(
@@ -391,7 +422,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
             pnlNameLastPartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlNameLastPartLayout.createSequentialGroup()
                 .addComponent(jLabel2)
-                .addGap(0, 54, Short.MAX_VALUE))
+                .addGap(0, 49, Short.MAX_VALUE))
             .addComponent(txtNameLastPart)
         );
         pnlNameLastPartLayout.setVerticalGroup(
@@ -418,7 +449,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addComponent(jLabel3)
-                .addGap(0, 231, Short.MAX_VALUE))
+                .addGap(0, 221, Short.MAX_VALUE))
             .addComponent(txtOwnerName)
         );
         jPanel3Layout.setVerticalGroup(
@@ -471,7 +502,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addComponent(jLabel4)
-                .addGap(0, 252, Short.MAX_VALUE))
+                .addGap(0, 242, Short.MAX_VALUE))
             .addComponent(cbxAddress2, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel4Layout.setVerticalGroup(
@@ -541,7 +572,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addComponent(jLabel7)
-                .addGap(0, 33, Short.MAX_VALUE))
+                .addGap(0, 28, Short.MAX_VALUE))
             .addComponent(txtParcelArea)
         );
         jPanel7Layout.setVerticalGroup(
@@ -595,7 +626,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addComponent(jLabel5)
-                .addGap(0, 133, Short.MAX_VALUE))
+                .addGap(0, 123, Short.MAX_VALUE))
             .addComponent(cbxLandType, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel5Layout.setVerticalGroup(
@@ -641,7 +672,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel8Layout.createSequentialGroup()
                 .addComponent(jLabel8)
-                .addGap(0, 202, Short.MAX_VALUE))
+                .addGap(0, 192, Short.MAX_VALUE))
             .addComponent(cbxSurveyMethod, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel8Layout.setVerticalGroup(
@@ -669,7 +700,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
             jPanel17Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel17Layout.createSequentialGroup()
                 .addComponent(lblSurveyor)
-                .addGap(0, 203, Short.MAX_VALUE))
+                .addGap(0, 193, Short.MAX_VALUE))
             .addComponent(cbxLicensedSurveyor, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel17Layout.setVerticalGroup(
@@ -696,7 +727,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
             jPanel22Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel22Layout.createSequentialGroup()
                 .addComponent(jLabel18)
-                .addGap(0, 205, Short.MAX_VALUE))
+                .addGap(0, 195, Short.MAX_VALUE))
             .addComponent(cbxSurveyType, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel22Layout.setVerticalGroup(
@@ -722,7 +753,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
             jPanel24Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel24Layout.createSequentialGroup()
                 .addComponent(jLabel19)
-                .addGap(0, 39, Short.MAX_VALUE))
+                .addGap(0, 34, Short.MAX_VALUE))
             .addComponent(txtRefNameFirstPart)
         );
         jPanel24Layout.setVerticalGroup(
@@ -746,7 +777,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
             jPanel25Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel25Layout.createSequentialGroup()
                 .addComponent(jLabel20)
-                .addGap(0, 42, Short.MAX_VALUE))
+                .addGap(0, 37, Short.MAX_VALUE))
             .addComponent(txtRefNameLastPart)
         );
         jPanel25Layout.setVerticalGroup(
@@ -804,7 +835,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
             pnlStateLandOfficerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlStateLandOfficerLayout.createSequentialGroup()
                 .addComponent(jLabel16)
-                .addGap(0, 158, Short.MAX_VALUE))
+                .addGap(0, 148, Short.MAX_VALUE))
             .addComponent(cbxClearingStateLandOfficer, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         pnlStateLandOfficerLayout.setVerticalGroup(
@@ -831,7 +862,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
             jPanel27Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel27Layout.createSequentialGroup()
                 .addComponent(jLabel21)
-                .addGap(0, 51, Short.MAX_VALUE))
+                .addGap(0, 46, Short.MAX_VALUE))
             .addComponent(txtSurveyNumber)
         );
         jPanel27Layout.setVerticalGroup(
@@ -885,7 +916,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
             jPanel30Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel30Layout.createSequentialGroup()
                 .addComponent(jLabel23)
-                .addGap(0, 26, Short.MAX_VALUE))
+                .addGap(0, 21, Short.MAX_VALUE))
             .addComponent(txtComputationFile)
         );
         jPanel30Layout.setVerticalGroup(
@@ -937,7 +968,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
             pnlDrawnByLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlDrawnByLayout.createSequentialGroup()
                 .addComponent(jLabel25)
-                .addGap(0, 251, Short.MAX_VALUE))
+                .addGap(0, 241, Short.MAX_VALUE))
             .addComponent(txtDrawnBy)
         );
         pnlDrawnByLayout.setVerticalGroup(
@@ -1064,7 +1095,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
             jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel11Layout.createSequentialGroup()
                 .addComponent(jLabel11)
-                .addGap(0, 211, Short.MAX_VALUE))
+                .addGap(0, 201, Short.MAX_VALUE))
             .addComponent(txtNeighbourSouth)
         );
         jPanel11Layout.setVerticalGroup(
@@ -1088,7 +1119,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
             jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel13Layout.createSequentialGroup()
                 .addComponent(jLabel13)
-                .addGap(0, 215, Short.MAX_VALUE))
+                .addGap(0, 205, Short.MAX_VALUE))
             .addComponent(txtNeighbourWest)
         );
         jPanel13Layout.setVerticalGroup(
@@ -1112,7 +1143,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
             jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel12Layout.createSequentialGroup()
                 .addComponent(jLabel12)
-                .addGap(0, 218, Short.MAX_VALUE))
+                .addGap(0, 208, Short.MAX_VALUE))
             .addComponent(txtNeighbourEast)
         );
         jPanel12Layout.setVerticalGroup(
@@ -1127,7 +1158,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
 
         pnlSave.setLayout(new java.awt.CardLayout());
 
-        cbxClearance.setText("State Land Clearance");
+        cbxStateLandClearance.setText("State Land Clearance");
 
         btnSaveClearance.setText("Save");
         btnSaveClearance.addActionListener(new java.awt.event.ActionListener() {
@@ -1136,20 +1167,31 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
             }
         });
 
+        cbxEnvClearance.setText("Environment Clearance");
+
+        cbxPlanningClearance.setText("Planning Clearance");
+
         javax.swing.GroupLayout pnlClearanceLayout = new javax.swing.GroupLayout(pnlClearance);
         pnlClearance.setLayout(pnlClearanceLayout);
         pnlClearanceLayout.setHorizontalGroup(
             pnlClearanceLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlClearanceLayout.createSequentialGroup()
-                .addComponent(cbxClearance)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
+                .addContainerGap(40, Short.MAX_VALUE)
+                .addComponent(cbxPlanningClearance)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(cbxEnvClearance)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(cbxStateLandClearance)
+                .addGap(18, 18, 18)
                 .addComponent(btnSaveClearance, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         pnlClearanceLayout.setVerticalGroup(
             pnlClearanceLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlClearanceLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                .addComponent(cbxClearance)
-                .addComponent(btnSaveClearance))
+                .addComponent(cbxStateLandClearance)
+                .addComponent(btnSaveClearance)
+                .addComponent(cbxEnvClearance)
+                .addComponent(cbxPlanningClearance))
         );
 
         pnlSave.add(pnlClearance, "card3");
@@ -1166,7 +1208,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
         pnlSaveButtonLayout.setHorizontalGroup(
             pnlSaveButtonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlSaveButtonLayout.createSequentialGroup()
-                .addGap(0, 179, Short.MAX_VALUE)
+                .addGap(0, 515, Short.MAX_VALUE)
                 .addComponent(btnSave, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         pnlSaveButtonLayout.setVerticalGroup(
@@ -1182,11 +1224,11 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(pnlMainGrid, javax.swing.GroupLayout.DEFAULT_SIZE, 644, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(pnlSave, javax.swing.GroupLayout.PREFERRED_SIZE, 264, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(pnlMainGrid, javax.swing.GroupLayout.DEFAULT_SIZE, 664, Short.MAX_VALUE))
+                        .addComponent(pnlSave, javax.swing.GroupLayout.PREFERRED_SIZE, 600, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -1219,7 +1261,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_btnCheckingDateActionPerformed
 
     private void btnSaveClearanceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveClearanceActionPerformed
-        makeStateLandClearance();
+        makeClearance();
     }//GEN-LAST:event_btnSaveClearanceActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -1230,10 +1272,12 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
     private org.sola.clients.swing.gis.beans.CadastreObjectBean cadastreObjectBean;
     private javax.swing.JComboBox<String> cbxAddress2;
     private javax.swing.JComboBox<String> cbxChartingOfficer;
-    private javax.swing.JCheckBox cbxClearance;
     private javax.swing.JComboBox<String> cbxClearingStateLandOfficer;
+    private javax.swing.JCheckBox cbxEnvClearance;
     private javax.swing.JComboBox<String> cbxLandType;
     private javax.swing.JComboBox<String> cbxLicensedSurveyor;
+    private javax.swing.JCheckBox cbxPlanningClearance;
+    private javax.swing.JCheckBox cbxStateLandClearance;
     private javax.swing.JComboBox<String> cbxSurveyMethod;
     private javax.swing.JComboBox<String> cbxSurveyType;
     private org.sola.clients.beans.party.PartySearchResultListBean chartingOfficers;

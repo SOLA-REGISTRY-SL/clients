@@ -114,8 +114,8 @@ public final class ControlsBundleForNewParcel extends ControlsBundleForTransacti
                     // Recalculate area
 //                    if (requestTypeCode.equalsIgnoreCase(RequestTypeBean.CODE_EXISTING_PARCEL)) {
                     if (requestTypeCode.equalsIgnoreCase(RequestTypeBean.CODE_NEW_PARCEL)
-                      ||requestTypeCode.equalsIgnoreCase(RequestTypeBean.CODE_NEW_PARCEL_SL)) {
-                        CadastreObjectBean co = (CadastreObjectBean)evt.getSource();
+                            || requestTypeCode.equalsIgnoreCase(RequestTypeBean.CODE_NEW_PARCEL_SL)) {
+                        CadastreObjectBean co = (CadastreObjectBean) evt.getSource();
                         co.setParcelArea(co.getFeatureGeom().getArea());
                     }
                 }
@@ -123,12 +123,12 @@ public final class ControlsBundleForNewParcel extends ControlsBundleForTransacti
         };
 
         // Listen to cadastre objects list events
-        if(newCadastreObjectLayer.getBeanList() != null){
-            for(CadastreObjectBean co : newCadastreObjectLayer.getBeanList()){
+        if (newCadastreObjectLayer.getBeanList() != null) {
+            for (CadastreObjectBean co : newCadastreObjectLayer.getBeanList()) {
                 co.addPropertyChangeListener(coBeanListener);
             }
         }
-        
+
         ((SolaObservableList) this.newCadastreObjectLayer.getBeanList())
                 .addObservableListListener(new ObservableListListener() {
                     @Override
@@ -145,7 +145,7 @@ public final class ControlsBundleForNewParcel extends ControlsBundleForTransacti
                             // Calulate parcel area automatically
 //                            if (requestTypeCode.equalsIgnoreCase(RequestTypeBean.CODE_EXISTING_PARCEL)) {
                             if (requestTypeCode.equalsIgnoreCase(RequestTypeBean.CODE_NEW_PARCEL)
-                                    ||requestTypeCode.equalsIgnoreCase(RequestTypeBean.CODE_NEW_PARCEL_SL)) {
+                                    || requestTypeCode.equalsIgnoreCase(RequestTypeBean.CODE_NEW_PARCEL_SL)) {
                                 bean.setParcelArea(bean.getFeatureGeom().getArea());
                             }
                         }
@@ -295,7 +295,9 @@ public final class ControlsBundleForNewParcel extends ControlsBundleForTransacti
     @Override
     public void setReadOnly(boolean readOnly) {
         super.setReadOnly(readOnly);
-        if(!readOnly && SecurityBean.getCurrentUser().isInRole(RolesConstants.STATE_LAND_CLEARANCE)){
+        if (!readOnly && (SecurityBean.getCurrentUser().isInRole(RolesConstants.STATE_LAND_CLEARANCE)
+                || SecurityBean.getCurrentUser().isInRole(RolesConstants.PLANNING_CLEARANCE)
+                || SecurityBean.getCurrentUser().isInRole(RolesConstants.ENVIRONMENT_CLEARANCE))) {
             this.getMap().getMapActionByName(SaveTransaction.MAPACTION_NAME).setEnabled(false);
         }
         boolean hasCadastreObjects = newCadastreObjectLayer.getBeanList().size() > 0;
