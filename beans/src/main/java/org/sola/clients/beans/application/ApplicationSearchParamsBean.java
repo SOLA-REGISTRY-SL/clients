@@ -57,6 +57,9 @@ public class ApplicationSearchParamsBean extends AbstractBindingBean {
     private LandTypeBean landType;
 
     public LandTypeBean getLandTypes() {
+        if(landType == null){
+            landType = new LandTypeBean();
+        }
         return landType;
     }
 

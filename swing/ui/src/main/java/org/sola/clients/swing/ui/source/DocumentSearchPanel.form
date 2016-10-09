@@ -148,6 +148,8 @@
         </DimensionLayout>
       </Layout>
     </Container>
+    <Component class="org.sola.clients.beans.referencedata.LandTypeListBean" name="landTypeListBean1">
+    </Component>
   </NonVisualComponents>
   <Properties>
     <Property name="name" type="java.lang.String" value="Form" noResource="true"/>
@@ -732,9 +734,10 @@
                     <Component class="javax.swing.JComboBox" name="txtOwnerName">
                       <Properties>
                         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                          <StringArray count="2">
-                            <StringItem index="0" value="Private"/>
-                            <StringItem index="1" value="State"/>
+                          <StringArray count="3">
+                            <StringItem index="0" value=""/>
+                            <StringItem index="1" value="Private"/>
+                            <StringItem index="2" value="State"/>
                           </StringArray>
                         </Property>
                         <Property name="name" type="java.lang.String" value="txtOwnerName" noResource="true"/>

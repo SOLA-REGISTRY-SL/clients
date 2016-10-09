@@ -2514,11 +2514,11 @@ public class ApplicationPanel extends ContentPanel {
         if (tabFeeDetails.getColumnModel().getColumnCount() > 0) {
             tabFeeDetails.getColumnModel().getColumn(0).setHeaderValue(bundle.getString("ApplicationPanel.tabFeeDetails.columnModel.title0")); // NOI18N
             tabFeeDetails.getColumnModel().getColumn(1).setHeaderValue(bundle.getString("ApplicationPanel.tabFeeDetails.columnModel.title1_1")); // NOI18N
-            tabFeeDetails.getColumnModel().getColumn(1).setCellRenderer(new MoneyCellRenderer());
+            tabFeeDetails.getColumnModel().getColumn(1).setCellRenderer(null);
             tabFeeDetails.getColumnModel().getColumn(2).setHeaderValue(bundle.getString("ApplicationPanel.tabFeeDetails.columnModel.title2_2")); // NOI18N
-            tabFeeDetails.getColumnModel().getColumn(2).setCellRenderer(new MoneyCellRenderer());
+            tabFeeDetails.getColumnModel().getColumn(2).setCellRenderer(null);
             tabFeeDetails.getColumnModel().getColumn(3).setHeaderValue(bundle.getString("ApplicationPanel.tabFeeDetails.columnModel.title3")); // NOI18N
-            tabFeeDetails.getColumnModel().getColumn(3).setCellRenderer(new MoneyCellRenderer());
+            tabFeeDetails.getColumnModel().getColumn(3).setCellRenderer(null);
             tabFeeDetails.getColumnModel().getColumn(4).setHeaderValue(bundle.getString("ApplicationPanel.tabFeeDetails.columnModel.title4")); // NOI18N
             tabFeeDetails.getColumnModel().getColumn(4).setCellRenderer(new DateTimeRenderer(false));
         }
@@ -2526,7 +2526,6 @@ public class ApplicationPanel extends ContentPanel {
         jPanel2.setName("jPanel2"); // NOI18N
 
         formTxtServiceFee.setEditable(false);
-        formTxtServiceFee.setFormatterFactory(FormattersFactory.getInstance().getMoneyFormatterFactory());
         formTxtServiceFee.setInheritsPopupMenu(true);
         formTxtServiceFee.setName("formTxtServiceFee"); // NOI18N
 
@@ -2537,7 +2536,6 @@ public class ApplicationPanel extends ContentPanel {
         formTxtServiceFee.setHorizontalAlignment(JFormattedTextField.LEADING);
 
         formTxtTaxes.setEditable(false);
-        formTxtTaxes.setFormatterFactory(FormattersFactory.getInstance().getMoneyFormatterFactory());
         formTxtTaxes.setInheritsPopupMenu(true);
         formTxtTaxes.setName("formTxtTaxes"); // NOI18N
 
@@ -2548,7 +2546,6 @@ public class ApplicationPanel extends ContentPanel {
         formTxtTaxes.setHorizontalAlignment(JFormattedTextField.LEADING);
 
         formTxtFee.setEditable(false);
-        formTxtFee.setFormatterFactory(FormattersFactory.getInstance().getMoneyFormatterFactory());
         formTxtFee.setName("formTxtFee"); // NOI18N
 
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, appBean, org.jdesktop.beansbinding.ELProperty.create("${totalFee}"), formTxtFee, org.jdesktop.beansbinding.BeanProperty.create("value"));
@@ -2593,7 +2590,6 @@ public class ApplicationPanel extends ContentPanel {
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, appBean, org.jdesktop.beansbinding.ELProperty.create("${feePaid}"), cbxPaid, org.jdesktop.beansbinding.BeanProperty.create("selected"));
         bindingGroup.addBinding(binding);
 
-        formTxtPaid.setFormatterFactory(FormattersFactory.getInstance().getMoneyFormatterFactory());
         formTxtPaid.setText(bundle.getString("ApplicationPanel.formTxtPaid.text")); // NOI18N
         formTxtPaid.setName(bundle.getString("ApplicationPanel.formTxtPaid.name")); // NOI18N
 
@@ -2816,12 +2812,11 @@ public class ApplicationPanel extends ContentPanel {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(pnlHeader, javax.swing.GroupLayout.DEFAULT_SIZE, 770, Short.MAX_VALUE)
-            .addComponent(jToolBar3, javax.swing.GroupLayout.DEFAULT_SIZE, 770, Short.MAX_VALUE)
+            .addComponent(pnlHeader, javax.swing.GroupLayout.DEFAULT_SIZE, 747, Short.MAX_VALUE)
+            .addComponent(jToolBar3, javax.swing.GroupLayout.DEFAULT_SIZE, 747, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(tabbedControlMain, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(tabbedControlMain, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

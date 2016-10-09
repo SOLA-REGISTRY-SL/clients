@@ -42,6 +42,7 @@ import org.sola.clients.beans.application.ApplicationBean;
 import org.sola.clients.beans.application.ApplicationSearchParamsBean;
 import org.sola.clients.beans.application.ApplicationSearchResultBean;
 import org.sola.clients.beans.application.ApplicationSearchResultsListBean;
+import org.sola.clients.beans.referencedata.LandTypeListBean;
 import org.sola.clients.beans.referencedata.StatusConstants;
 import org.sola.clients.beans.security.SecurityBean;
 import org.sola.clients.swing.common.laf.LafManager;
@@ -105,7 +106,7 @@ public class ApplicationSearchPanel extends ContentPanel {
         btnOpenApplication.setEnabled(searchResult != null);
         menuOpenApplication.setEnabled(btnOpenApplication.isEnabled());
     }
-
+   
     private void customizeAssignedAppButtons(ApplicationSearchResultBean app) {
         boolean isUnassignEnabled = false;
         boolean isAssignEnabled = false;
@@ -217,7 +218,7 @@ public class ApplicationSearchPanel extends ContentPanel {
         popupSearchResults = new javax.swing.JPopupMenu();
         menuOpenApplication = new javax.swing.JMenuItem();
         landTypeBean1 = new org.sola.clients.beans.referencedata.LandTypeBean();
-        landTypeListBean1 = new org.sola.clients.beans.referencedata.LandTypeListBean();
+        landTypeListBean1 = CreateLandTypes();
         appListPanel = new javax.swing.JScrollPane();
         tbAppList = new org.sola.clients.swing.common.controls.JTableWithDefaultStyles();
         jToolBar1 = new javax.swing.JToolBar();
@@ -784,7 +785,15 @@ public class ApplicationSearchPanel extends ContentPanel {
     public void clickFind() {
         find();
     }
-
+    
+    private LandTypeListBean CreateLandTypes() {
+        if (landTypeListBean1 == null) {
+            landTypeListBean1 = new LandTypeListBean(true);
+        }
+        return landTypeListBean1;
+    }
+    
+    
     /**
      * Opens {@link ApplicationForm} for selected application in search results.
      */
