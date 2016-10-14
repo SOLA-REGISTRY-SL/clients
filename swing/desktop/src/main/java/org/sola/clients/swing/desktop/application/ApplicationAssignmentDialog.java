@@ -32,6 +32,7 @@ import org.sola.clients.beans.application.ApplicationBean;
 import org.sola.clients.beans.application.ApplicationSearchResultBean;
 import org.sola.clients.beans.security.SecurityBean;
 import org.sola.common.RolesConstants;
+import org.sola.common.StringUtility;
 import org.sola.common.messaging.ClientMessage;
 import org.sola.common.messaging.MessageUtility;
 
@@ -85,7 +86,9 @@ public class ApplicationAssignmentDialog extends javax.swing.JDialog {
         }
 
         for (ApplicationSearchResultBean app : applications) {
-            ApplicationBean.assignUser(app, usersList.getSelectedUser().getId());
+            if (StringUtility.isEmpty(app.getAssigneeId())) {
+                ApplicationBean.assignUser(app, usersList.getSelectedUser().getId());
+            }
         }
 
         MessageUtility.displayMessage(ClientMessage.APPLICATION_ASSIGNED);

@@ -551,7 +551,7 @@ public class MainForm extends javax.swing.JFrame {
      */
     public void openDashBoard(boolean forceRefresh) {
         if (!pnlContent.isPanelOpened(MainContentPanel.CARD_DASHBOARD)) {
-            DashBoardPanel dashBoard = new DashBoardPanel(forceRefresh);
+            DashboardDetailedPanel dashBoard = new DashboardDetailedPanel(forceRefresh);
             pnlContent.addPanel(dashBoard, MainContentPanel.CARD_DASHBOARD);
         }
         pnlContent.showPanel(MainContentPanel.CARD_DASHBOARD);

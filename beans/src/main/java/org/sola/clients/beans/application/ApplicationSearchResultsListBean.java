@@ -36,9 +36,11 @@ import org.jdesktop.observablecollections.ObservableListListener;
 import org.sola.clients.beans.AbstractBindingBean;
 import org.sola.clients.beans.controls.SolaObservableList;
 import org.sola.clients.beans.converters.TypeConverters;
+import org.sola.common.StringUtility;
 import org.sola.services.boundary.wsclients.WSManager;
 import org.sola.webservices.transferobjects.search.ApplicationSearchParamsTO;
 import org.sola.webservices.transferobjects.search.ApplicationSearchResultTO;
+import org.sola.webservices.transferobjects.search.DashboardStatisticsTO;
 
 /**
  * Contains methods to search applications and get the list of assigned and
@@ -120,6 +122,123 @@ private class AppSearchResultListener implements PropertyChangeListener {
     }
 
     /**
+     * Fills application search result list with my applications.
+     */
+    public void FillMyApplications() {
+        applicationSearchResultsList.clear();
+        List<ApplicationSearchResultTO> applicationsTO = WSManager.getInstance().getSearchService().getMyApplications();
+        TypeConverters.TransferObjectListToBeanList(applicationsTO, ApplicationSearchResultBean.class, (List) getApplicationSearchResultsList());
+    }
+    
+    /**
+     * Fills private land application search result list with lodged applications.
+     */
+    public void FillPlLodged() {
+        applicationSearchResultsList.clear();
+        List<ApplicationSearchResultTO> applicationsTO = WSManager.getInstance().getSearchService().getPlLodgedApplications();
+        TypeConverters.TransferObjectListToBeanList(applicationsTO, ApplicationSearchResultBean.class, (List) getApplicationSearchResultsList());
+    }
+    
+    /**
+     * Fills private land application search result list with applications ready for survey plan capturing.
+     */
+    public void FillPlApplicationsForPlanCapturing() {
+        applicationSearchResultsList.clear();
+        List<ApplicationSearchResultTO> applicationsTO = WSManager.getInstance().getSearchService().getPlApplicationsForPlanCapturing();
+        TypeConverters.TransferObjectListToBeanList(applicationsTO, ApplicationSearchResultBean.class, (List) getApplicationSearchResultsList());
+    }
+    
+    /**
+     * Fills private land application search result list with applications ready for state land clearance.
+     */
+    public void FillPlApplicationsForStateLandClearance() {
+        applicationSearchResultsList.clear();
+        List<ApplicationSearchResultTO> applicationsTO = WSManager.getInstance().getSearchService().getPlApplicationsForSLClearance();
+        TypeConverters.TransferObjectListToBeanList(applicationsTO, ApplicationSearchResultBean.class, (List) getApplicationSearchResultsList());
+    }
+    
+    /**
+     * Fills private land application search result list with applications ready for planning clearance.
+     */
+    public void FillPlApplicationsForPlanningClearance() {
+        applicationSearchResultsList.clear();
+        List<ApplicationSearchResultTO> applicationsTO = WSManager.getInstance().getSearchService().getPlApplicationsForPlanningClearance();
+        TypeConverters.TransferObjectListToBeanList(applicationsTO, ApplicationSearchResultBean.class, (List) getApplicationSearchResultsList());
+    }
+    
+    /**
+     * Fills private land application search result list with applications ready for environment clearance.
+     */
+    public void FillPlApplicationsForEnvironmentClearance() {
+        applicationSearchResultsList.clear();
+        List<ApplicationSearchResultTO> applicationsTO = WSManager.getInstance().getSearchService().getPlApplicationsForEnvClearance();
+        TypeConverters.TransferObjectListToBeanList(applicationsTO, ApplicationSearchResultBean.class, (List) getApplicationSearchResultsList());
+    }
+    
+    /**
+     * Fills private land application search result list with applications ready for completion.
+     */
+    public void FillPlApplicationsForCompletion() {
+        applicationSearchResultsList.clear();
+        List<ApplicationSearchResultTO> applicationsTO = WSManager.getInstance().getSearchService().getPlApplicationsForCompletion();
+        TypeConverters.TransferObjectListToBeanList(applicationsTO, ApplicationSearchResultBean.class, (List) getApplicationSearchResultsList());
+    }
+    
+    /**
+     * Fills private land application search result list with applications ready for approval.
+     */
+    public void FillPlApplicationsForApproval() {
+        applicationSearchResultsList.clear();
+        List<ApplicationSearchResultTO> applicationsTO = WSManager.getInstance().getSearchService().getPlApplicationsForApproval();
+        TypeConverters.TransferObjectListToBeanList(applicationsTO, ApplicationSearchResultBean.class, (List) getApplicationSearchResultsList());
+    }
+    
+    /**
+     * Fills state land application search result list with lodged applications.
+     */
+    public void FillSlLodgedApplications() {
+        applicationSearchResultsList.clear();
+        List<ApplicationSearchResultTO> applicationsTO = WSManager.getInstance().getSearchService().getSlLodgedApplications();
+        TypeConverters.TransferObjectListToBeanList(applicationsTO, ApplicationSearchResultBean.class, (List) getApplicationSearchResultsList());
+    }
+    
+    /**
+     * Fills state land application search result list with applications ready for survey plan capturing.
+     */
+    public void FillSlApplicationsForPlanCapturing() {
+        applicationSearchResultsList.clear();
+        List<ApplicationSearchResultTO> applicationsTO = WSManager.getInstance().getSearchService().getSlApplicationsForPlanCapturing();
+        TypeConverters.TransferObjectListToBeanList(applicationsTO, ApplicationSearchResultBean.class, (List) getApplicationSearchResultsList());
+    }
+    
+    /**
+     * Fills state land application search result list with applications ready for completion.
+     */
+    public void FillSlApplicationsForCompletion() {
+        applicationSearchResultsList.clear();
+        List<ApplicationSearchResultTO> applicationsTO = WSManager.getInstance().getSearchService().getSlApplicationsForCompletion();
+        TypeConverters.TransferObjectListToBeanList(applicationsTO, ApplicationSearchResultBean.class, (List) getApplicationSearchResultsList());
+    }
+    
+    /**
+     * Fills state land application search result list with applications ready for approval.
+     */
+    public void FillSlApplicationsForApproval() {
+        applicationSearchResultsList.clear();
+        List<ApplicationSearchResultTO> applicationsTO = WSManager.getInstance().getSearchService().getSlApplicationsForApproval();
+        TypeConverters.TransferObjectListToBeanList(applicationsTO, ApplicationSearchResultBean.class, (List) getApplicationSearchResultsList());
+    }
+    
+    /**
+     * Get applications dashboard statistics.
+     * @return 
+     */
+    public DashboardStatisticsTO getDashboardStatistics() {
+        applicationSearchResultsList.clear();
+        return WSManager.getInstance().getSearchService().getDashboardStatistics();
+    }
+    
+    /**
      * Runs application search with a given search criteria.
      */
     public void searchApplications(ApplicationSearchParamsBean params) {
@@ -159,6 +278,32 @@ private class AppSearchResultListener implements PropertyChangeListener {
         return false;
     }
 
+    /**
+     * Returns true if there are checked assigned applications on the list. Otherwise
+     * false.
+     */
+    public boolean hasAssignedChecked() {
+        for (ApplicationSearchResultBean app : getApplicationSearchResultsList()) {
+            if (app.isChecked() && !StringUtility.isEmpty(app.getAssigneeId())) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    /**
+     * Returns true if there are checked unassigned applications on the list. Otherwise
+     * false.
+     */
+    public boolean hasUnassignedChecked() {
+        for (ApplicationSearchResultBean app : getApplicationSearchResultsList()) {
+            if (app.isChecked() && StringUtility.isEmpty(app.getAssigneeId())) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
     /**
      * Returns list of checked applications.
      *

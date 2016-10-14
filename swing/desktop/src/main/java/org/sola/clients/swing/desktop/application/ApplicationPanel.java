@@ -65,6 +65,7 @@ import org.sola.clients.swing.common.tasks.SolaTask;
 import org.sola.clients.swing.common.tasks.TaskManager;
 import org.sola.clients.swing.common.utils.FormattersFactory;
 import org.sola.clients.swing.desktop.DashBoardPanel;
+import org.sola.clients.swing.desktop.DashboardDetailedPanel;
 import org.sola.clients.swing.desktop.MainForm;
 import org.sola.clients.swing.desktop.administrative.PropertyHelper;
 import org.sola.clients.swing.desktop.administrative.PropertyPanel;
@@ -757,7 +758,7 @@ public class ApplicationPanel extends ContentPanel {
 
     private void markDashboardForRefresh() {
         if (getMainContentPanel().isPanelOpened(MainContentPanel.CARD_DASHBOARD)) {
-            DashBoardPanel dashBoard = (DashBoardPanel) getMainContentPanel().getPanel(MainContentPanel.CARD_DASHBOARD);
+            DashboardDetailedPanel dashBoard = (DashboardDetailedPanel) getMainContentPanel().getPanel(MainContentPanel.CARD_DASHBOARD);
             if (dashBoard != null) {
                 dashBoard.setAutoRefresh(true);
             }
