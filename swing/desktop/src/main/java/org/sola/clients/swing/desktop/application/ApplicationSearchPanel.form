@@ -34,6 +34,9 @@
     <Component class="org.sola.clients.beans.referencedata.LandTypeBean" name="landTypeBean1">
     </Component>
     <Component class="org.sola.clients.beans.referencedata.LandTypeListBean" name="landTypeListBean1">
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="CreateLandTypes()"/>
+      </AuxValues>
     </Component>
   </NonVisualComponents>
   <Properties>

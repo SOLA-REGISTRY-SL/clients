@@ -77,7 +77,7 @@ public class DocumentSearchPanel extends javax.swing.JPanel {
         DefaultRowSorter rowSorter = (DefaultRowSorter) this.tblSearchResults.getRowSorter();
         rowSorter.setComparator(1, comp);
 
-
+         txtOwnerName.setSelectedIndex(-1);
         cbxSourceType.setSelectedIndex(-1);
         searchResultsList.addPropertyChangeListener(new PropertyChangeListener() {
             @Override
@@ -188,6 +188,7 @@ public class DocumentSearchPanel extends javax.swing.JPanel {
 
     private void clearForm() {
         cbxSourceType.setSelectedIndex(-1);
+        txtOwnerName.setSelectedIndex(-1);
         txtDateFrom.setValue(null);
         txtDateTo.setValue(null);
         txtLaNr.setText(null);
@@ -352,6 +353,7 @@ public class DocumentSearchPanel extends javax.swing.JPanel {
         menuOpenApplication = new javax.swing.JMenuItem();
         menuPrint = new javax.swing.JMenuItem();
         jPanel20 = new javax.swing.JPanel();
+        landTypeListBean1 = new org.sola.clients.beans.referencedata.LandTypeListBean();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblSearchResults = new org.sola.clients.swing.common.controls.JTableWithDefaultStyles();
         jToolBar1 = new javax.swing.JToolBar();
@@ -796,7 +798,7 @@ public class DocumentSearchPanel extends javax.swing.JPanel {
         jLabel11.setText(bundle.getString("DocumentSearchPanel.jLabel11.text")); // NOI18N
         jLabel11.setName(bundle.getString("DocumentSearchPanel.jLabel11.name")); // NOI18N
 
-        txtOwnerName.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Private", "State" }));
+        txtOwnerName.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "", "Private", "State" }));
         txtOwnerName.setName("txtOwnerName"); // NOI18N
 
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, searchParams, org.jdesktop.beansbinding.ELProperty.create("${ownerName}"), txtOwnerName, org.jdesktop.beansbinding.BeanProperty.create("selectedItem"));
@@ -1214,6 +1216,7 @@ public class DocumentSearchPanel extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JToolBar.Separator jSeparator1;
     private javax.swing.JToolBar jToolBar1;
+    private org.sola.clients.beans.referencedata.LandTypeListBean landTypeListBean1;
     private javax.swing.JLabel lblResults;
     private javax.swing.JMenuItem menuAttach;
     private javax.swing.JMenuItem menuEdit;

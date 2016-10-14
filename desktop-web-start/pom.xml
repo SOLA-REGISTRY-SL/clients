@@ -4,12 +4,12 @@
     <parent>
         <artifactId>sola-clients</artifactId>
         <groupId>org.sola</groupId>
-        <version>1609a</version>
+        <version>1610a</version>
     </parent>
 
     <groupId>org.sola.clients</groupId>
     <artifactId>sola-desktop-web-start</artifactId>
-    <version>1609a</version>
+    <version>1610a</version>
     <packaging>war</packaging>
 
     <name>Clients Desktop Web Start</name>
@@ -17,7 +17,7 @@
     <properties>
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <solaVersion>1609a</solaVersion>
+        <solaVersion>1610a</solaVersion>
         <webstart.codesigning.keystore>${basedir}/sola.jks</webstart.codesigning.keystore>
         <webstart.codesigning.alias>sola</webstart.codesigning.alias>
         <webstart.codesigning.storepass>FLOSS2011</webstart.codesigning.storepass>
@@ -25,6 +25,11 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>webstart-maven-plugin</artifactId>
+            <version>1.0-beta-7</version>
+        </dependency>
         <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-web-api</artifactId>
@@ -34,7 +39,7 @@
         <dependency>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>webstart-jnlp-servlet</artifactId>
-            <version>1.0-beta-4</version>
+            <version>1.0-beta-7</version>
             <scope>runtime</scope>
         </dependency>   
 
@@ -66,7 +71,7 @@
                 together for easy deployment. These could be packaged separately if necessary. --> 
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>webstart-maven-plugin</artifactId>
-                <version>1.0-beta-4</version>
+                 <version>1.0-beta-7</version>
                 <executions>
                     <execution>
                         <phase>process-resources</phase>
@@ -80,9 +85,9 @@
                     <templateDirectory>${project.basedir}/template</templateDirectory>
                     <updateManifestEntries>
                         <Permissions>all-permissions</Permissions>
-                        <Codebase>*.localhost *.flossola.org *.solaproduction *.nrc016  *.solatest</Codebase>
+                        <Codebase>*.localhost *.flossola.org *.solaproduction *.nrc016  *.solatest  *.192.168.0.1  *.192.168.0.2  </Codebase>
                         <Application-Name>SOLA FAO</Application-Name>
-                        <Application-Library-Allowable-Codebase>*.localhost *.flossola.org *.solaproduction *.nrc016  *.solatest</Application-Library-Allowable-Codebase>
+                        <Application-Library-Allowable-Codebase>*.localhost *.flossola.org *.solaproduction *.nrc016  *.solatest   *.192.168.0.1  *.192.168.0.2</Application-Library-Allowable-Codebase>
                     </updateManifestEntries>
                     <libPath>lib</libPath>
                     <!-- 1 Feb 2014 - The pack200 option was updated in version 1.0-beta-4 of the
@@ -157,6 +162,10 @@
                         <alias>${webstart.codesigning.alias}</alias>
                         <storepass>${webstart.codesigning.storepass}</storepass>
                         <keypass>${webstart.codesigning.keypass}</keypass>
+                         <!-- 24 Sep 2016 - See http://certhelp.ksoftware.net/support/solutions/articles/17164-how-do-i-sign-and-timestamp-a-java-jar-file- 
+                             Adding a timestamp to the signed jars will ensure they are still runnable after the code signing certificate
+                             expires. SOLA is currently using a Comodo code signing certificate due to expire on 14 Feb 2019.-->
+                        <tsaLocation>http://timestamp.comodoca.com/rfc3161</tsaLocation>
                     </sign>
                     <!-- Use verbose setting to monitor progress during build -->
                     <verbose>true</verbose>

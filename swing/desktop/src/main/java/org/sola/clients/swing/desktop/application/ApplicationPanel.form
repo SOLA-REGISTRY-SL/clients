@@ -369,12 +369,11 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="pnlHeader" alignment="0" pref="770" max="32767" attributes="2"/>
-          <Component id="jToolBar3" alignment="0" pref="770" max="32767" attributes="2"/>
+          <Component id="pnlHeader" alignment="0" pref="747" max="32767" attributes="2"/>
+          <Component id="jToolBar3" alignment="0" pref="747" max="32767" attributes="2"/>
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Component id="tabbedControlMain" max="32767" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -2671,8 +2670,8 @@
                             <ResourceString bundle="org/sola/clients/swing/desktop/application/Bundle.properties" key="ApplicationPanel.tabFeeDetails.columnModel.title1_1" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                           </Title>
                           <Editor/>
-                          <Renderer editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                            <Connection code="new MoneyCellRenderer()" type="code"/>
+                          <Renderer editor="org.netbeans.modules.form.ComponentChooserEditor">
+                            <ComponentRef name="null"/>
                           </Renderer>
                         </Column>
                         <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
@@ -2680,8 +2679,8 @@
                             <ResourceString bundle="org/sola/clients/swing/desktop/application/Bundle.properties" key="ApplicationPanel.tabFeeDetails.columnModel.title2_2" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                           </Title>
                           <Editor/>
-                          <Renderer editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                            <Connection code="new MoneyCellRenderer()" type="code"/>
+                          <Renderer editor="org.netbeans.modules.form.ComponentChooserEditor">
+                            <ComponentRef name="null"/>
                           </Renderer>
                         </Column>
                         <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
@@ -2689,8 +2688,8 @@
                             <ResourceString bundle="org/sola/clients/swing/desktop/application/Bundle.properties" key="ApplicationPanel.tabFeeDetails.columnModel.title3" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                           </Title>
                           <Editor/>
-                          <Renderer editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                            <Connection code="new MoneyCellRenderer()" type="code"/>
+                          <Renderer editor="org.netbeans.modules.form.ComponentChooserEditor">
+                            <ComponentRef name="null"/>
                           </Renderer>
                         </Column>
                         <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
@@ -2831,9 +2830,6 @@
                 <Component class="javax.swing.JFormattedTextField" name="formTxtServiceFee">
                   <Properties>
                     <Property name="editable" type="boolean" value="false"/>
-                    <Property name="formatterFactory" type="javax.swing.JFormattedTextField$AbstractFormatterFactory" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                      <Connection code="FormattersFactory.getInstance().getMoneyFormatterFactory()" type="code"/>
-                    </Property>
                     <Property name="inheritsPopupMenu" type="boolean" value="true"/>
                     <Property name="name" type="java.lang.String" value="formTxtServiceFee" noResource="true"/>
                   </Properties>
@@ -2847,9 +2843,6 @@
                 <Component class="javax.swing.JFormattedTextField" name="formTxtTaxes">
                   <Properties>
                     <Property name="editable" type="boolean" value="false"/>
-                    <Property name="formatterFactory" type="javax.swing.JFormattedTextField$AbstractFormatterFactory" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                      <Connection code="FormattersFactory.getInstance().getMoneyFormatterFactory()" type="code"/>
-                    </Property>
                     <Property name="inheritsPopupMenu" type="boolean" value="true"/>
                     <Property name="name" type="java.lang.String" value="formTxtTaxes" noResource="true"/>
                   </Properties>
@@ -2863,9 +2856,6 @@
                 <Component class="javax.swing.JFormattedTextField" name="formTxtFee">
                   <Properties>
                     <Property name="editable" type="boolean" value="false"/>
-                    <Property name="formatterFactory" type="javax.swing.JFormattedTextField$AbstractFormatterFactory" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                      <Connection code="FormattersFactory.getInstance().getMoneyFormatterFactory()" type="code"/>
-                    </Property>
                     <Property name="name" type="java.lang.String" value="formTxtFee" noResource="true"/>
                   </Properties>
                   <BindingProperties>
@@ -2963,9 +2953,6 @@
                 </Component>
                 <Component class="javax.swing.JFormattedTextField" name="formTxtPaid">
                   <Properties>
-                    <Property name="formatterFactory" type="javax.swing.JFormattedTextField$AbstractFormatterFactory" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                      <Connection code="FormattersFactory.getInstance().getMoneyFormatterFactory()" type="code"/>
-                    </Property>
                     <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
                       <ResourceString bundle="org/sola/clients/swing/desktop/application/Bundle.properties" key="ApplicationPanel.formTxtPaid.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                     </Property>

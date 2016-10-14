@@ -301,6 +301,7 @@ public final class ControlsBundleForNewParcel extends ControlsBundleForTransacti
             this.getMap().getMapActionByName(SaveTransaction.MAPACTION_NAME).setEnabled(false);
         }
         boolean hasCadastreObjects = newCadastreObjectLayer.getBeanList().size() > 0;
+        boolean isCompleted = this.applicationBean.getServiceList().get(0).getStatusCode().equalsIgnoreCase("completed");
         this.getMap().getMapActionByName(
                 CadastreChangePointSurveyListFormShow.MAPACTION_NAME).setEnabled(!readOnly);
         this.getMap().getMapActionByName(CadastreChangeNodeTool.NAME).setEnabled(!readOnly);
@@ -309,7 +310,7 @@ public final class ControlsBundleForNewParcel extends ControlsBundleForTransacti
 
         ((SurveyPlanDetails) getMap().getMapActionByName(SurveyPlanDetails.MAPACTION_NAME)).setReadOnly(readOnly);
         getMap().getMapActionByName(SurveyPlanDetails.MAPACTION_NAME).setEnabled(hasCadastreObjects);
-        this.getMap().getMapActionByName(SurveyPlanPrint.MAPACTION_NAME).setEnabled(hasCadastreObjects);
+        this.getMap().getMapActionByName(SurveyPlanPrint.MAPACTION_NAME).setEnabled(isCompleted);
 
         if (!readOnly) {
             this.getMap().getMapActionByName(CadastreChangeNewCadastreObjectTool.NAME).setEnabled(!hasCadastreObjects);
