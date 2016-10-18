@@ -212,6 +212,8 @@ public class DashboardDetailedPanel extends ContentPanel {
                         lblSLForSurveyPlanCapturingCount.setText(String.format("(%s)", Long.toString(stat.getSlForCapture())));
                         lblSLForCompletionCount.setText(String.format("(%s)", Long.toString(stat.getSlForCompletion())));
                         lblSLForApprovalCount.setText(String.format("(%s)", Long.toString(stat.getSlForApproval())));
+                        lblSLApprovedCount.setText(String.format("(%s)", Long.toString(stat.getSlApproved())));
+                        lblPLApprovedCount.setText(String.format("(%s)", Long.toString(stat.getPlApproved())));
                     }
                     
                     if (selectedLink == null || selectedLink.equals(lblMyApplications)) {
@@ -274,6 +276,14 @@ public class DashboardDetailedPanel extends ContentPanel {
                         if (selectedLink.equals(lblSLForApproval)) {
                             setMessage(MessageUtility.getLocalizedMessageText(ClientMessage.APPLICATION_LOADING_SL_APPROVAL));
                             applicationSearchResults.FillSlApplicationsForApproval();
+                        }
+                        if (selectedLink.equals(lblSLApproved)) {
+                            setMessage(MessageUtility.getLocalizedMessageText(ClientMessage.APPLICATION_LOADING_SL_APPROVED));
+                            applicationSearchResults.FillSlApprovedApplications();
+                        }
+                        if (selectedLink.equals(lblPLApproved)) {
+                            setMessage(MessageUtility.getLocalizedMessageText(ClientMessage.APPLICATION_LOADING_PL_APPROVED));
+                            applicationSearchResults.FillPlApprovedApplications();
                         }
                     }
                 }
@@ -395,6 +405,10 @@ public class DashboardDetailedPanel extends ContentPanel {
         lblSLForCompletionCount = new javax.swing.JLabel();
         lblSLForApproval = new org.sola.clients.swing.common.labels.HyperLink();
         lblSLForApprovalCount = new javax.swing.JLabel();
+        lblSLApproved = new org.sola.clients.swing.common.labels.HyperLink();
+        lblSLApprovedCount = new javax.swing.JLabel();
+        lblPLApproved = new org.sola.clients.swing.common.labels.HyperLink();
+        lblPLApprovedCount = new javax.swing.JLabel();
 
         addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentShown(java.awt.event.ComponentEvent evt) {
@@ -451,7 +465,6 @@ public class DashboardDetailedPanel extends ContentPanel {
         tblApplications.setName("tblApplications"); // NOI18N
         tblApplications.setShowVerticalLines(false);
         tblApplications.getTableHeader().setReorderingAllowed(false);
-		tblApplications.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
 
         org.jdesktop.beansbinding.ELProperty eLProperty = org.jdesktop.beansbinding.ELProperty.create("${applicationSearchResultsList}");
         org.jdesktop.swingbinding.JTableBinding jTableBinding = org.jdesktop.swingbinding.SwingBindings.createJTableBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, applicationSearchResults, eLProperty, tblApplications);
@@ -717,6 +730,28 @@ public class DashboardDetailedPanel extends ContentPanel {
         lblSLForApprovalCount.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         lblSLForApprovalCount.setText("(0)");
 
+        lblSLApproved.setLabelFor(lblStateLand);
+        lblSLApproved.setText("Approved");
+        lblSLApproved.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblSLApprovedMouseClicked(evt);
+            }
+        });
+
+        lblSLApprovedCount.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        lblSLApprovedCount.setText("(0)");
+
+        lblPLApproved.setLabelFor(lblPrivateLand);
+        lblPLApproved.setText("Approved");
+        lblPLApproved.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblPLApprovedMouseClicked(evt);
+            }
+        });
+
+        lblPLApprovedCount.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        lblPLApprovedCount.setText("(0)");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -768,6 +803,10 @@ public class DashboardDetailedPanel extends ContentPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(lblPLForApprovalCount))
                     .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(lblPLApproved, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(lblPLApprovedCount))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(lblSLLodged, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(lblSLLodgedCount))
@@ -782,7 +821,11 @@ public class DashboardDetailedPanel extends ContentPanel {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(lblSLForApproval, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(lblSLForApprovalCount)))
+                        .addComponent(lblSLForApprovalCount))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(lblSLApproved, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(lblSLApprovedCount)))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -831,6 +874,10 @@ public class DashboardDetailedPanel extends ContentPanel {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblPLForApprovalCount)
                     .addComponent(lblPLForApproval, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblPLApproved, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblPLApprovedCount))
                 .addGap(18, 18, 18)
                 .addComponent(lblStateLand, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -849,7 +896,11 @@ public class DashboardDetailedPanel extends ContentPanel {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblSLForApprovalCount)
                     .addComponent(lblSLForApproval, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 122, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblSLApproved, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblSLApprovedCount))
+                .addContainerGap(76, Short.MAX_VALUE))
         );
 
         jSplitPane1.setLeftComponent(jPanel2);
@@ -948,6 +999,14 @@ public class DashboardDetailedPanel extends ContentPanel {
         unassignApplication();
     }//GEN-LAST:event_btnUnassignMouseClicked
 
+    private void lblSLApprovedMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblSLApprovedMouseClicked
+        selectLink(evt.getComponent());
+    }//GEN-LAST:event_lblSLApprovedMouseClicked
+
+    private void lblPLApprovedMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblPLApprovedMouseClicked
+        selectLink(evt.getComponent());
+    }//GEN-LAST:event_lblPLApprovedMouseClicked
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private org.sola.clients.beans.application.ApplicationSearchResultsListBean applicationSearchResults;
@@ -969,6 +1028,8 @@ public class DashboardDetailedPanel extends ContentPanel {
     private javax.swing.JLabel lblHeader;
     private org.sola.clients.swing.common.labels.HyperLink lblMyApplications;
     private javax.swing.JLabel lblMyApplicationsCount;
+    private org.sola.clients.swing.common.labels.HyperLink lblPLApproved;
+    private javax.swing.JLabel lblPLApprovedCount;
     private org.sola.clients.swing.common.labels.HyperLink lblPLForApproval;
     private javax.swing.JLabel lblPLForApprovalCount;
     private org.sola.clients.swing.common.labels.HyperLink lblPLForCompletion;
@@ -984,6 +1045,8 @@ public class DashboardDetailedPanel extends ContentPanel {
     private org.sola.clients.swing.common.labels.HyperLink lblPLLodged;
     private javax.swing.JLabel lblPLLodgedCount;
     private javax.swing.JLabel lblPrivateLand;
+    private org.sola.clients.swing.common.labels.HyperLink lblSLApproved;
+    private javax.swing.JLabel lblSLApprovedCount;
     private org.sola.clients.swing.common.labels.HyperLink lblSLForApproval;
     private javax.swing.JLabel lblSLForApprovalCount;
     private org.sola.clients.swing.common.labels.HyperLink lblSLForCompletion;

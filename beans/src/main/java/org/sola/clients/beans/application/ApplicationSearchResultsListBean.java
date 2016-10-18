@@ -194,6 +194,24 @@ private class AppSearchResultListener implements PropertyChangeListener {
     }
     
     /**
+     * Fills private land approved applications.
+     */
+    public void FillPlApprovedApplications() {
+        applicationSearchResultsList.clear();
+        List<ApplicationSearchResultTO> applicationsTO = WSManager.getInstance().getSearchService().getPlApprovedApplications();
+        TypeConverters.TransferObjectListToBeanList(applicationsTO, ApplicationSearchResultBean.class, (List) getApplicationSearchResultsList());
+    }
+    
+    /**
+     * Fills state land approved applications.
+     */
+    public void FillSlApprovedApplications() {
+        applicationSearchResultsList.clear();
+        List<ApplicationSearchResultTO> applicationsTO = WSManager.getInstance().getSearchService().getSlApprovedApplications();
+        TypeConverters.TransferObjectListToBeanList(applicationsTO, ApplicationSearchResultBean.class, (List) getApplicationSearchResultsList());
+    }
+    
+    /**
      * Fills state land application search result list with lodged applications.
      */
     public void FillSlLodgedApplications() {
