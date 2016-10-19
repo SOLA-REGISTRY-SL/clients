@@ -362,6 +362,11 @@
                               <Component id="lblPLForApprovalCount" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <Group type="102" alignment="0" attributes="0">
+                              <Component id="lblPLApproved" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="32767" attributes="0"/>
+                              <Component id="lblPLApprovedCount" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <Group type="102" alignment="0" attributes="0">
                               <Component id="lblSLLodged" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="32767" attributes="0"/>
                               <Component id="lblSLLodgedCount" min="-2" max="-2" attributes="0"/>
@@ -380,6 +385,11 @@
                               <Component id="lblSLForApproval" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="32767" attributes="0"/>
                               <Component id="lblSLForApprovalCount" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <Group type="102" alignment="0" attributes="0">
+                              <Component id="lblSLApproved" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="32767" attributes="0"/>
+                              <Component id="lblSLApprovedCount" min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
@@ -442,6 +452,11 @@
                           <Component id="lblPLForApprovalCount" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="lblPLForApproval" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="lblPLApproved" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="lblPLApprovedCount" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Component id="lblStateLand" min="-2" pref="27" max="-2" attributes="0"/>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
@@ -464,7 +479,12 @@
                           <Component id="lblSLForApprovalCount" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="lblSLForApproval" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace min="0" pref="122" max="32767" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="lblSLApproved" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="lblSLApprovedCount" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace pref="76" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -748,6 +768,40 @@
               </Events>
             </Component>
             <Component class="javax.swing.JLabel" name="lblSLForApprovalCount">
+              <Properties>
+                <Property name="horizontalAlignment" type="int" value="4"/>
+                <Property name="text" type="java.lang.String" value="(0)"/>
+              </Properties>
+            </Component>
+            <Component class="org.sola.clients.swing.common.labels.HyperLink" name="lblSLApproved">
+              <Properties>
+                <Property name="labelFor" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
+                  <ComponentRef name="lblStateLand"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Approved"/>
+              </Properties>
+              <Events>
+                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="lblSLApprovedMouseClicked"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JLabel" name="lblSLApprovedCount">
+              <Properties>
+                <Property name="horizontalAlignment" type="int" value="4"/>
+                <Property name="text" type="java.lang.String" value="(0)"/>
+              </Properties>
+            </Component>
+            <Component class="org.sola.clients.swing.common.labels.HyperLink" name="lblPLApproved">
+              <Properties>
+                <Property name="labelFor" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
+                  <ComponentRef name="lblPrivateLand"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Approved"/>
+              </Properties>
+              <Events>
+                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="lblPLApprovedMouseClicked"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JLabel" name="lblPLApprovedCount">
               <Properties>
                 <Property name="horizontalAlignment" type="int" value="4"/>
                 <Property name="text" type="java.lang.String" value="(0)"/>
