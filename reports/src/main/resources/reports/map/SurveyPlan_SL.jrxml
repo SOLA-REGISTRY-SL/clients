@@ -174,8 +174,8 @@
 				<reportElement x="27" y="1" width="500" height="300" uuid="9f126ab6-6e10-43ff-974b-3f0e0f614cf4"/>
 				<imageExpression><![CDATA[$P{MAP_IMAGE}]]></imageExpression>
 			</image>
-			<image scaleImage="RealSize" hAlign="Center">
-				<reportElement positionType="Float" x="194" y="358" width="166" height="30" uuid="faa7b7f7-e8f9-4cdf-a692-06bf2f488311"/>
+			<image scaleImage="RealSize" hAlign="Center" vAlign="Middle">
+				<reportElement positionType="Float" x="144" y="358" width="266" height="30" uuid="faa7b7f7-e8f9-4cdf-a692-06bf2f488311"/>
 				<imageExpression><![CDATA[$P{SCALE_IMAGE}]]></imageExpression>
 			</image>
 			<textField>

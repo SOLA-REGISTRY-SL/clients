@@ -124,7 +124,7 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" attributes="0">
                           <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace min="0" pref="47" max="32767" attributes="0"/>
+                          <EmptySpace min="0" pref="102" max="32767" attributes="0"/>
                       </Group>
                       <Component id="txtNameFirstPart" max="32767" attributes="0"/>
                   </Group>
@@ -145,7 +145,7 @@
                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                       <Image iconType="3" name="/org/sola/clients/swing/gis/ui/control/red_asterisk.gif"/>
                     </Property>
-                    <Property name="text" type="java.lang.String" value="Name first part:"/>
+                    <Property name="text" type="java.lang.String" value="Ls No:"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JTextField" name="txtNameFirstPart">
@@ -164,7 +164,7 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace min="0" pref="49" max="32767" attributes="0"/>
+                          <EmptySpace min="0" pref="140" max="32767" attributes="0"/>
                       </Group>
                       <Component id="txtNameLastPart" alignment="0" max="32767" attributes="0"/>
                   </Group>
@@ -182,10 +182,7 @@
               <SubComponents>
                 <Component class="javax.swing.JLabel" name="jLabel2">
                   <Properties>
-                    <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                      <Image iconType="3" name="/org/sola/clients/swing/gis/ui/control/red_asterisk.gif"/>
-                    </Property>
-                    <Property name="text" type="java.lang.String" value="Name last part:"/>
+                    <Property name="text" type="java.lang.String" value="   "/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JTextField" name="txtNameLastPart">
@@ -267,7 +264,7 @@
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/org/sola/clients/swing/gis/ui/control/red_asterisk.gif"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Address1"/>
+                <Property name="text" type="java.lang.String" value="Property location (address):"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="txtAddress1">
@@ -286,7 +283,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="0" pref="242" max="32767" attributes="0"/>
+                      <EmptySpace min="0" pref="256" max="32767" attributes="0"/>
                   </Group>
                   <Component id="cbxAddress2" alignment="0" max="32767" attributes="0"/>
               </Group>
@@ -307,7 +304,7 @@
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/org/sola/clients/swing/gis/ui/control/red_asterisk.gif"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Address2:"/>
+                <Property name="text" type="java.lang.String" value="District:"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JComboBox" name="cbxAddress2">
@@ -694,7 +691,7 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="jLabel19" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace min="0" pref="34" max="32767" attributes="0"/>
+                          <EmptySpace min="0" pref="93" max="32767" attributes="0"/>
                       </Group>
                       <Component id="txtRefNameFirstPart" alignment="0" max="32767" attributes="0"/>
                   </Group>
@@ -712,7 +709,7 @@
               <SubComponents>
                 <Component class="javax.swing.JLabel" name="jLabel19">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Ref. Name first part:"/>
+                    <Property name="text" type="java.lang.String" value="Foot note:"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JTextField" name="txtRefNameFirstPart">
@@ -731,7 +728,7 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="jLabel20" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace min="0" pref="37" max="32767" attributes="0"/>
+                          <EmptySpace min="0" pref="144" max="32767" attributes="0"/>
                       </Group>
                       <Component id="txtRefNameLastPart" alignment="0" max="32767" attributes="0"/>
                   </Group>
@@ -749,7 +746,7 @@
               <SubComponents>
                 <Component class="javax.swing.JLabel" name="jLabel20">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Ref. name last part:"/>
+                    <Property name="text" type="java.lang.String" value="  "/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JTextField" name="txtRefNameLastPart">
