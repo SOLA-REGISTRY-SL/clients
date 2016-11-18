@@ -386,7 +386,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
         pnlParcelNumber.setLayout(new java.awt.GridLayout(1, 2, 10, 0));
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/sola/clients/swing/gis/ui/control/red_asterisk.gif"))); // NOI18N
-        jLabel1.setText("Name first part:");
+        jLabel1.setText("Ls No:");
 
         org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, cadastreObjectBean, org.jdesktop.beansbinding.ELProperty.create("${nameFirstpart}"), txtNameFirstPart, org.jdesktop.beansbinding.BeanProperty.create("text"));
         bindingGroup.addBinding(binding);
@@ -397,7 +397,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jLabel1)
-                .addGap(0, 47, Short.MAX_VALUE))
+                .addGap(0, 102, Short.MAX_VALUE))
             .addComponent(txtNameFirstPart)
         );
         jPanel1Layout.setVerticalGroup(
@@ -410,8 +410,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
 
         pnlParcelNumber.add(jPanel1);
 
-        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/sola/clients/swing/gis/ui/control/red_asterisk.gif"))); // NOI18N
-        jLabel2.setText("Name last part:");
+        jLabel2.setText("   ");
 
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, cadastreObjectBean, org.jdesktop.beansbinding.ELProperty.create("${nameLastpart}"), txtNameLastPart, org.jdesktop.beansbinding.BeanProperty.create("text"));
         bindingGroup.addBinding(binding);
@@ -422,7 +421,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
             pnlNameLastPartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlNameLastPartLayout.createSequentialGroup()
                 .addComponent(jLabel2)
-                .addGap(0, 49, Short.MAX_VALUE))
+                .addGap(0, 140, Short.MAX_VALUE))
             .addComponent(txtNameLastPart)
         );
         pnlNameLastPartLayout.setVerticalGroup(
@@ -463,7 +462,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
         pnlMainGrid.add(jPanel3);
 
         jLabel6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/sola/clients/swing/gis/ui/control/red_asterisk.gif"))); // NOI18N
-        jLabel6.setText("Address1");
+        jLabel6.setText("Property location (address):");
 
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, cadastreObjectBean, org.jdesktop.beansbinding.ELProperty.create("${address}"), txtAddress1, org.jdesktop.beansbinding.BeanProperty.create("text"));
         bindingGroup.addBinding(binding);
@@ -488,7 +487,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
         pnlMainGrid.add(jPanel6);
 
         jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/sola/clients/swing/gis/ui/control/red_asterisk.gif"))); // NOI18N
-        jLabel4.setText("Address2:");
+        jLabel4.setText("District:");
 
         org.jdesktop.beansbinding.ELProperty eLProperty = org.jdesktop.beansbinding.ELProperty.create("${chiefdomTypeListBean}");
         org.jdesktop.swingbinding.JComboBoxBinding jComboBoxBinding = org.jdesktop.swingbinding.SwingBindings.createJComboBoxBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, chiefdomTypeListBean, eLProperty, cbxAddress2);
@@ -502,7 +501,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addComponent(jLabel4)
-                .addGap(0, 242, Short.MAX_VALUE))
+                .addGap(0, 256, Short.MAX_VALUE))
             .addComponent(cbxAddress2, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel4Layout.setVerticalGroup(
@@ -742,7 +741,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
 
         jPanel23.setLayout(new java.awt.GridLayout(1, 2, 10, 0));
 
-        jLabel19.setText("Ref. Name first part:");
+        jLabel19.setText("Foot note:");
 
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, cadastreObjectBean, org.jdesktop.beansbinding.ELProperty.create("${refNameFirstpart}"), txtRefNameFirstPart, org.jdesktop.beansbinding.BeanProperty.create("text"));
         bindingGroup.addBinding(binding);
@@ -753,7 +752,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
             jPanel24Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel24Layout.createSequentialGroup()
                 .addComponent(jLabel19)
-                .addGap(0, 34, Short.MAX_VALUE))
+                .addGap(0, 93, Short.MAX_VALUE))
             .addComponent(txtRefNameFirstPart)
         );
         jPanel24Layout.setVerticalGroup(
@@ -766,7 +765,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
 
         jPanel23.add(jPanel24);
 
-        jLabel20.setText("Ref. name last part:");
+        jLabel20.setText("  ");
 
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, cadastreObjectBean, org.jdesktop.beansbinding.ELProperty.create("${refNameLastpart}"), txtRefNameLastPart, org.jdesktop.beansbinding.BeanProperty.create("text"));
         bindingGroup.addBinding(binding);
@@ -777,7 +776,7 @@ public class SurveyPlanDetailsDialog extends javax.swing.JDialog {
             jPanel25Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel25Layout.createSequentialGroup()
                 .addComponent(jLabel20)
-                .addGap(0, 37, Short.MAX_VALUE))
+                .addGap(0, 144, Short.MAX_VALUE))
             .addComponent(txtRefNameLastPart)
         );
         jPanel25Layout.setVerticalGroup(

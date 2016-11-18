@@ -58,15 +58,17 @@ public class ScalebarGenerator {
     private final static String IMAGE_FORMAT = "png";
 
     private enum segmentMeasureUnitType {
-
         m,
+        ft,
+        in,
+        mi,
         km,
         cm,
         mm
     }
     private int height = 40;
     private int numberOfSegments = 3;
-    private int lrbMargin = 15;
+    private int lrbMargin = 10;
     private int topMargin = 15;
     private Color colorBorderSegment = Color.DARK_GRAY;
     private Color colorSegmentEven = Color.BLACK;
@@ -75,6 +77,7 @@ public class ScalebarGenerator {
     private Font textFont = new Font(Font.SANS_SERIF, Font.BOLD, 10);
     private segmentMeasureUnitType segmentMeasureUnit = segmentMeasureUnitType.m;
     private boolean drawScaleText = true;
+    private boolean isMetric = true;
 
     /**
      * Constructor
@@ -179,6 +182,14 @@ public class ScalebarGenerator {
         this.textFont = textFont;
     }
 
+    public boolean getIsMetric() {
+        return isMetric;
+    }
+
+    public void setIsMetric(boolean isMetric) {
+        this.isMetric = isMetric;
+    }
+
     public BufferedImage getImage(Double scale, double width, double dpi) {
 
         double extentWidth = 2.54 * scale / 100;
@@ -192,7 +203,8 @@ public class ScalebarGenerator {
         // Uses the widthInMeters to determine the appropriate unit of measure and rounding
         // factor to use for the scale bar
         double rounding = 1;
-        this.segmentMeasureUnit = segmentMeasureUnitType.m;
+        this.segmentMeasureUnit = segmentMeasureUnit.m;
+
         if (widthInMeters > 1000) {
             rounding = 500;
             this.segmentMeasureUnit = segmentMeasureUnitType.km;
@@ -213,15 +225,15 @@ public class ScalebarGenerator {
             rounding = 0.5;
             this.segmentMeasureUnit = segmentMeasureUnitType.cm;
         }
-        double segmentInMeters =
-                (double) Math.ceil((widthInMeters / this.numberOfSegments) / rounding) * rounding;
+        double segmentInMeters
+                = (double) Math.ceil((widthInMeters / this.numberOfSegments) / rounding) * rounding;
 
         double finalWidthInMeters = segmentInMeters * this.numberOfSegments;
         int scalebarDrawingWidth = (int) Math.round(finalWidthInMeters * screenWidth / extentWidth);
         int segmentDrawingWidth = scalebarDrawingWidth / this.numberOfSegments;
         int finalScalebarWidth = scalebarDrawingWidth + (this.lrbMargin * 2);
         //int finalScalebarWidth = (int)width + (this.lrbMargin * 2);
-                
+
         BufferedImage bi = new BufferedImage(
                 finalScalebarWidth, height, BufferedImage.TYPE_INT_ARGB);
 
@@ -264,11 +276,11 @@ public class ScalebarGenerator {
 
         return bi;
     }
-    
+
     /**
-     * Generate the image of the scalebar for printing purposes. 
-     * It has fixed width of scale segments of 1 centimeter.
-     * If the scale is small (e.g. &lt; * 0.01), the scale bar will not be generated.
+     * Generate the image of the scalebar for printing purposes. It has fixed
+     * width of scale segments of 1 centimeter. If the scale is small (e.g. &lt;
+     * * 0.01), the scale bar will not be generated.
      *
      * Note that due to different screen resolutions, generating a 100% accurate
      * scale bar for on screen display is next to impossible. The scale should
@@ -280,26 +292,45 @@ public class ScalebarGenerator {
      * measurement of the segments.
      * @param dpi DPI used on the display device. e.g. for a standard printout,
      * 72 is suitable. For screen display, 96 is better.
+     * @param isMetric
      * @return
      */
     public BufferedImage getImageForPrint(Double scale, double width, double dpi) {
-        double segmentInMeters = scale / 100;
-        int segmentInPixels = (int) (dpi / 2.5);
-        
-        if (segmentInMeters < 0.001) {
+        double segmentInUnits;
+        int segmentInPixels;
+
+        if (isMetric) {
+            segmentInUnits = scale / 100;
+            segmentInPixels = (int) (dpi / 2.5);
+        } else {
+            scale = scale / 2.5;
+            segmentInUnits = scale / 12;
+            segmentInPixels = (int) (dpi);
+        }
+
+        if (segmentInUnits < 0.001) {
             // Scale is too small to draw a reasonable scalebar. 
             return null;
         }
 
         // Uses the widthInMeters to determine the appropriate unit of measure and rounding
         // factor to use for the scale bar
-        this.segmentMeasureUnit = segmentMeasureUnitType.m;
-        if (segmentInMeters >= 1000) {
-            this.segmentMeasureUnit = segmentMeasureUnitType.km;
-        } else if (segmentInMeters < 0.01) {
-            this.segmentMeasureUnit = segmentMeasureUnitType.mm;
-        } else if (segmentInMeters < 1) {
-            this.segmentMeasureUnit = segmentMeasureUnitType.cm;
+        if (isMetric) {
+            this.segmentMeasureUnit = segmentMeasureUnitType.m;
+            if (segmentInUnits >= 1000) {
+                this.segmentMeasureUnit = segmentMeasureUnitType.km;
+            } else if (segmentInUnits < 0.01) {
+                this.segmentMeasureUnit = segmentMeasureUnitType.mm;
+            } else if (segmentInUnits < 1) {
+                this.segmentMeasureUnit = segmentMeasureUnitType.cm;
+            }
+        } else {
+            this.segmentMeasureUnit = segmentMeasureUnitType.ft;
+            if (segmentInUnits >= 5280) {
+                this.segmentMeasureUnit = segmentMeasureUnitType.mi;
+            } else if (segmentInUnits < 1) {
+                this.segmentMeasureUnit = segmentMeasureUnitType.in;
+            }
         }
 
         int finalScalebarWidth = (int) width + (this.lrbMargin * 2);
@@ -313,16 +344,19 @@ public class ScalebarGenerator {
         }
 
         BufferedImage bi = new BufferedImage(finalScalebarWidth, height, BufferedImage.TYPE_INT_ARGB);
-
-        int segmentHeight = this.height - (this.lrbMargin + this.topMargin);
+        
+        // Calculate initial x for centrally aligning of segments
+        int initX = (finalScalebarWidth - (segNum * segmentInPixels))/2;
+        
+        int segmentHeight = (int) (this.height / 3.5);
         Graphics2D g2D = (Graphics2D) bi.getGraphics();
         g2D.setColor(this.colorBorderSegment);
-        g2D.fillRect(this.lrbMargin - 1, this.topMargin - 1,
+        g2D.fillRect(initX - 1, this.topMargin - 1,
                 segNum * segmentInPixels + 2,
                 segmentHeight + 2);
 
         for (int segmentInd = 0; segmentInd < segNum; segmentInd++) {
-            int x = this.lrbMargin + segmentInd * segmentInPixels;
+            int x = initX + segmentInd * segmentInPixels;
             int y = this.topMargin;
             if (segmentInd % 2 == 0) {
                 g2D.setColor(this.colorSegmentEven);
@@ -331,13 +365,12 @@ public class ScalebarGenerator {
             }
             g2D.fillRect(x, y, segmentInPixels, segmentHeight);
             this.drawSegmentText(g2D,
-                    segmentInd * segmentInMeters,
-                    this.lrbMargin + segmentInd * segmentInPixels,
-                    this.height);
+                    segmentInd * segmentInUnits,
+                    x, this.height);
         }
         this.drawSegmentText(g2D,
-                segNum * segmentInMeters,
-                this.lrbMargin + segNum * segmentInPixels,
+                segNum * segmentInUnits,
+                initX + segNum * segmentInPixels,
                 this.height);
 
         if (scale != null && drawScaleText) {
@@ -395,30 +428,42 @@ public class ScalebarGenerator {
         g2D.drawString(txt, x, y);
     }
 
-    private void drawSegmentText(Graphics2D g2D, double segmentMeasureInMeters, int x, int y) {
+    private void drawSegmentText(Graphics2D g2D, double segmentMeasureInUnits, int x, int y) {
         String measureToWrite = "";
         if (this.segmentMeasureUnit == segmentMeasureUnitType.km) {
-            if ((double) segmentMeasureInMeters / 1000 < 10) {
+            if ((double) segmentMeasureInUnits / 1000 < 10) {
                 DecimalFormat decFormat = new DecimalFormat("#.#");
-                measureToWrite = decFormat.format(((double) segmentMeasureInMeters / 1000));
+                measureToWrite = decFormat.format(((double) segmentMeasureInUnits / 1000));
             } else {
                 DecimalFormat decFormat = new DecimalFormat("#");
-                measureToWrite = decFormat.format(((double) segmentMeasureInMeters / 1000));
+                measureToWrite = decFormat.format(((double) segmentMeasureInUnits / 1000));
             }
         } else if (this.segmentMeasureUnit == segmentMeasureUnitType.cm) {
             DecimalFormat decFormat = new DecimalFormat("#");
-            measureToWrite = decFormat.format(((double) segmentMeasureInMeters * 100));
+            measureToWrite = decFormat.format(((double) segmentMeasureInUnits * 100));
         } else if (this.segmentMeasureUnit == segmentMeasureUnitType.mm) {
-            if ((double) segmentMeasureInMeters * 1000 < 1) {
+            if ((double) segmentMeasureInUnits * 1000 < 1) {
                 DecimalFormat decFormat = new DecimalFormat("#.#");
-                measureToWrite = decFormat.format(((double) segmentMeasureInMeters * 1000));
+                measureToWrite = decFormat.format(((double) segmentMeasureInUnits * 1000));
             } else {
                 DecimalFormat decFormat = new DecimalFormat("#");
-                measureToWrite = decFormat.format(((double) segmentMeasureInMeters * 1000));
+                measureToWrite = decFormat.format(((double) segmentMeasureInUnits * 1000));
             }
-        } else {
+        } else if (this.segmentMeasureUnit == segmentMeasureUnitType.mi) {
+            if ((double) segmentMeasureInUnits / 5280 < 10) {
+                DecimalFormat decFormat = new DecimalFormat("#.#");
+                measureToWrite = decFormat.format(((double) segmentMeasureInUnits / 5280));
+            } else {
+                DecimalFormat decFormat = new DecimalFormat("#");
+                measureToWrite = decFormat.format(((double) segmentMeasureInUnits / 5280));
+            }
+        } else if (this.segmentMeasureUnit == segmentMeasureUnitType.in) {
             DecimalFormat decFormat = new DecimalFormat("#");
-            measureToWrite = decFormat.format(segmentMeasureInMeters);
+            measureToWrite = decFormat.format(((double) segmentMeasureInUnits * 12));
+        }
+        else {
+            DecimalFormat decFormat = new DecimalFormat("#");
+            measureToWrite = decFormat.format(segmentMeasureInUnits);
         }
         measureToWrite = String.format("%s%s", measureToWrite, this.segmentMeasureUnit);
         this.drawText(g2D, measureToWrite, x, y);

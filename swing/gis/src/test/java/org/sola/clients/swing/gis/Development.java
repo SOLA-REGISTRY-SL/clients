@@ -267,7 +267,7 @@ public class Development {
 
         MapImageGeneratorForSelectedParcel gen
                 = new MapImageGeneratorForSelectedParcel(
-                        co, 665, 423, 200, 200, true, 192, 40);
+                        co, 665, 423, 200, 200, true, 192, 40, true);
         MapImageInformation info = gen.getInformation();
 
         ReportViewerForm form = new ReportViewerForm(

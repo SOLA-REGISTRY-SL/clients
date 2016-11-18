@@ -61,6 +61,7 @@ public class MapImageGenerator {
     private Font textFont = new Font(Font.SANS_SERIF, Font.BOLD, 10);
     private String textInTheMapCenter = null;
     private boolean drawCoordinatesInTheSides = true;
+    private boolean isMetric = true;
 
     /**
      * Constructor of the generator.
@@ -162,6 +163,14 @@ public class MapImageGenerator {
                 centerY - extentHeight / 2, centerY + extentHeight / 2,
                 initialExtent.getCoordinateReferenceSystem());
         return this.getImage((int) Math.round(imageWidth), extent);
+    }
+    
+    public boolean getIsMetric() {
+        return isMetric;
+    }
+
+    public void setIsMetric(boolean isMetric) {
+        this.isMetric = isMetric;
     }
     
     /**

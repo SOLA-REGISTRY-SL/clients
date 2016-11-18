@@ -2,10 +2,7 @@ package org.sola.clients.swing.gis.imagegenerator;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
-import com.vividsolutions.jts.geom.impl.CoordinateArraySequence;
 import com.vividsolutions.jts.io.ParseException;
 import java.awt.Color;
 import java.awt.FontMetrics;
@@ -18,19 +15,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.feature.SchemaException;
 import org.geotools.geometry.jts.Geometries;
-import org.geotools.geometry.GeometryBuilder;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.extended.layer.ExtendedFeatureLayer;
 import org.geotools.map.extended.layer.ExtendedLayerGraphics;
-import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.swing.extended.Map;
 import org.geotools.swing.extended.exception.InitializeLayerException;
 import org.geotools.swing.extended.exception.InitializeMapException;
@@ -88,6 +81,7 @@ public class MapImageGeneratorForSelectedParcel {
     private int mapSrid;
     private int gridCutSrid;
     private CadastreObjectBean co;
+    private boolean isMetric = true;
 
     public MapImageGeneratorForSelectedParcel(String cadastreObjectId,
             int imageWidth, int imageHeight, int sketchWidth, int sketchHeight,
@@ -95,7 +89,7 @@ public class MapImageGeneratorForSelectedParcel {
             throws InitializeLayerException, InitializeMapException, SchemaException {
         this(PojoDataAccess.getInstance().getCadastreObject(cadastreObjectId),
                 imageWidth, imageHeight, sketchWidth, sketchHeight,
-                generateAlsoScaleBar, scalebarWidth, scalebarHeight);
+                generateAlsoScaleBar, scalebarWidth, scalebarHeight, true);
     }
 
     /**
@@ -112,13 +106,16 @@ public class MapImageGeneratorForSelectedParcel {
      * @param scalebarWidth The scalebar width. The returned width of the
      * scalebar can vary to fit a good scale.
      * @param scalebarHeight The scalebar height
+     * @param isMetric Indicates whether measurements must be in metric system
+     * or not
      * @throws InitializeLayerException
      * @throws InitializeMapException
      * @throws SchemaException
      */
     public MapImageGeneratorForSelectedParcel(CadastreObjectBean cadastreObject,
             int imageWidth, int imageHeight, int sketchWidth, int sketchHeight,
-            boolean generateAlsoScaleBar, int scalebarWidth, int scalebarHeight)
+            boolean generateAlsoScaleBar, int scalebarWidth, int scalebarHeight,
+            boolean isMetric)
             throws InitializeLayerException, InitializeMapException, SchemaException {
 
         this.co = cadastreObject;
@@ -126,6 +123,8 @@ public class MapImageGeneratorForSelectedParcel {
         this.imageHeight = imageHeight;
         this.sketchWidth = sketchWidth;
         this.sketchHeight = sketchHeight;
+        this.isMetric = isMetric;
+
         org.geotools.swing.extended.util.Messaging.getInstance().setMessaging(
                 new org.sola.clients.swing.gis.Messaging());
         ExtendedFeatureLayer.setExtraSldResources(extraSldResources);
@@ -151,6 +150,7 @@ public class MapImageGeneratorForSelectedParcel {
         mapImageGenerator = new MapImageGenerator(map.getMapContent());
         mapImageGenerator.setDrawCoordinatesInTheSides(true);
         mapImageGenerator.setTextInTheMapCenter(null);
+        mapImageGenerator.setIsMetric(isMetric);
 
         // Initialize the map generator of the map sketch image
 //        map = new Map(crs.getSrid(), crs.getWkt());
@@ -162,9 +162,15 @@ public class MapImageGeneratorForSelectedParcel {
         if (generateAlsoScaleBar) {
             this.scalebarWidth = scalebarWidth;
             scalebarGenerator = new ScalebarGenerator();
-            scalebarGenerator.setNumberOfSegments(5);
+
             scalebarGenerator.setDrawScaleText(false);
             scalebarGenerator.setHeight(scalebarHeight);
+            scalebarGenerator.setIsMetric(isMetric);
+            if (isMetric) {
+                scalebarGenerator.setNumberOfSegments(5);
+            } else {
+                scalebarGenerator.setNumberOfSegments(3);
+            }
         }
 
 //        mainToSketchScaleRatio = Double.parseDouble(
@@ -287,7 +293,7 @@ public class MapImageGeneratorForSelectedParcel {
 
         for (int i = 0; i < points.length - 1; i++) {
             HashMap<String, Object> fieldValues = new HashMap<String, Object>();
-            fieldValues.put(LAYER_FEATURE_LABEL_FIELD_NAME, "E "
+            fieldValues.put(LAYER_FEATURE_LABEL_FIELD_NAME, "(" + (i + 1) + ") \nE "
                     + NumberUtility.roundDouble(points[i].x, 2) + "\nN "
                     + NumberUtility.roundDouble(points[i].y, 2));
             layerParcelPoints.addFeature(Integer.toString(i),
@@ -296,8 +302,13 @@ public class MapImageGeneratorForSelectedParcel {
 
             fieldValues.clear();
 
+            String unit = "m";
+            if (!isMetric) {
+                unit = "ft";
+            }
+
             fieldValues.put(LAYER_FEATURE_LABEL_FIELD_NAME,
-                    NumberUtility.roundDouble(calcDistance(points[i], points[i + 1]), 2));
+                    NumberUtility.roundDouble(calcDistance(points[i], points[i + 1]), 2) + unit);
             layerParcelLines.addFeature(Integer.toString(i),
                     (Geometry) GeometryUtility.getGeometryFactory().createLineString(
                             new Coordinate[]{points[i], points[i + 1]}),
@@ -553,7 +564,14 @@ public class MapImageGeneratorForSelectedParcel {
 
     private double calcDistance(Coordinate coord1, Coordinate coord2) {
         try {
-            return JTS.orthodromicDistance(coord1, coord2, mapCrs);
+            double distance = JTS.orthodromicDistance(coord1, coord2, mapCrs);
+
+            if (isMetric) {
+                return distance;
+            } else {
+                return distance / 3.28084;
+            }
+
         } catch (TransformException ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             return 0;
