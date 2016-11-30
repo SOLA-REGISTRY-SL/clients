@@ -53,7 +53,6 @@ import org.sola.clients.swing.gis.layer.CadastreBoundaryPointLayer;
 import org.sola.clients.swing.gis.layer.PojoLayer;
 import org.sola.clients.swing.gis.mapaction.SaveTransaction;
 import org.sola.clients.swing.gis.tool.CadastreBoundaryEditTool;
-import org.sola.clients.swing.gis.tool.CadastreBoundarySelectTool;
 import org.sola.clients.swing.gis.ui.control.MapDocumentsPanel;
 import org.sola.common.messaging.GisMessage;
 

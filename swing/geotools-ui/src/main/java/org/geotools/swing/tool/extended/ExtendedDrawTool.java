@@ -88,6 +88,18 @@ public abstract class ExtendedDrawTool extends ExtendedTool {
         }
     }
 
+    public Point2D getStartPos1() {
+        return startPos1;
+    }
+
+    public Point2D getStartPos2() {
+        return startPos2;
+    }
+
+    public Point2D getMovingPos() {
+        return movingPos;
+    }
+
     /**
      * @return the geometryType
      */
@@ -109,6 +121,10 @@ public abstract class ExtendedDrawTool extends ExtendedTool {
         this.styleTemporaryLinesColor = styleTemporaryLinesColor;
     }
 
+    public Color getStyleTemporaryLinesColor(){
+        return this.styleTemporaryLinesColor;
+    }
+    
     /**
      * @param styleTemporaryLinesStrokeWidth the styleTemporaryLinesStrokeWidth to set
      */
@@ -363,7 +379,7 @@ public abstract class ExtendedDrawTool extends ExtendedTool {
      * Draws the temporary line while the mouse is moving.
      * @param g2D 
      */
-    private void drawTemporaryLines(Graphics2D g2D) {
+    protected void drawTemporaryLines(Graphics2D g2D) {
         Line2D line;
         if (this.startPos1 != null && this.movingPos != null) {
             line = new Line2D.Double(this.startPos1, this.movingPos);

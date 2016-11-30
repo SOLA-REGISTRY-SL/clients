@@ -120,7 +120,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="22" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Survey plan"]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Survey Plan"]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="0" y="33" width="555" height="28" uuid="b2d0588b-c0e0-478c-954d-a3ed966d9f70"/>

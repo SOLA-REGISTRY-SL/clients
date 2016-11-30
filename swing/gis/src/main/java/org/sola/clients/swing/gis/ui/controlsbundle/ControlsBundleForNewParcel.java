@@ -27,7 +27,6 @@
  */
 package org.sola.clients.swing.gis.ui.controlsbundle;
 
-import static com.sun.jndi.ldap.LdapURL.fromList;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;

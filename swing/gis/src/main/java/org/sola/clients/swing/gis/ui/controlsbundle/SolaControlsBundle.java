@@ -29,8 +29,6 @@ package org.sola.clients.swing.gis.ui.controlsbundle;
 
 import com.vividsolutions.jts.geom.Envelope;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.geotools.feature.SchemaException;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.geometry.jts.ReferencedEnvelope;
@@ -57,6 +55,7 @@ import org.sola.webservices.search.MapDefinitionTO;
 // CHOOSE WHICH TOOL IS PREFERRED FOR THE MAP PRINT COMMENTING AND UNCOMMENTING THE FOLLOWING LINES
 //this is the mapaction used for creating a jasper report map print
 import org.sola.clients.swing.gis.mapaction.SolaJasperPrint;
+import org.sola.clients.swing.gis.tool.MeasureTool;
 import org.sola.common.RolesConstants;
 //this is the mapaction used for creating a pdf map print
 //import org.sola.clients.swing.gis.mapaction.SolaPrint;
@@ -129,6 +128,8 @@ public abstract class SolaControlsBundle extends ControlsBundle {
             this.addSearchPanel();
             InformationTool infoTool = new InformationTool(this.pojoDataAccess);
             this.getMap().addTool(infoTool, this.getToolbar(), true);
+            MeasureTool measureTool = new MeasureTool();
+            this.getMap().addTool(measureTool, this.getToolbar(), true);
 
             // CHOOSE WHICH TOOL IS PREFERRED FOR THE MAP PRINT COMMENTING AND UNCOMMENTING THE FOLLOWING LINES
             //this is used for creating a pdf map print
